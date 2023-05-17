@@ -40,7 +40,6 @@ export const useFormStore = defineStore("form-Store", () => {
       const res = await stepUploadApi(newFormSteps.value!.processId,newFormSteps.value!.stepId,userInfo)
       //@ts-ignore
       newFormSteps.value = res
-      console.log(res)
     }
   
   // 表单验证

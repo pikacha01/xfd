@@ -127,7 +127,13 @@ const upLoadCard = async (direction:string) => {
   res[0].words_result_num === 6 ? formStore.IDCardInfo.PicField_43.push(res[1]) : formStore.IDCardInfo.PicField_44.push(res[1])
   if (formStore.IDCardInfo.PicField_43.length !== 0 && formStore.IDCardInfo.PicField_44.length !== 0) {
     formStore.IDCardInfo.TextField_87 = formStore.newFormSteps?.data.initData.TextField_87 as string
-    formStore.stepUpload(formStore.IDCardInfo)
+    await formStore.stepUpload(formStore.IDCardInfo)
+    if (formStore.newFormSteps?.stepId === "_end_id") {
+      uni.showToast({
+        title: "用户已存在",
+        icon: "error"
+      })
+    }
   }
   for (let index in res[0].words_result) {
     if (index.includes("日期") || index === "出生") {
@@ -188,6 +194,9 @@ const submitForm = async () => {
     //@ts-ignore
     if (data.success) {
       formStore.stepUpload(clientStore.IDCardForm)
+      uni.navigateTo({
+        url:"/pages/index/index"
+      })
     }
   }).catch(err => {
     console.log('err', err);
