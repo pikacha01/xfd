@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      var coverSupport =
+        "CSS" in window &&
+        typeof CSS.supports === "function" &&
+        (CSS.supports("top: env(a)") || CSS.supports("top: constant(a)"));
+      document.write(
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ", viewport-fit=cover" : "") +
+          '" />'
+      );
+    </script>
+    <title></title>
+    <!--preload-links-->
+    <!--app-context-->
+    <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">  
+    <script src="https://unpkg.com/video.js/dist/video.min.js"></script>  
+  </head>
+  <body>
+    <div id="app"><!--app-html--></div>
+    <script type="module" src="/src/main.ts"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+      // VConsole will be exported to `window.VConsole` by default.
+      var vConsole = new window.VConsole();
+    </script> -->
+
+    <!-- #ifdef H5 -->
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=d184974634cdbdf1e2ec774ea86277a9"></script>
+    <!-- #endif -->
+  </body>
+</html>

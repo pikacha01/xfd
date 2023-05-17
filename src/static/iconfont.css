@@ -1,0 +1,174 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3638246 */
+  /* Color fonts */
+  src: 
+       /* url('iconfont.woff2?t=1664344311059') format('woff2'),
+       url('iconfont.woff?t=1664344311059') format('woff'), */
+       url('iconfont.ttf') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+}
+
+.icon-wenjian:before {
+  content: "\e600";
+}
+
+.icon-ppt:before {
+  content: "\e8b0";
+}
+
+.icon-shipin:before {
+  content: "\e622";
+}
+
+.icon-PDF:before {
+  content: "\e64d";
+}
+
+.icon-excel:before {
+  content: "\e665";
+}
+
+.icon-word:before {
+  content: "\e66d";
+}
+
+.icon-yinpinwenjian:before {
+  content: "\e6ed";
+}
+
+.icon-AmountField:before {
+  content: "\e601";
+}
+
+.icon-DepartField:before {
+  content: "\e602";
+}
+
+.icon-CaseCard:before {
+  content: "\e603";
+}
+
+.icon-CapitalAmount:before {
+  content: "\e604";
+}
+
+.icon-DateField:before {
+  content: "\e605";
+}
+
+.icon-ChildTableField:before {
+  content: "\e606";
+}
+
+.icon-CheckField:before {
+  content: "\e607";
+}
+
+.icon-EmailField:before {
+  content: "\e608";
+}
+
+.icon-FormGrid:before {
+  content: "\e609";
+}
+
+.icon-FormulaField:before {
+  content: "\e60a";
+}
+
+.icon-editor:before {
+  content: "\e60b";
+}
+
+.icon-GradeField:before {
+  content: "\e60c";
+}
+
+.icon-FileField:before {
+  content: "\e60d";
+}
+
+.icon-GroupField:before {
+  content: "\e60e";
+}
+
+.icon-MemberField:before {
+  content: "\e60f";
+}
+
+.icon-NoteField:before {
+  content: "\e610";
+}
+
+.icon-JoinFormField:before {
+  content: "\e611";
+}
+
+.icon-SelectField:before {
+  content: "\e612";
+}
+
+.icon-PositionField:before {
+  content: "\e613";
+}
+
+.icon-OtherFormField:before {
+  content: "\e614";
+}
+
+.icon-PhoneField:before {
+  content: "\e615";
+}
+
+.icon-PivotReport:before {
+  content: "\e616";
+}
+
+.icon-PicField:before {
+  content: "\e617";
+}
+
+.icon-SummaryField:before {
+  content: "\e618";
+}
+
+.icon-IdentityField:before {
+  content: "\e619";
+}
+
+.icon-SignatureField:before {
+  content: "\e61a";
+}
+
+.icon-RegionField:before {
+  content: "\e61b";
+}
+
+.icon-RichTextField:before {
+  content: "\e61c";
+}
+
+.icon-NumberField:before {
+  content: "\e61d";
+}
+
+.icon-SystemMemberField:before {
+  content: "\e61e";
+}
+
+.icon-TextField:before {
+  content: "\e61f";
+}
+
+.icon-AutoNumberField:before {
+  content: "\e620";
+}
+
+.icon-TextCombinationField:before {
+  content: "\e621";
+}
+
