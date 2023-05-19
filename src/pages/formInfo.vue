@@ -6,6 +6,8 @@ import FormGrid from '@/components/FormGrid/index.vue'
 import TextField from '@/components/inputField/index.vue'
 import DateField from '@/components/DateInput/index.vue'
 import GroupField from '@/components/PickerSelect/index.vue'
+import IDField  from '@/components/IDField/index.vue'
+import RegionField  from '@/components/RegionInput/index.vue'
 
 const formStore = useFormStore()
 const clientStore = useClientStore()
@@ -104,7 +106,7 @@ onMounted(async () => {
     <view class="content">
       <view v-for="item in inputFormArray"
         :key="item.id">
-        <template v-if="item.tag === 'TextField'">
+        <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField'">
           <TextField :data="item"></TextField>
         </template>
         <template v-else-if ="item.tag === 'FormGrid'">
@@ -118,6 +120,12 @@ onMounted(async () => {
         </template>
         <template v-else-if ="item.tag === 'GroupField'">
           <GroupField :data="item"></GroupField>
+        </template>
+        <template v-else-if ="item.tag === 'PicField' && item.id === 'PicField_43'">
+          <IDField :data="item"></IDField>
+        </template>
+        <template v-else-if ="item.tag === 'RegionField'">
+          <RegionField :data="item"></RegionField>
         </template>
       </view>
     </view>

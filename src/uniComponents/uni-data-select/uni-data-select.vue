@@ -4,8 +4,8 @@
 		<view class="uni-stat-box" :class="{'uni-stat__actived': current}">
 			<view class="uni-select">
 				<view class="uni-select__input-box" @click="toggleSelector">
-					<view v-if="current" class="uni-select__input-text">{{current}}</view>
-					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{typePlaceholder}}</view>
+					<view v-if="current" class="uni-select__input-text" :class="{'disabled': disabled}">{{current}}</view>
+					<view v-else class="uni-select__input-text uni-select__input-placeholder" :class="{'disabled': disabled}">{{typePlaceholder}}</view>
 					<uni-icons v-if="current && clear" type="clear" color="#c0c4cc" size="24" @click="clearVal" />
 					<uni-icons v-else :type="showSelector? 'top' : 'bottom'" size="14" color="#999" />
 				</view>
@@ -88,7 +88,11 @@
 			defItem: {
 				type: Number,
 				default: 0
-			}
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      }
 		},
 		created() {
 			this.last = `${this.collection}_last_selected_option_value`
@@ -203,7 +207,8 @@
 				}
 			},
 
-			toggleSelector() {
+      toggleSelector () {
+        if(this.disabled) return 
 				this.showSelector = !this.showSelector
 			},
 			formatItemName(item) {
@@ -239,6 +244,9 @@
 		}
 	}
 
+  .disabled {
+    color: #a9a9a9 !important;
+  }
 	/* #endif */
 	.uni-stat__select {
 		display: flex;
@@ -274,8 +282,7 @@
 		border: 0 !important;
 		box-sizing: border-box;
 		border-radius: 4px;
-		padding: 0 5px;
-		padding-left: 10px;
+		padding: 0 5px 0 0;
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
