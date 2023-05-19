@@ -7,7 +7,7 @@ export function OcrIdCard(direction: string) {
     uni.chooseImage({  //选择身份证图片/拍照
       count: 1,
       sizeType: ['original', 'compressed'],
-      sourceType: ['camera'],
+      sourceType: ['camera','album'],
       success: function (res) {   //调用照片选择成功的回调函数
         //图片编码部分核心代码
         uni.getFileSystemManager().readFile({

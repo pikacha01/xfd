@@ -3,6 +3,7 @@
 import { watch, ref } from 'vue'
 import { onShow,onReachBottom } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
+import { clienData } from '@/constants/client'
 
 const userStore = useUserStore()
 const store = useCountStore()
@@ -169,6 +170,15 @@ watch(() => {
   clientStore.selectOption = ""
   await clientStore.getClientInfo()
 })
+
+// 详情页跳转
+const goUserDetail = (item:clienData,userCurrentStep) => {
+  formStore.goUserDetailInfo = item
+  formStore.userCurrentStep = userCurrentStep
+  uni.navigateTo({
+    url:"/pages/formInfo"
+  })
+}
 </script>
 
 <template>
@@ -199,7 +209,7 @@ watch(() => {
       </view>
     </view>
     <view class="content">
-      <view class="userInfo" v-for="item in clientStore.userList" :key="item.id">
+      <view class="userInfo" @click="goUserDetail(item,clientStore.steps[item.label])" v-for="item in clientStore.userList" :key="item.id">
         <view class="left">
           <view class="name">{{ item.TextField_1 }}<text class="companyName">兴伏贷</text></view>
           <view class="holder">{{ item.owner }}</view>

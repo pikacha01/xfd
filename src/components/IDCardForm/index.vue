@@ -4,7 +4,6 @@ import {useClientStore,useFormStore} from '@/store'
 import { OcrIdCard } from '@/utils/baiduAi'
 import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
 import QQMapWX from '../../utils/qqmap-wx-jssdk'
-import PositionMap from '@/components/PositionMap/index.vue'
 import { getStaticPic } from "@/api/modules/user";
 
 const clientStore = useClientStore()
@@ -194,6 +193,10 @@ const submitForm = async () => {
     //@ts-ignore
     if (data.success) {
       formStore.stepUpload(clientStore.IDCardForm)
+      uni.showToast({
+        title: '上传成功',
+        duration: 2000,
+      })
       uni.navigateTo({
         url:"/pages/index/index"
       })
@@ -372,12 +375,6 @@ const idFormRules = {
             <uni-icons class="pickerIcons" type="location-filled" color="#A9A9A9" size="22"></uni-icons>
           </view>
         </view>
-        <PositionMap @delete="clientStore.IDCardForm.PositionField_67 = null" v-if="clientStore.IDCardForm.PositionField_67" 
-          :title="clientStore.IDCardForm.PositionField_67.pName" 
-          :address="clientStore.IDCardForm.PositionField_67.address"
-          :location="clientStore.IDCardForm.PositionField_67.location"
-          :image="clientStore.IDCardForm.PositionField_67.staticPic"
-        />
       </view>
       <button class="saveButton" type="submit" @click="submitForm">保存</button>
 		</uni-forms>  

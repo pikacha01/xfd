@@ -28,6 +28,10 @@
 			"path": "pages/addClient",
       "title": "新增农户"
 		},
+    {
+			"path": "pages/formInfo",
+      "title": "客户档案"
+		},
 		{
 			"path": "pages/add"
 		},

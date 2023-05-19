@@ -444,9 +444,7 @@ export interface formTree {
 // 步骤参数
 export interface newClientStep {
   data: {
-    initData: {
-      TextField_87: string
-    },
+    initData: any,
     inputForm: IfForm,
     viewId: number,
     appId: number,
@@ -469,6 +467,50 @@ export interface IDUpload {
   PicField_43: IDInfo[],
   PicField_44: IDInfo[],
   TextField_87: string
+}
+
+// 地区选择 
+export interface addressInfo {
+  fid: number,
+  id: number,
+  levelId:number,
+  name:string
+}
+
+export interface FormCompnentData {
+  placeholder: string,
+  col: number;
+  color: boolean;
+  cssStyle: null | string;
+  dataType: string;
+  defaultValue: string;
+  deleted: boolean;
+  errorMsg: any[];
+  height: number;
+  id: string;
+  items?: {
+    label: string;
+    value: string;
+    color: string;
+    checked: boolean;
+  }[];
+  label: string;
+  layout: string;
+  left: number;
+  note: string;
+  persistence: boolean;
+  primary: boolean;
+  readonly: boolean;
+  required: boolean;
+  summaryGeneratorList: null;
+  system: boolean;
+  tag: string;
+  top: number;
+  type: number;
+  unique: boolean;
+  verifyResult: boolean;
+  visible: boolean;
+  width: number;
 }
 
 export {

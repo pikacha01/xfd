@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { clientFormInfoInfo,userInfo } from '@/constants/client'
+import { clientFormInfoInfo,userInfo,clienData } from '@/constants/client'
 import { newClientStep,IDUpload } from '@/constants/form'
-import { getClientFormInfoApi,getNewClientApi,stepUploadApi,addUserValidateApi } from "@/api/modules/formInfo"
+import { geUserInfoDetailApi,getClientFormInfoApi,getNewClientApi,stepUploadApi,addUserValidateApi } from "@/api/modules/formInfo"
 
 export const useFormStore = defineStore("form-Store", () => {
   // 具体工作表信息
@@ -48,8 +48,23 @@ export const useFormStore = defineStore("form-Store", () => {
     return res
   }
   
+  // 用户详情跳转
+  const goUserDetailInfo = ref<clienData>()
+  // 用户步骤
+  const userCurrentStep = ref<number>()
+  // 获取表单详情
+  const getuserInfoStep = async () => {
+    const res = await geUserInfoDetailApi(goUserDetailInfo.value!.id)
+    //@ts-ignore
+    newFormSteps.value = res
+    console.log(goUserDetailInfo.value)
+    console.log(newFormSteps.value)
+    console.log(userCurrentStep.value)
+  }
+
   return {
-    getClientFormInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm
+    getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
+    userCurrentStep,getuserInfoStep
   }
 },{
   // @ts-ignore
