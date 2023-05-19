@@ -53,6 +53,8 @@ const instance = axios.create({
   }
 })
 
+// 用于存储每个请求的 CancelToken
+const requests:any = [];
 /**
  * 请求拦截
  */
@@ -82,6 +84,12 @@ instance.interceptors.request.use((config) => {
     })
   }
 
+  // 创建 CancelToken
+  const source = axios.CancelToken.source();
+  // 将 CancelToken 存储到 requests 数组中
+  requests.push(source);
+  // 将 CancelToken 添加到请求参数中
+  config.cancelToken = source.token;
   return {
     ...config,
     headers
@@ -94,6 +102,14 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use((v) => {
   // @ts-ignore
   if (v.statusCode === 401) {
+    // 取消其他请求
+    requests.forEach(source => {
+      source.cancel('请求被取消');
+    });
+    // 获取当前路由
+    let routes = getCurrentPages();
+    console.log(routes[routes.length - 1].route)
+    
     // const refreshToken = uni.getStorageSync('refreshToken')
     // if (refreshToken) {
     //   userApi.refreshToken(refreshToken).then(res => {
@@ -106,6 +122,7 @@ instance.interceptors.response.use((v) => {
     uni.removeStorageSync('accessToken')
     // alert('即将跳转登录页。。。', '登录过期')
     // setTimeout(redirectHome, 1500)
+    if(routes[routes.length - 1].route === "pages/login") return v.data
     uni.navigateTo({
       url:"/pages/login"
     })
