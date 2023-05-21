@@ -20,6 +20,7 @@ import uniLink from "../node_modules/@dcloudio/uni-ui/lib/uni-link/uni-link.vue"
 import uniPopup from "../node_modules/@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue"
 import uniTransition from "../node_modules/@dcloudio/uni-ui/lib/uni-transition/uni-transition.vue"
 import uniSearchBar from "../node_modules/@dcloudio/uni-ui/lib/uni-search-bar/uni-search-bar.vue"
+
 import '../node_modules/@dcloudio/uni-ui/lib/uni-scss/variables.scss'
 
 dayjs().format()

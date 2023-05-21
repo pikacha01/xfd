@@ -18,10 +18,10 @@ onShow(async () => {
       url:"/pages/login"
     })
   }
-  clientStore.getTabTotal()
-  userStore.getCompany()
-  userStore.getUserInfo()
-  await clientStore.getClientInfo()
+  await formStore.getClientFormInfo()
+  await clientStore.getTabTotal()
+  await userStore.getCompany()
+  await userStore.getUserInfo()
   selectTab.value = "全部"
   refresh = false
 })
@@ -83,8 +83,7 @@ const selectOptionChange = async (e: string) => {
 
 
 
-
-// 下拉刷新
+// 触底刷新
 onReachBottom(async () => {
   if (refresh) {
     return 
@@ -129,8 +128,7 @@ const selectOptions = ref<{ text: string, value: string }[]>([{ text: "全部", 
 // Tab选项
 watch(() => {
   return selectTab.value
-}, async (newValue,oldValue) => {
-  if(oldValue === "") return
+}, async () => {
   clientStore.startZero()
   selectOptions.value = [{ text: "全部", value: "" }]
   if (selectTab.value === "全部") {

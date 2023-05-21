@@ -7,7 +7,8 @@ import TextField from '@/components/inputField/index.vue'
 import DateField from '@/components/DateInput/index.vue'
 import GroupField from '@/components/PickerSelect/index.vue'
 import IDField  from '@/components/IDField/index.vue'
-import RegionField  from '@/components/RegionInput/index.vue'
+import RegionField from '@/components/RegionInput/index.vue'
+import IDDateEnd  from '@/components/IDDateEnd/index.vue'
 
 const formStore = useFormStore()
 const clientStore = useClientStore()
@@ -114,6 +115,9 @@ onMounted(async () => {
         </template>
         <template v-else-if ="item.tag === 'PhoneField'">
           <TextField :data="item"></TextField>
+        </template>
+        <template v-else-if ="item.tag === 'DateField' &&  item.id === 'DateField_17'">
+          <IDDateEnd :data="item"></IDDateEnd>
         </template>
         <template v-else-if ="item.tag === 'DateField'">
           <DateField :data="item"></DateField>

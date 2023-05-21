@@ -87,7 +87,6 @@ export const useClientStore = defineStore("client-Store", () => {
   // 获取人员列表
   const getClientInfo = async () => {
     const formStore = useFormStore()
-    console.log("请求时",statusFilter.value)
     const res = await getClientInfoApi(start.value, end.value,search.value,statusFilter.value)
     for (const item of res.datas) {
       item.DateField_4 = formatDateTime(item.DateField_4);

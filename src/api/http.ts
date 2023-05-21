@@ -107,9 +107,7 @@ instance.interceptors.response.use((v) => {
       source.cancel('请求被取消');
     });
     // 获取当前路由
-    let routes = getCurrentPages();
-    console.log(routes[routes.length - 1].route)
-    
+    let routes = getCurrentPages();    
     // const refreshToken = uni.getStorageSync('refreshToken')
     // if (refreshToken) {
     //   userApi.refreshToken(refreshToken).then(res => {

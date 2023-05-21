@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref,onMounted,nextTick } from 'vue'
+import { ref,onMounted,nextTick,watch } from 'vue'
 import {useClientStore,useFormStore} from '@/store'
 import { OcrIdCard } from '@/utils/baiduAi'
 import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
@@ -117,7 +117,7 @@ const IDCardFormInfo = {
   "出生": "DateField_12",
   "姓名": "TextField_1",
   "性别": "GroupField_13",
-  "民族":"TextField_76"
+  "民族":"TextField_76",
 }
 
 // 身份证上传
@@ -134,11 +134,16 @@ const upLoadCard = async (direction:string) => {
       })
     }
   }
+  console.log(res)
   for (let index in res[0].words_result) {
     if (index.includes("日期") || index === "出生") {
       const tempData = res[0].words_result[index].words
       const formattedDateStr = `${tempData.slice(0, 4)}-${tempData.slice(4, 6)}-${tempData.slice(6)}`;
-      clientStore.IDCardForm[IDCardFormInfo[index]] = formattedDateStr
+      if (index === "失效日期") {
+        res[0].words_result[index].words === "长期" ? idLength.value = ["1"] : clientStore.IDCardForm[IDCardFormInfo[index]] = formattedDateStr
+      } else {
+        clientStore.IDCardForm[IDCardFormInfo[index]] = formattedDateStr
+      }
     } else {
       clientStore.IDCardForm[IDCardFormInfo[index]] = res[0].words_result[index].words
     }
@@ -254,6 +259,19 @@ const idFormRules = {
 
 }
 
+// 身份证长期有效
+const IDlength = [{
+  text: "长期有效",
+  value: "1"
+}]
+
+const idLength = ref<string []>([])
+
+watch(() => {
+  return idLength[0]
+}, () => {
+  idLength.value[0] === "1" ? clientStore.IDCardForm.SelectField_58 = ["1"] : clientStore.IDCardForm.SelectField_58 = null
+})
 
 </script>
 
@@ -339,12 +357,17 @@ const idFormRules = {
         </picker>
       </uni-forms-item>
       <uni-forms-item label="证件有效期止">
-        <picker class="picker" mode="date"  :value="clientStore.IDCardForm.DateField_17"  @change="changeIDCardEnd">
-          <view class="date">
-            {{ clientStore.IDCardForm.DateField_17? clientStore.IDCardForm.DateField_17 : "请选择日期" }}
-            <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>
+        <view>
+          <picker class="picker IdDate" mode="date"  :value="clientStore.IDCardForm.DateField_17"  @change="changeIDCardEnd">
+            <view class="date">
+              {{ clientStore.IDCardForm.DateField_17? clientStore.IDCardForm.DateField_17 : "请选择日期" }}
+              <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>
+            </view>
+          </picker>
+          <view class="idDateLength">
+            <uni-data-checkbox selectedColor="#d4151f" multiple v-model="idLength" :localdata="IDlength"></uni-data-checkbox>
           </view>
-        </picker>
+        </view>
       </uni-forms-item>
       <uni-forms-item label="手机号码" required  name="PhoneField_9">
         <uni-easyinput v-model="clientStore.IDCardForm.PhoneField_9" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入手机号码" />
@@ -497,6 +520,14 @@ const idFormRules = {
     }
   }
 }
+.IdDate {
+  height: 78rpx;
 
+}
+.idDateLength {
+  height: 78rpx;
+  display: flex;
+  align-items: center;
+}
 
 </style>

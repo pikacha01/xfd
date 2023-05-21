@@ -113,20 +113,18 @@ const formStore = useFormStore()
 // 取需要的 state
 const { token } = storeToRefs(store);
 
-onShow(() => {
-  // uni.showLoading({
-  //   title: "加载中...",
-  // });
-  console.log(token);
-
-  if (token.value) {
-    initForm();
-  } else {
-    uni.navigateTo({ url: "/pages/login" });
-  }
-  const pages = getCurrentPages();
-  formStore.getClientFormInfo()
-});
+// onShow(() => {
+//   // uni.showLoading({
+//   //   title: "加载中...",
+//   // });
+//   if (token.value) {
+//     // initForm();
+//   } else {
+//     uni.navigateTo({ url: "/pages/login" });
+//   }
+//   const pages = getCurrentPages();
+//  
+// });
 
 // 初始化表单
 async function initForm() {

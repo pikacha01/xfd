@@ -129,7 +129,7 @@ export interface userInfo {
     type: number;
   }  | null ;
   RegionField_20: number[]  | null;
-  SelectField_58: null | number[];
+  SelectField_58: null | string[];
   TextField_1: string  | null;
   TextField_21: string  | null;
   TextField_76: string  | null;
