@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { boolean } from 'mathjs';
 import {} from 'vue'
 
 const props = defineProps({
@@ -17,6 +18,11 @@ const props = defineProps({
   image: {
     type: String,
     required: true,
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+    required: false
   }
 });
 const emits = defineEmits(["delete"])
@@ -26,7 +32,7 @@ const emits = defineEmits(["delete"])
   <view class="card">
     <view class="title">
       {{ title }}
-      <view @click="emits('delete')" class="delPosition">
+      <view v-if="!readonly" @click="emits('delete')" class="delPosition">
         <image src="@/static/images/delete@2x.png"></image>
       </view>
     </view>

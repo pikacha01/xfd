@@ -20,7 +20,7 @@ const props = defineProps({
 const  reginSelect = ref<string[]>()
 
 onMounted(async() => {
-  const res = await getAddressDetailApi(formStore.newFormSteps!.data.initData[props.data.id])
+  const res = await getAddressDetailApi(formStore.currentFormSteps!.data.initData[props.data.id])
   //@ts-ignore
   reginSelect.value = res.map(item => {
     return item.name
@@ -28,7 +28,7 @@ onMounted(async() => {
 })
 // 改变地区
 const changeRegin = (e) => {
-  formStore.newFormSteps!.data.initData[props.data.id] = e.detail.code
+  formStore.currentFormSteps!.data.initData[props.data.id] = e.detail.code
   reginSelect.value = e.detail.value
 }
 </script>

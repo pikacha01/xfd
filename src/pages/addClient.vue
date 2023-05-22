@@ -23,7 +23,7 @@ onMounted(() => {
 
 <template>
   <view>
-    <Steps :current-step="0"></Steps>
+    <Steps :current-step="0" :select-step="1"></Steps>
     <view class="content">
       <IDForm ></IDForm>
     </view>

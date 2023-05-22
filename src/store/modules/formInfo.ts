@@ -52,19 +52,23 @@ export const useFormStore = defineStore("form-Store", () => {
   const goUserDetailInfo = ref<clienData>()
   // 用户步骤
   const userCurrentStep = ref<number>()
+  // 用户当前选中步骤
+  const userSelectStep = ref<number>()
+  // 获取用户当前选中的表信息
+  const currentFormSteps = ref<newClientStep>()
   // 获取表单详情
   const getuserInfoStep = async () => {
     const res = await geUserInfoDetailApi(goUserDetailInfo.value!.id)
     //@ts-ignore
     newFormSteps.value = res
-    console.log(goUserDetailInfo.value)
-    console.log(newFormSteps.value)
-    console.log(userCurrentStep.value)
+    //@ts-ignore
+    currentFormSteps.value = res
   }
+  
 
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
-    userCurrentStep,getuserInfoStep
+    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps
   }
 },{
   // @ts-ignore

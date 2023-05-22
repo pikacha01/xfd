@@ -9,6 +9,12 @@ import GroupField from '@/components/PickerSelect/index.vue'
 import IDField  from '@/components/IDField/index.vue'
 import RegionField from '@/components/RegionInput/index.vue'
 import IDDateEnd  from '@/components/IDDateEnd/index.vue'
+import PositionField  from '@/components/PositionComponent/index.vue'
+import JoinFormField  from '@/components/JoinFormField/index.vue'
+import PicField  from '@/components/ImgField/index.vue'
+import { getUserDetailStepAPi } from '@/api/modules/formInfo'
+import { newClientStep } from '@/constants/form'
+
 
 const formStore = useFormStore()
 const clientStore = useClientStore()
@@ -84,10 +90,62 @@ onMounted(async () => {
     frontColor: '#000000',
     backgroundColor: '#ffffff'
   })
-  await formStore.getuserInfoStep()
-  inputFormArray.value = inputFormChangeArray(formStore.newFormSteps!.data.inputForm)
-  console.log(inputFormArray.value)
+  await getFormInfo()
 })
+
+// 获取表单详情
+const getFormInfo = async () => {
+  currentStepFormData.value = []
+  await formStore.getuserInfoStep()
+  if (Math.floor(formStore.userSelectStep!) !== 1) {
+    for (const key of formStep[Math.floor(formStore.userSelectStep!)]) {
+      const res = await getUserDetailStepAPi(formStore.newFormSteps!.processId,formStore.newFormSteps!.stepId,key.form,key.viewId)
+      console.log(res)
+      //@ts-ignore
+      formStore.currentFormSteps = res
+      // currentStepFormData.value.push(res)
+      // console.log(currentStepFormData.value)
+    }
+  }
+  inputFormArray.value = inputFormChangeArray(formStore.currentFormSteps!.data.inputForm)
+  console.log("inputFormArray",inputFormArray.value)
+}
+
+// 当前页面表单数据
+const currentStepFormData = ref<newClientStep[]>([])
+
+// 改变步骤
+const changeStep = (index: number) => {
+  formStore.userSelectStep = index + 1
+}
+
+// 每个步骤对应的表单
+const formStep = {
+  1: "_this",
+  2: [
+    {
+      viewId: "797373861394317313",
+      form: "JoinField_59"
+    },
+    // {
+    //   view: "792604619072372737",
+    //   form: "JoinField_80"
+    // }
+  ],
+  3: [
+    { 
+      viewId: "790599731258425345",
+      form: "JoinFormField_73"
+    }
+  ],
+  4: [
+    {
+      form: "JoinFormField_75",
+      viewId: "796495087814901763"
+    }
+  ]
+}
+
 </script>
 
 <template>
@@ -101,13 +159,13 @@ onMounted(async () => {
       <view class="time">{{ formStore.goUserDetailInfo?.DateField_4 }}</view>
     </view>
   </view>
-  <Steps :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
+  <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
     <uni-forms ref="IDform" :rules="idFormRules"  :modelValue="clientStore.IDCardForm" label-width="200rpx">
     <view class="content">
       <view v-for="item in inputFormArray"
         :key="item.id">
-        <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField'">
+        <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField' || item.tag === 'NumberField'">
           <TextField :data="item"></TextField>
         </template>
         <template v-else-if ="item.tag === 'FormGrid'">
@@ -130,6 +188,15 @@ onMounted(async () => {
         </template>
         <template v-else-if ="item.tag === 'RegionField'">
           <RegionField :data="item"></RegionField>
+        </template>
+        <template v-else-if ="item.tag === 'PositionField'">
+          <PositionField :data="item"></PositionField>
+        </template>
+        <template v-else-if ="item.id === 'JoinFormField_80'">
+          <JoinFormField :data="item"></JoinFormField>
+        </template>
+        <template v-else-if ="item.tag === 'PicField'">
+          <PicField :data="item"></PicField>
         </template>
       </view>
     </view>

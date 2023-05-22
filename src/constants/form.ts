@@ -513,6 +513,11 @@ export interface FormCompnentData {
   width: number;
 }
 
+export interface InverterList {
+  TextField_1: string;
+  id: number;
+}
+
 export {
   ControlTagName,
   fileCate,

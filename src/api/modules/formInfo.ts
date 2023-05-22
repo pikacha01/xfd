@@ -1,7 +1,7 @@
 import http from '../http'
 import { AxiosPromise } from "axios";
 import { clientFormInfoInfo,userInfo } from '@/constants/client'
-import { formTree,newClientStep,addressInfo } from '@/constants/form'
+import { formTree,newClientStep,addressInfo,InverterList } from '@/constants/form'
 
 // 获取具体工作表信息
 export function getClientFormInfoApi(): AxiosPromise<clientFormInfoInfo>{
@@ -47,5 +47,25 @@ export function geUserInfoDetailApi(userID: number): AxiosPromise<newClientStep>
     menuId: "790536182940565506",
     selectedIds:[userID],
     viewId: "797373861394317313"
+  })
+}
+
+// 获取逆变器配置
+export function getInverterApi(id:string,stepId:string,userInfo:userInfo,start:number,end:number): AxiosPromise<InverterList[]>{
+  return http.post(`/zoro/fetchJoinTableByCondition/790241614973665283/${id}/${stepId}/JoinFormField_80`, {
+    userCondition: {
+      start,
+      end
+    },
+    value:userInfo
+  })
+}
+
+// 获取表单详情
+export function getUserDetailStepAPi(id: string, stepId: string, formID: string, viewId: string): AxiosPromise<newClientStep>{
+  return http.post(`/zoro/start-detail-join/790241614973665283/${id}/${stepId}/${formID}`, {
+    buttonId: "edit",
+    menuId :  "",
+    viewId 
   })
 }

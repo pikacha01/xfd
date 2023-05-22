@@ -6,18 +6,27 @@ import { useClientStore } from "@/store"
 const steps = ["预审","踏勘","安装","并网"]
 
 const props = defineProps<{
-  currentStep: number
+  currentStep: number,
+  selectStep: number,
 }>()
+
+const emits = defineEmits(["changeStep"])
+
+const changeStep = (index:number) => {
+  emits('changeStep',index)
+}
+
+
 </script>
 
 <template>
 <!-- 基本用法 -->
   <view class="steps">
-    <view class="step" v-for="(item,index) in steps" :key="item">
+    <view class="step" v-for="(item,index) in steps" :key="item" @click="changeStep(index)">
         <view class="label">
           <view class="step-number" :class="{BGCRED : index <= props.currentStep}">{{ index + 1 }}</view>
           <view class="step-title" :class="{colorRed : index <= props.currentStep}">{{ item }}</view>
-          <view class="underLine" v-if="index === props.currentStep"></view>
+          <view class="underLine" v-if="index === Math.floor(selectStep)"></view>
         </view>
         <view class="step-line" :class="{BGCRED : index < props.currentStep}" v-if="index !== steps.length-1"></view>
     </view>
@@ -41,12 +50,12 @@ const props = defineProps<{
       align-items: center;
       justify-content: center;
       .step-number{
-        width: 32rpx;
-        height: 32rpx;
+        width: 40rpx;
+        height: 40rpx;
         border-radius: 50%;
         background: #DCDCDC;
         text-align: center;
-        line-height: 32rpx;
+        line-height: 40rpx;
         color: #fff;
       }
       .step-title{
@@ -55,7 +64,7 @@ const props = defineProps<{
         color: #595757;
       }
       .underLine {
-        margin-top: 16rpx;
+        margin-top: 10rpx;
         width: 24rpx;
         height: 4rpx;
         background: #C7000B;

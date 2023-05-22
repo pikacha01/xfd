@@ -33,11 +33,11 @@ const IDCardFormInfo = {
 const upLoadCard = async (direction: string) => {
   if(props.data.readonly) return 
   const res: any = await OcrIdCard(direction)
-  res[0].words_result_num === 6 ? formStore.newFormSteps!.data.initData.PicField_43.push(res[1]) : formStore.newFormSteps!.data.initData.PicField_44.push(res[1])
-  if (formStore.newFormSteps!.data.initData.PicField_43.length !== 0 && formStore.newFormSteps!.data.initData.PicField_44.length !== 0) {
-    formStore.newFormSteps!.data.initData.TextField_87 = formStore.newFormSteps?.data.initData.TextField_87 as string
-    await formStore.stepUpload(formStore.newFormSteps!.data.initData)
-    if (formStore.newFormSteps?.stepId === "_end_id") {
+  res[0].words_result_num === 6 ? formStore.currentFormSteps!.data.initData.PicField_43.push(res[1]) : formStore.currentFormSteps!.data.initData.PicField_44.push(res[1])
+  if (formStore.currentFormSteps!.data.initData.PicField_43.length !== 0 && formStore.currentFormSteps!.data.initData.PicField_44.length !== 0) {
+    formStore.currentFormSteps!.data.initData.TextField_87 = formStore.currentFormSteps?.data.initData.TextField_87 as string
+    await formStore.stepUpload(formStore.currentFormSteps!.data.initData)
+    if (formStore.currentFormSteps?.stepId === "_end_id") {
       uni.showToast({
         title: "用户已存在",
         icon: "error"
@@ -48,15 +48,15 @@ const upLoadCard = async (direction: string) => {
     if (index.includes("日期") || index === "出生") {
       const tempData = res[0].words_result[index].words
       const formattedDateStr = `${tempData.slice(0, 4)}-${tempData.slice(4, 6)}-${tempData.slice(6)}`;
-      formStore.newFormSteps!.data.initData[IDCardFormInfo[index]] = formattedDateStr
+      formStore.currentFormSteps!.data.initData[IDCardFormInfo[index]] = formattedDateStr
     } else {
-      formStore.newFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words
+      formStore.currentFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words
     }
     if (index === "住址") {
-      formStore.newFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words
+      formStore.currentFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words
     }
     if (index === "性别") {
-      formStore.newFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words === "男" ? "1" : "2"
+      formStore.currentFormSteps!.data.initData[IDCardFormInfo[index]] = res[0].words_result[index].words === "男" ? "1" : "2"
     }
   }
   
@@ -69,7 +69,7 @@ const upLoadCard = async (direction: string) => {
     证件信息
   </view>
   <view class="right">
-    <view v-if="formStore.newFormSteps!.data.initData.PicField_43.length === 0" class="person" @click="upLoadCard('front')">
+    <view v-if="formStore.currentFormSteps!.data.initData.PicField_43.length === 0" class="person" @click="upLoadCard('front')">
       <view>
         <image src="@/static/images/upload@2x.png"></image>
       </view>
@@ -79,11 +79,11 @@ const upLoadCard = async (direction: string) => {
     </view>
     <view v-else class="person">
       <view class="IDImageBox">
-        <image class="IDImage" :src="formStore.newFormSteps!.data.initData.PicField_43[0].url"></image>
-        <uni-icons v-if="!data.readonly" class="delImage"  type="closeempty" color="#fff" size="22" @click.stop="formStore.newFormSteps!.data.initData.PicField_43 = []"></uni-icons>
+        <image class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_43[0].url"></image>
+        <uni-icons v-if="!data.readonly" class="delImage"  type="closeempty" color="#fff" size="22" @click.stop="formStore.currentFormSteps!.data.initData.PicField_43 = []"></uni-icons>
       </view>
     </view>
-    <view  v-if="formStore.newFormSteps!.data.initData.PicField_44.length === 0" class="nation"  @click="upLoadCard('back')">
+    <view  v-if="formStore.currentFormSteps!.data.initData.PicField_44.length === 0" class="nation"  @click="upLoadCard('back')">
       <view>
         <image src="@/static/images/upload@2x.png"></image>
       </view>
@@ -93,8 +93,8 @@ const upLoadCard = async (direction: string) => {
     </view>
     <view v-else class="person" style="margin-left: 28rpx;">
       <view class="IDImageBox">
-        <image class="IDImage" :src="formStore.newFormSteps!.data.initData.PicField_44[0].url"></image>
-        <uni-icons v-if="!data.readonly" class="delImage" type="closeempty" color="#fff" size="22" @click.stop="formStore.newFormSteps!.data.initData.PicField_44 = []"></uni-icons>
+        <image class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_44[0].url"></image>
+        <uni-icons v-if="!data.readonly" class="delImage" type="closeempty" color="#fff" size="22" @click.stop="formStore.currentFormSteps!.data.initData.PicField_44 = []"></uni-icons>
       </view>
     </view>
   </view>

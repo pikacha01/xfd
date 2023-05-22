@@ -15,12 +15,12 @@ const props = defineProps({
   },
 });
 // 
-const inputData = ref(formStore.newFormSteps?.data.initData[props.data.id])
+const inputData = ref(formStore.currentFormSteps?.data.initData[props.data.id])
 
 watch(() => {
   return inputData
 },()=>{
-  formStore.newFormSteps!.data.initData[props.data.id] = inputData.value
+  formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
 })
 </script>
 

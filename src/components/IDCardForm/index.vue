@@ -5,6 +5,7 @@ import { OcrIdCard } from '@/utils/baiduAi'
 import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
 import QQMapWX from '../../utils/qqmap-wx-jssdk'
 import { getStaticPic } from "@/api/modules/user";
+import PositionMap from '@/components/PositionMap/index.vue'
 
 const clientStore = useClientStore()
 const formStore = useFormStore()
@@ -107,6 +108,11 @@ const goMap = () => {
     
 }
 
+// 删除地理位置
+const deletePosition = () => {
+  clientStore.IDCardForm.PositionField_67 = null
+}
+
 
 // 各个对应的值
 const IDCardFormInfo = {
@@ -134,7 +140,6 @@ const upLoadCard = async (direction:string) => {
       })
     }
   }
-  console.log(res)
   for (let index in res[0].words_result) {
     if (index.includes("日期") || index === "出生") {
       const tempData = res[0].words_result[index].words
@@ -398,6 +403,16 @@ watch(() => {
             <uni-icons class="pickerIcons" type="location-filled" color="#A9A9A9" size="22"></uni-icons>
           </view>
         </view>
+        <template v-if="clientStore.IDCardForm.PositionField_67">
+          <PositionMap 
+            :title="clientStore.IDCardForm.PositionField_67.pName"
+            :address="clientStore.IDCardForm.PositionField_67.address"
+            :location="clientStore.IDCardForm.PositionField_67.location"
+            :image="clientStore.IDCardForm.PositionField_67.staticPic"
+            @delete="deletePosition"
+            >
+          </PositionMap>
+        </template>
       </view>
       <button class="saveButton" type="submit" @click="submitForm">保存</button>
 		</uni-forms>  

@@ -173,6 +173,7 @@ watch(() => {
 const goUserDetail = (item:clienData,userCurrentStep) => {
   formStore.goUserDetailInfo = item
   formStore.userCurrentStep = userCurrentStep
+  formStore.userSelectStep = userCurrentStep
   uni.navigateTo({
     url:"/pages/formInfo"
   })
