@@ -2,6 +2,9 @@
 import { PropType,ref,watch,onMounted } from 'vue'
 import { FormCompnentData } from '@/constants/form'
 import { useFormStore } from "@/store";
+import user from "@/api/modules/user";
+import { IfObsKey } from "@/constants/form";
+import OBSupload from "@/utils/obs/upload";
 import uniFilePicker from "../../../node_modules/@dcloudio/uni-ui/lib/uni-file-picker/uni-file-picker.vue"
 
 // 获取自定义的store
@@ -23,6 +26,7 @@ const ImgList = ref<{
 }[]>([])
 
 onMounted(() => {
+  ImgList.value = []
   formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
     const temp = {
       name: item.fileName,
@@ -31,19 +35,42 @@ onMounted(() => {
       // size: item.size
     }
     ImgList.value.push(temp)
-    console.log(ImgList.value)
   })
 })
 
-const select = (e) => {
+const select = async (e) => {
   console.log(e)
+  const temp:any = []
+  for (const key of e.tempFiles) {
+    //@ts-ignore
+    await user.getObsKey().then(async (data: IfObsKey) => {
+    //@ts-ignore
+    const fileObj = await OBSupload(key.file, data);
+     formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
+    });
+  }
 }
+
+watch(() => {
+  return formStore.currentFormSteps?.data.initData[props.data.id]
+}, () => {
+  ImgList.value = []
+  formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
+    const temp = {
+      name: item.fileName,
+      extname: item.fileType,
+      url: item.url,
+      size: item.size
+    }
+    ImgList.value.push(temp)
+  })
+},{deep:true})
 
 </script>
 
 <template>
 <uni-forms-item :label="data.label" :required="data.required" :name="data.id">
-  <uni-file-picker @select="select" file-mediatype="image" :readonly="data.readonly" :value="ImgList"></uni-file-picker>
+  <uni-file-picker @select="select" file-mediatype="image" :readonly="data.readonly" :modelValue="ImgList"></uni-file-picker>
 </uni-forms-item>
 </template>
 
