@@ -135,7 +135,6 @@ async function initForm() {
   );
 
   // res.map(menu => ({ name: menu.name, id: menu.id }));
-  console.log(model.menu);
 }
 
 /**

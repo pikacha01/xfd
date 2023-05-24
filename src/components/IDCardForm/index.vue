@@ -6,6 +6,7 @@ import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
 import QQMapWX from '../../utils/qqmap-wx-jssdk'
 import { getStaticPic } from "@/api/modules/user";
 import PositionMap from '@/components/PositionMap/index.vue'
+import { previewImg } from '@/utils/imgPreview'
 
 const clientStore = useClientStore()
 const formStore = useFormStore()
@@ -328,7 +329,7 @@ watch(() => {
           </view>
           <view v-else class="person">
             <view class="IDImageBox">
-              <image class="IDImage" :src="formStore.IDCardInfo.PicField_43[0].url"></image>
+              <image @click="previewImg(formStore.IDCardInfo.PicField_43[0].url,formStore.IDCardInfo.PicField_43)" class="IDImage" :src="formStore.IDCardInfo.PicField_43[0].url"></image>
               <uni-icons class="delImage"  type="closeempty" color="#fff" size="22" @click.stop="formStore.IDCardInfo.PicField_43 = []"></uni-icons>
             </view>
           </view>
@@ -342,7 +343,7 @@ watch(() => {
           </view>
           <view v-else class="person" style="margin-left: 28rpx;">
             <view class="IDImageBox">
-              <image class="IDImage" :src="formStore.IDCardInfo.PicField_44[0].url"></image>
+              <image class="IDImage" @click="previewImg(formStore.IDCardInfo.PicField_44[0].url,formStore.IDCardInfo.PicField_44)" :src="formStore.IDCardInfo.PicField_44[0].url"></image>
               <uni-icons class="delImage" type="closeempty" color="#fff" size="22" @click.stop="formStore.IDCardInfo.PicField_44 = []"></uni-icons>
             </view>
           </view>

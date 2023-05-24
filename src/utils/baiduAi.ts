@@ -43,7 +43,6 @@ export function OcrIdCard(direction: string) {
                     temp.push(_res.data)
                     //@ts-ignore
                     await user.getObsKey().then(async (data: IfObsKey) => {
-                    console.log(res.tempFiles[0],data)
                     //@ts-ignore
                     const fileObj = await OBSupload(res.tempFiles[0], data);
                       temp.push(fileObj);

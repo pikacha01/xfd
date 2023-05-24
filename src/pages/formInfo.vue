@@ -15,6 +15,7 @@ import PicField  from '@/components/ImgField/index.vue'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
 import constractField from '@/components/contractField/index.vue'
+import FileField from '@/components/FileInput/index.vue'
 
 
 const formStore = useFormStore()
@@ -193,6 +194,9 @@ const formStep = {
         </template>
         <template v-else-if ="item.tag === 'PicField' && item.id !== 'PicField_44'">
           <PicField :data="item"></PicField>
+        </template>
+        <template v-else-if ="item.tag === 'FileField'">
+          <FileField :data="item"></FileField>
         </template>
       </view>
     </view>
