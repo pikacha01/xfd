@@ -16,6 +16,7 @@ import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
 import constractField from '@/components/contractField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
+import ChildTableField from '@/components/ChildField/index.vue'
 
 
 const formStore = useFormStore()
@@ -197,6 +198,9 @@ const formStep = {
         </template>
         <template v-else-if ="item.tag === 'FileField'">
           <FileField :data="item"></FileField>
+        </template>
+        <template v-else-if ="item.tag === 'ChildTableField'">
+          <ChildTableField :data="item"></ChildTableField>
         </template>
       </view>
     </view>

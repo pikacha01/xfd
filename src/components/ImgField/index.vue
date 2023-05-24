@@ -5,7 +5,7 @@ import { useFormStore } from "@/store";
 import user from "@/api/modules/user";
 import { IfObsKey } from "@/constants/form";
 import OBSupload from "@/utils/obs/upload";
-import uniFilePicker from "../../../node_modules/@dcloudio/uni-ui/lib/uni-file-picker/uni-file-picker.vue"
+import uniFilePicker from "@/uniComponents/uni-file-picker/uni-file-picker.vue"
 
 // 获取自定义的store
 const formStore = useFormStore()

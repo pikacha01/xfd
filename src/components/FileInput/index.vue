@@ -52,7 +52,7 @@ onMounted(() => {
 
 // 添加文件
 const addFile =async () => {
-  // if (props.data.readonly) return
+  if (props.data.readonly) return
   uni.chooseMessageFile({
     count: 9,
     async success(res) {
@@ -84,6 +84,7 @@ const addFile =async () => {
 
 // 删除文件
 const deleteFile = (item) => {
+  if (props.data.readonly) return
   formStore.currentFormSteps!.data.initData[props.data.id] = formStore.currentFormSteps!.data.initData[props.data.id].filter((data) => {
     return item.url !== data.url
   })

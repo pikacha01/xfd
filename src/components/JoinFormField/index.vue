@@ -37,15 +37,16 @@ const formStore = useFormStore()
 const inverterSelect = ref<number>()
 
 
-
 watch(() => {
-  return formStore.currentFormSteps?.data.initData[props.data.id][0]
+  return formStore.currentFormSteps?.data.initData[props.data.id]
 }, () => {
   inverterSelect.value = formStore.currentFormSteps?.data.initData[props.data.id][0]
-})
+},{deep: true})
+
 
 const changeSelect = (e) => {
-  console.log("e:", e);
+  formStore.currentFormSteps!.data.initData[props.data.id] = []
+  formStore.currentFormSteps!.data.initData[props.data.id][0] = e
 }
 </script>
 

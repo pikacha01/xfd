@@ -15,6 +15,10 @@
 		{
 			"path": "pages/login"
 		},
+    {
+      "path": "pages/TableList",
+      "title": "组件列表"
+    },
 		{
 			"path": "pages/home",
       "style": {
