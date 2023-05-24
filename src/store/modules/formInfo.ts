@@ -65,10 +65,12 @@ export const useFormStore = defineStore("form-Store", () => {
     currentFormSteps.value = res
   }
   
+  // 合同签定表
+  const contractForm = ref<newClientStep>()
 
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
-    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps
+    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm
   }
 },{
   // @ts-ignore

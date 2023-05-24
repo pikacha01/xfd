@@ -59,7 +59,6 @@ const goMap = () => {
       const statiPic = await getMapImg(tempPosition.location)
       tempPosition.staticPic = statiPic
       formStore.currentFormSteps!.data.initData.PositionField_67 = tempPosition
-      console.log(formStore.currentFormSteps!.data.initData.PositionField_67)
     }
   })
     

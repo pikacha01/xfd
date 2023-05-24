@@ -27,20 +27,20 @@ const ImgList = ref<{
 
 onMounted(() => {
   ImgList.value = []
-  formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
-    const temp = {
-      name: item.fileName,
-      extname: item.fileType,
-      url: item.url,
-      // size: item.size
-    }
-    ImgList.value.push(temp)
-  })
+  if (formStore.currentFormSteps?.data.initData[props.data.id]) {
+    formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
+      const temp = {
+        name: item.fileName,
+        extname: item.fileType,
+        url: item.url,
+        size: item.size
+      }
+      ImgList.value.push(temp)
+    })
+  }
 })
 
 const select = async (e) => {
-  console.log(e)
-  const temp:any = []
   for (const key of e.tempFiles) {
     //@ts-ignore
     await user.getObsKey().then(async (data: IfObsKey) => {
@@ -51,26 +51,36 @@ const select = async (e) => {
   }
 }
 
+const deleteImg = (e) => {
+  formStore.currentFormSteps!.data.initData[props.data.id].forEach((item,index) => {
+    if (item.url === e.tempFilePath) {
+      formStore.currentFormSteps!.data.initData[props.data.id].splice(index, 1)
+    }
+  })
+}
+
 watch(() => {
   return formStore.currentFormSteps?.data.initData[props.data.id]
 }, () => {
   ImgList.value = []
-  formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
-    const temp = {
-      name: item.fileName,
-      extname: item.fileType,
-      url: item.url,
-      size: item.size
-    }
-    ImgList.value.push(temp)
-  })
+  if (formStore.currentFormSteps?.data.initData[props.data.id]) {
+    formStore.currentFormSteps?.data.initData[props.data.id].forEach((item) => {
+      const temp = {
+        name: item.fileName,
+        extname: item.fileType,
+        url: item.url,
+        size: item.size
+      }
+      ImgList.value.push(temp)
+    })
+  }
 },{deep:true})
 
 </script>
 
 <template>
 <uni-forms-item :label="data.label" :required="data.required" :name="data.id">
-  <uni-file-picker @select="select" file-mediatype="image" :readonly="data.readonly" :modelValue="ImgList"></uni-file-picker>
+  <uni-file-picker @delete="deleteImg" @select="select"  file-mediatype="image" :readonly="data.readonly" :modelValue="ImgList"></uni-file-picker>
 </uni-forms-item>
 </template>
 

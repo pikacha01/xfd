@@ -34,7 +34,7 @@ const selectList = props.data.items!.map((item) => {
 </script>
 
 <template>
-<uni-forms-item :label="data.label">
+<uni-forms-item :label="data.label" :required="data.readonly">
   <uni-data-select
       :disabled="data.readonly"
       v-model="inputData"

@@ -132,8 +132,11 @@ watch(() => {
   clientStore.startZero()
   selectOptions.value = [{ text: "全部", value: "" }]
   if (selectTab.value === "全部") {
-    selectOptions.value = formStore.selectOption
-    selectOptions.value.unshift({ text: "全部", value: "" })
+    formStore.selectOption.forEach(item => {
+      selectOptions.value.push(item)
+    })
+    // selectOptions.value = [{ text: "全部", value: "" },...formStore.selectOption]
+    // selectOptions.value.unshift({ text: "全部", value: "" })
   } else if (selectTab.value === "预审") {
     formStore.selectOption.forEach(item => {
       if (item.text === "草稿") {

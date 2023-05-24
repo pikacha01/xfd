@@ -210,6 +210,29 @@ const submitForm = async () => {
       uni.navigateTo({
         url:"/pages/index/index"
       })
+      clientStore.IDCardForm= {
+        DateField_4: null,
+        JoinFormField_89: null,
+        MemberField_3: null,
+        MemberField_5: null,
+        TextField_88: null,
+        id: null,
+        DateField_12: null,
+        DateField_16: null,
+        DateField_17: null,
+        GroupField_13: null,
+        IdentityField_15: null,
+        MemberField_48: null,
+        PhoneField_9: "",
+        PositionField_67: null,
+        RegionField_20: null,
+        SelectField_58: null,
+        TextField_1: null,
+        TextField_76: null,
+        TextField_21: null,
+        TextField_84: null,
+        TextField_87:null,
+      }
     }
   }).catch(err => {
     console.log('err', err);
@@ -403,17 +426,17 @@ watch(() => {
             <uni-icons class="pickerIcons" type="location-filled" color="#A9A9A9" size="22"></uni-icons>
           </view>
         </view>
-        <template v-if="clientStore.IDCardForm.PositionField_67">
-          <PositionMap 
-            :title="clientStore.IDCardForm.PositionField_67.pName"
-            :address="clientStore.IDCardForm.PositionField_67.address"
-            :location="clientStore.IDCardForm.PositionField_67.location"
-            :image="clientStore.IDCardForm.PositionField_67.staticPic"
-            @delete="deletePosition"
-            >
-          </PositionMap>
-        </template>
       </view>
+      <template v-if="clientStore.IDCardForm.PositionField_67?.staticPic">
+        <PositionMap 
+          :title="clientStore.IDCardForm.PositionField_67!.pName"
+          :address="clientStore.IDCardForm.PositionField_67!.address"
+          :location="clientStore.IDCardForm.PositionField_67!.location"
+          :image="clientStore.IDCardForm.PositionField_67!.staticPic"
+          @delete="deletePosition"
+          >
+        </PositionMap>
+      </template>
       <button class="saveButton" type="submit" @click="submitForm">保存</button>
 		</uni-forms>  
   </view>

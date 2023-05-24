@@ -14,6 +14,7 @@ import JoinFormField  from '@/components/JoinFormField/index.vue'
 import PicField  from '@/components/ImgField/index.vue'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
+import constractField from '@/components/contractField/index.vue'
 
 
 const formStore = useFormStore()
@@ -100,7 +101,6 @@ const getFormInfo = async () => {
   if (Math.floor(formStore.userSelectStep!) !== 1) {
     for (const key of formStep[Math.floor(formStore.userSelectStep!)]) {
       const res = await getUserDetailStepAPi(formStore.newFormSteps!.processId,formStore.newFormSteps!.stepId,key.form,key.viewId)
-      console.log(res)
       //@ts-ignore
       formStore.currentFormSteps = res
       // currentStepFormData.value.push(res)
@@ -108,7 +108,6 @@ const getFormInfo = async () => {
     }
   }
   inputFormArray.value = inputFormChangeArray(formStore.currentFormSteps!.data.inputForm)
-  console.log("inputFormArray",inputFormArray.value)
 }
 
 // 当前页面表单数据
@@ -117,6 +116,7 @@ const currentStepFormData = ref<newClientStep[]>([])
 // 改变步骤
 const changeStep = (index: number) => {
   formStore.userSelectStep = index + 1
+  getFormInfo()
 }
 
 // 每个步骤对应的表单
@@ -127,10 +127,6 @@ const formStep = {
       viewId: "797373861394317313",
       form: "JoinField_59"
     },
-    // {
-    //   view: "792604619072372737",
-    //   form: "JoinField_80"
-    // }
   ],
   3: [
     { 
@@ -161,7 +157,7 @@ const formStep = {
   </view>
   <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
-    <uni-forms ref="IDform" :rules="idFormRules"  :modelValue="clientStore.IDCardForm" label-width="200rpx">
+    <uni-forms ref="IDform" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
     <view class="content">
       <view v-for="item in inputFormArray"
         :key="item.id">
@@ -195,12 +191,17 @@ const formStep = {
         <template v-else-if ="item.id === 'JoinFormField_80'">
           <JoinFormField :data="item"></JoinFormField>
         </template>
-        <template v-else-if ="item.tag === 'PicField'">
+        <template v-else-if ="item.tag === 'PicField' && item.id !== 'PicField_44'">
           <PicField :data="item"></PicField>
         </template>
       </view>
     </view>
 		</uni-forms>  
+    <template v-if="Math.floor(formStore.userSelectStep!) === 2">
+      <view class="content">
+        <constractField />
+      </view>
+    </template>
   </view> 
 </template>
 
@@ -213,9 +214,9 @@ const formStep = {
   justify-content: space-between;
   align-items: center;
   .content {
-    padding: 0rpx 24rpx;
     color: #595757;
     font-size: 24rpx;
+    padding: 0rpx 24rpx;
   }
   .currentStep {
     padding: 0 24rpx;

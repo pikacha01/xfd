@@ -31,16 +31,16 @@ onMounted(() => {
       <view class="sperate"></view>
       <view class="department">
         <view class="label">部门</view>
-        <view class="tagList">
+        <scroll-view scroll-x="true" style="white-space: nowrap;" class="tagList">
           <view class="tag" v-for="item in store.deparmtmentInfo" :key="item.id">{{ item.name }}</view>
-        </view>
+        </scroll-view>
       </view>
       <view class="sperate"></view>
       <view class="department">
         <view class="label">职务</view>
-        <view class="tagList">
+        <scroll-view scroll-x="true" style="white-space: nowrap;" class="tagList">
           <view class="tag" v-for="item in store.positionInfo" :key="item.id">{{ item.name }}</view>
-        </view>
+        </scroll-view>
       </view>
       <view class="sperate"></view>
       <view class="department">
@@ -129,6 +129,7 @@ onMounted(() => {
       font-size: 24rpx;
       padding: 0 16rpx;
       white-space: nowrap;
+      display: inline-block;
     }
   }
   .help {
