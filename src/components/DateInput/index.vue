@@ -26,7 +26,7 @@ const changeDate = (e) => {
 
 <template>
 <uni-forms-item :label="data.label" :name="data.id" :required="data.required">
-  <picker class="picker" :disabled="data.readonly" mode="date" :value="formStore.currentFormSteps?.data.initData[data.id]" @change="changeDate">
+  <picker class="picker" :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" mode="date" :value="formStore.currentFormSteps?.data.initData[data.id]" @change="changeDate">
     <view class="date">
       {{ formStore.currentFormSteps?.data.initData[data.id] ? formStore.currentFormSteps?.data.initData[data.id].substr(0,10) : data.placeholder}}
       <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>

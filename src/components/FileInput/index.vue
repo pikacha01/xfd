@@ -47,12 +47,10 @@ const preview = (fileLink) => {
   })
 }
 
-onMounted(() => {
-})
 
 // 添加文件
 const addFile =async () => {
-  if (props.data.readonly) return
+  if (props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   uni.chooseMessageFile({
     count: 9,
     async success(res) {
@@ -84,7 +82,7 @@ const addFile =async () => {
 
 // 删除文件
 const deleteFile = (item) => {
-  if (props.data.readonly) return
+  if (props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   formStore.currentFormSteps!.data.initData[props.data.id] = formStore.currentFormSteps!.data.initData[props.data.id].filter((data) => {
     return item.url !== data.url
   })
@@ -104,12 +102,12 @@ const deleteFile = (item) => {
           <image v-else-if="item.fileType.toLowerCase() === 'xlsx' || item.fileType.toLowerCase() === 'xls'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_excel.png"></image>
           <image v-else-if="item.fileType.toLowerCase() === 'mp4' || item.fileType.toLowerCase() === 'avi' || item.fileType.toLowerCase() === 'flv'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_type_video.png"></image>
         </view>
-        <view class="deleteIcon" v-if="data.readonly">
+        <view class="deleteIcon" v-if="!data.readonly || !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
           <image class="icon" src="@/static/images/delete@2x.png" @click="deleteFile(item)"></image>
         </view>
       </view>
     </template>
-    <view class="delete"  v-if="data.readonly">
+    <view class="delete"  v-if="!data.readonly || !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
       <view class="box">
         <view class="add"  @click="addFile">
           <uni-icons type="plusempty" color="#cccccc" size="55"/>

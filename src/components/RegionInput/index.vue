@@ -35,9 +35,9 @@ const changeRegin = (e) => {
 
 <template>
   <uni-forms-item :label="data.label" :name="data.id" :required="data.required" >
-    <picker :disabled="data.readonly" class="picker" mode="region" :value="data" @change="changeRegin">
-      <view class="date">
-        {{ reginSelect? `${reginSelect[0]} ${reginSelect[1]} ${reginSelect[2]}` : "请输入地址" }}
+    <picker :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" class="picker" mode="region" :value="data" @change="changeRegin">
+      <view class="date" v-if="reginSelect">
+        {{ reginSelect[0]? `${reginSelect[0]} ${reginSelect[1]} ${reginSelect[2]}` : "请输入地址" }}
       </view>
     </picker>
   </uni-forms-item>

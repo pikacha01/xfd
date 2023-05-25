@@ -27,8 +27,6 @@ onMounted(async () => {
       text: item.TextField_1
     }
   })
-  console.log(selectList.value)
-  console.log(props.data.readonly)
 })
 
 // 获取自定义的store
@@ -40,20 +38,24 @@ const inverterSelect = ref<number>()
 watch(() => {
   return formStore.currentFormSteps?.data.initData[props.data.id]
 }, () => {
+  if (formStore.currentFormSteps?.data.initData[props.data.id][0]) {
   inverterSelect.value = formStore.currentFormSteps?.data.initData[props.data.id][0]
+  }
 },{deep: true})
 
 
 const changeSelect = (e) => {
-  formStore.currentFormSteps!.data.initData[props.data.id] = []
-  formStore.currentFormSteps!.data.initData[props.data.id][0] = e
+  if (e) {
+    formStore.currentFormSteps!.data.initData[props.data.id] = []
+    formStore.currentFormSteps!.data.initData[props.data.id][0] = e
+  }
 }
 </script>
 
 <template>
 <uni-forms-item :label="data.label" :required="data.required" :name="data.id">
   <uni-data-select
-    :disabled="data.readonly"
+    :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
     v-model="inverterSelect"
     :localdata="selectList"
     :clear="false"

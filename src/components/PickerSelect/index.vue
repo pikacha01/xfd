@@ -21,7 +21,9 @@ const inputData = ref(formStore.currentFormSteps?.data.initData[props.data.id])
 watch(()=>{
   return inputData.value
 }, () => {
-  formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+  if (formStore.currentFormSteps!.data.initData[props.data.id]) {
+    formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+  }
 })
 
 const selectList = props.data.items!.map((item) => {
@@ -34,9 +36,9 @@ const selectList = props.data.items!.map((item) => {
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :required="data.readonly">
+<uni-forms-item :label="data.label" :required="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
   <uni-data-select
-      :disabled="data.readonly"
+      :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
       v-model="inputData"
       :localdata="selectList"
       :placeholder="data.placeholder"

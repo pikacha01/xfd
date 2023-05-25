@@ -19,7 +19,7 @@ const props = defineProps({
 const IDlength = ref([{
   text: "长期有效",
   value: "1",
-  disable: props.data.readonly
+  disable: props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)
 }])
 
 console.log(IDlength)
@@ -42,7 +42,7 @@ const changeIDCardEnd = (e) => {
 <template>
 <uni-forms-item label="证件有效期止">
   <view>
-    <picker :disabled="data.readonly"  class="picker IdDate" mode="date"  :value="formStore.currentFormSteps!.data.initData[props.data.id]"  @change="changeIDCardEnd">
+    <picker :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"  class="picker IdDate" mode="date"  :value="formStore.currentFormSteps!.data.initData[props.data.id]"  @change="changeIDCardEnd">
       <view class="date">
         {{ formStore.currentFormSteps!.data.initData.DateField_17? formStore.currentFormSteps?.data.initData[data.id].substr(0,10): "请选择日期" }}
         <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>

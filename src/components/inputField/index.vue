@@ -31,7 +31,7 @@ watch(() => {
    v-model="inputData"
    :inputBorder="false"  
    :placeholder="data.placeholder" 
-   :disabled="data.readonly"
+   :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
    />
 </uni-forms-item>
 </template>

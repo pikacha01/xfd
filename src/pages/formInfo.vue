@@ -106,7 +106,6 @@ const getFormInfo = async () => {
       //@ts-ignore
       formStore.currentFormSteps = res
       // currentStepFormData.value.push(res)
-      // console.log(currentStepFormData.value)
     }
   }
   inputFormArray.value = inputFormChangeArray(formStore.currentFormSteps!.data.inputForm)
@@ -159,7 +158,7 @@ const formStep = {
   </view>
   <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
-    <uni-forms ref="IDform" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
+    <uni-forms ref="Form" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
     <view class="content">
       <view v-for="item in inputFormArray"
         :key="item.id">
@@ -210,6 +209,14 @@ const formStep = {
         <constractField />
       </view>
     </template>
+    <view class="buttons">
+      <view class="save">
+        保存
+      </view>
+      <view class="submit">
+        保存并提交
+      </view>
+    </view>
   </view> 
 </template>
 
@@ -255,6 +262,34 @@ const formStep = {
   background-color: #f6f7f9;
   .content {
     margin: 24rpx 32rpx;
+  }
+}
+.buttons {
+  height: 245rpx;
+  width: 100%;
+  display: flex;
+  padding: 48rpx 96rpx 0;
+  justify-content: space-between;
+  box-sizing: border-box;
+  .save {
+    width: 240rpx;
+    height: 80rpx;
+    border-radius: 4rpx;
+    border: 2rpx solid #221815;
+    color: #221815;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .submit {
+    width: 240rpx;
+    height: 80rpx;
+    color:#FFFFFF;
+    background: #C7000B;
+    border-radius: 4rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

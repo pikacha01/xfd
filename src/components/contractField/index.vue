@@ -77,7 +77,6 @@ const preview = (fileLink) => {
   uni.downloadFile({
     url: fileLink,
     success: function (res) {
-      console.log(res, "wx.downloadFile success res")
       if (res.statusCode != 200) {
         uni.hideLoading()
         uni.showToast({
@@ -93,7 +92,6 @@ const preview = (fileLink) => {
           //@ts-ignore
           showMenu: true,
           success: function (res) {
-              console.log('打开成功');
               uni.hideLoading()
           }
       })
@@ -108,9 +106,9 @@ const preview = (fileLink) => {
     <view class="title">
       <view class="left">3.1 合同签定</view>
     </view>
-    <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly">
+    <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)">
       <uni-data-select
-        :disabled="saleStatus.readonly"
+        :disabled="saleStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)"
         v-model="saleValue"
         :localdata="saleSelect"
         placeholder="待发送合同"
@@ -119,7 +117,7 @@ const preview = (fileLink) => {
     </uni-forms-item>
     <uni-forms-item :label="operationStatus.label" :required="operationStatus.readonly">
       <uni-data-select
-        :disabled="operationStatus.readonly"
+        :disabled="operationStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)"
         v-model="operationValue"
         :localdata="operationSelect"
         placeholder="待发送合同"

@@ -32,7 +32,7 @@ const IDCardFormInfo = {
 
 // 身份证上传
 const upLoadCard = async (direction: string) => {
-  if(props.data.readonly) return 
+  if(props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return 
   const res: any = await OcrIdCard(direction)
   res[0].words_result_num === 6 ? formStore.currentFormSteps!.data.initData.PicField_43.push(res[1]) : formStore.currentFormSteps!.data.initData.PicField_44.push(res[1])
   if (formStore.currentFormSteps!.data.initData.PicField_43.length !== 0 && formStore.currentFormSteps!.data.initData.PicField_44.length !== 0) {

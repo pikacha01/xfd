@@ -80,7 +80,7 @@ watch(() => {
 
 <template>
 <uni-forms-item :label="data.label" :required="data.required" :name="data.id">
-  <uni-file-picker @delete="deleteImg" @select="select"  file-mediatype="image" :readonly="data.readonly" :modelValue="ImgList"></uni-file-picker>
+  <uni-file-picker @delete="deleteImg" @select="select"  file-mediatype="image" :readonly="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" :modelValue="ImgList"></uni-file-picker>
 </uni-forms-item>
 </template>
 

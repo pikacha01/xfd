@@ -68,9 +68,12 @@ export const useFormStore = defineStore("form-Store", () => {
   // 合同签定表
   const contractForm = ref<newClientStep>()
 
+  // 各个表改变的值
+  const changeForm = ref<Object>({})
+
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
-    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm
+    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm,changeForm
   }
 },{
   // @ts-ignore

@@ -46,7 +46,7 @@ function getMapImg(location:string): Promise<string> {
 
 // 去地图重新定位
 const goMap = () => {
-  if(props.data.readonly) return
+  if(props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   uni.chooseLocation({
     success: async (res) => {
       const tempPosition = {
@@ -66,7 +66,7 @@ const goMap = () => {
 
 // 删除地理位置
 const deletePosition = () => {
-  if(props.data.readonly) return
+  if(props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   formStore.currentFormSteps!.data.initData.PositionField_67 = null
 }
 
@@ -82,13 +82,13 @@ const deletePosition = () => {
       <uni-icons class="pickerIcons" type="location-filled" color="#A9A9A9" size="22"></uni-icons>
     </view>
   </view>
-  <template v-if="formStore.currentFormSteps!.data.initData[data.id].staticPic">
+  <template v-if="formStore.currentFormSteps?.data.initData[data.id]?.staticPic">
     <PositionMap 
       :title="formStore.currentFormSteps!.data.initData[data.id].pName"
       :address="formStore.currentFormSteps!.data.initData[data.id].address"
       :location="formStore.currentFormSteps!.data.initData[data.id].location"
       :image="formStore.currentFormSteps!.data.initData[data.id].staticPic"
-      :readonly="data.readonly"
+      :readonly="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
       @delete="deletePosition"
       >
     </PositionMap>
