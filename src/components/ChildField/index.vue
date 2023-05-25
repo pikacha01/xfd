@@ -4,7 +4,6 @@ import { FormCompnentData } from '@/constants/form'
 import { ValidtorUniqueData } from "@/utils/validate";
 import { useFormStore } from "@/store";
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
-import { storeToRefs } from "pinia";
 
 // 获取自定义的store
 const formStore = useFormStore()
@@ -44,7 +43,7 @@ const getTotal = async () =>{
 // 跳转页面
 const goToScan = () => {
   uni.navigateTo({
-    url: "/pages/TableList"
+    url: `/pages/TableList?readonly=${props.data.readonly}`
   })
 }
 

@@ -2,6 +2,7 @@
 import { PropType,ref,watch } from 'vue'
 import { FormCompnentData } from '@/constants/form'
 import { useFormStore } from "@/store";
+import { previewImg } from '@/utils/imgPreview'
 import { OcrIdCard } from '@/utils/baiduAi'
 
 // 获取自定义的store
@@ -36,7 +37,6 @@ const upLoadCard = async (direction: string) => {
   res[0].words_result_num === 6 ? formStore.currentFormSteps!.data.initData.PicField_43.push(res[1]) : formStore.currentFormSteps!.data.initData.PicField_44.push(res[1])
   if (formStore.currentFormSteps!.data.initData.PicField_43.length !== 0 && formStore.currentFormSteps!.data.initData.PicField_44.length !== 0) {
     formStore.currentFormSteps!.data.initData.TextField_87 = formStore.currentFormSteps?.data.initData.TextField_87 as string
-    await formStore.stepUpload(formStore.currentFormSteps!.data.initData)
     if (formStore.currentFormSteps?.stepId === "_end_id") {
       uni.showToast({
         title: "用户已存在",
@@ -79,7 +79,7 @@ const upLoadCard = async (direction: string) => {
     </view>
     <view v-else class="person">
       <view class="IDImageBox">
-        <image class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_43[0].url"></image>
+        <image @click="previewImg(formStore.currentFormSteps!.data.initData.PicField_43[0].url,formStore.currentFormSteps!.data.initData.PicField_43)" class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_43[0].url"></image>
         <uni-icons v-if="!data.readonly" class="delImage"  type="closeempty" color="#fff" size="22" @click.stop="formStore.currentFormSteps!.data.initData.PicField_43 = []"></uni-icons>
       </view>
     </view>
@@ -93,7 +93,7 @@ const upLoadCard = async (direction: string) => {
     </view>
     <view v-else class="person" style="margin-left: 28rpx;">
       <view class="IDImageBox">
-        <image class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_44[0].url"></image>
+        <image @click="previewImg(formStore.currentFormSteps!.data.initData.PicField_44[0].url,formStore.currentFormSteps!.data.initData.PicField_44)"  class="IDImage" :src="formStore.currentFormSteps!.data.initData.PicField_44[0].url"></image>
         <uni-icons v-if="!data.readonly" class="delImage" type="closeempty" color="#fff" size="22" @click.stop="formStore.currentFormSteps!.data.initData.PicField_44 = []"></uni-icons>
       </view>
     </view>
