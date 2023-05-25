@@ -69,3 +69,25 @@ export function getUserDetailStepAPi(id: string, stepId: string, formID: string,
     viewId 
   })
 }
+
+/**
+ * 
+ * @param buttonId 按钮ID
+ * @param userIds 个人ID
+ * @param viewId 视图ID
+ * @returns 
+ */
+// 按钮请求
+export function postButtonApi(buttonId: string, userIds: string,viewId:string ): AxiosPromise<newClientStep>{
+  return http.post('/zoro/start-button/790241614973665283', {
+    buttonId,
+    selectedAll: false,
+    selectedIds: [userIds],
+    userCondition: {
+      fieldName: "id",
+      operator: "EQUALS",
+      recordId: userIds,
+    },
+    viewId
+  })
+}

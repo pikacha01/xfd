@@ -17,7 +17,21 @@ import { newClientStep } from '@/constants/form'
 import constractField from '@/components/contractField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
 import ChildTableField from '@/components/ChildField/index.vue'
+import { onShow, onHide } from "@dcloudio/uni-app";
 
+import {  webSoketInit,closeSocket,websoket  } from '@/utils/webSocket'
+
+onShow(() => {
+  webSoketInit();
+  websoket.value.addEventListener('message', function (event) {
+      console.log('Message from server ', event.data);
+      console.log('Message from server ', event);
+  });
+});
+onHide(() => {
+  closeSocket()
+  console.log("logout")
+});
 
 const formStore = useFormStore()
 const clientStore = useClientStore()
@@ -142,6 +156,15 @@ const formStep = {
     }
   ]
 }
+
+// 按钮列表
+const buttonsList = {
+  // 征信查询
+  credit: {
+    buttonId: "798189658066092035",
+    viewId: "797391751834271746"
+  }
+} 
 
 </script>
 

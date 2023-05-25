@@ -61,8 +61,8 @@ import { smartPhoneValidator } from "@/utils/validate";
 import { onReady } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
 const model = reactive({
-  phone: "18530784384",
-  passWord: "111111",
+  phone: "",
+  passWord: "",
 });
 const formRef = ref(null);
 // 获取自定义的store

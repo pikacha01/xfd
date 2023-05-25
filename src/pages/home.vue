@@ -1,9 +1,17 @@
 
 <script setup lang="ts">
 import { watch, ref } from 'vue'
-import { onShow,onReachBottom } from "@dcloudio/uni-app"
+import { onShow,onReachBottom,onHide } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
+import {  webSoketInit,closeSocket  } from '@/utils/webSocket'
+
+onShow(() => {
+  webSoketInit();
+});
+onHide(() => {
+  closeSocket()
+});
 
 const userStore = useUserStore()
 const store = useCountStore()

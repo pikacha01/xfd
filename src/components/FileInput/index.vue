@@ -93,7 +93,7 @@ const deleteFile = (item) => {
 <template>
 <uni-forms-item :label="data.label" :required="data.required" :name="data.id">
   <view class="right">
-    <template  v-for="item in formStore.currentFormSteps?.data.initData[props.data.id]" :key="item.url">
+    <template  v-for="item in formStore .currentFormSteps?.data.initData[props.data.id]" :key="item.url">
       <view class="delete">
         <view class="box">
           <image v-if="item.fileType.toLowerCase() === 'pdf'" @click="preview(item.url)" class="icon" mode="aspectFill" src="@/static/images/file_pdf.png"></image>
@@ -102,12 +102,12 @@ const deleteFile = (item) => {
           <image v-else-if="item.fileType.toLowerCase() === 'xlsx' || item.fileType.toLowerCase() === 'xls'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_excel.png"></image>
           <image v-else-if="item.fileType.toLowerCase() === 'mp4' || item.fileType.toLowerCase() === 'avi' || item.fileType.toLowerCase() === 'flv'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_type_video.png"></image>
         </view>
-        <view class="deleteIcon" v-if="!data.readonly || !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
+        <view class="deleteIcon" v-if="!data.readonly && !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
           <image class="icon" src="@/static/images/delete@2x.png" @click="deleteFile(item)"></image>
         </view>
       </view>
     </template>
-    <view class="delete"  v-if="!data.readonly || !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
+    <view class="delete"  v-if="!data.readonly && !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
       <view class="box">
         <view class="add"  @click="addFile">
           <uni-icons type="plusempty" color="#cccccc" size="55"/>
