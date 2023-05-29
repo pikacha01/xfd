@@ -313,7 +313,7 @@ watch(() => {
         <!-- <uni-icons type="bottom" size="22"></uni-icons> -->
       </view>
     </view>
-    <uni-forms ref="IDform" :rules="idFormRules"  :modelValue="clientStore.IDCardForm" label-width="200rpx">
+    <uni-forms :border="true" ref="IDform" :rules="idFormRules"  :modelValue="clientStore.IDCardForm" label-width="200rpx">
       <view class="IDCard">
         <view class="left">
           证件信息

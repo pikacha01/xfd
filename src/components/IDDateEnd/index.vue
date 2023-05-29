@@ -22,8 +22,6 @@ const IDlength = ref([{
   disable: props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)
 }])
 
-console.log(IDlength)
-
 const idLength = ref<string []>([])
 
 watch(() => {

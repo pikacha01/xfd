@@ -5,7 +5,6 @@ import {onMounted} from 'vue'
 const store = useUserStore()
 
 onMounted(() => {
-  store.getUserInfo()
   store.getCompany()
 })
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {onMounted,ref,defineAsyncComponent} from 'vue'
-import { useFormStore,useClientStore } from "@/store"
+import {onMounted,ref,onUnmounted } from 'vue'
+import { useFormStore,useUserStore } from "@/store"
 import Steps from '@/components/steps/index.vue'
 import FormGrid from '@/components/FormGrid/index.vue'
 import TextField from '@/components/inputField/index.vue'
@@ -18,23 +18,28 @@ import constractField from '@/components/contractField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
 import ChildTableField from '@/components/ChildField/index.vue'
 import { onShow, onHide } from "@dcloudio/uni-app";
-
-import {  webSoketInit,closeSocket,websoket  } from '@/utils/webSocket'
+import { postButtonApi } from '@/api/modules/formInfo'
 
 onShow(() => {
-  webSoketInit();
-  websoket.value.addEventListener('message', function (event) {
-      console.log('Message from server ', event.data);
-      console.log('Message from server ', event);
-  });
+  // uni.connectSocket({
+  //   url: 'wss://zhuyiyun.com/mqtt',
+  //   success: (()=> {
+  //     uni.onSocketOpen(function (res) {
+  //       console.log('WebSocket连接已打开！');
+  //       uni.onSocketMessage(function (res) {
+  //         console.log('收到服务器内容：' + res.data);
+  //       });
+  //     });
+  //   })
+  // });
+ 
 });
-onHide(() => {
-  closeSocket()
+onUnmounted(() => {
   console.log("logout")
 });
 
 const formStore = useFormStore()
-const clientStore = useClientStore()
+const userStore = useUserStore()
 
 //校验规则
 const idFormRules = {
@@ -108,6 +113,10 @@ onMounted(async () => {
     backgroundColor: '#ffffff'
   })
   await getFormInfo()
+  if (formStore.goUserDetailInfo?.label === "草稿") {
+    console.log("征信查询")
+    await getCredit()
+  }
 })
 
 // 获取表单详情
@@ -166,6 +175,11 @@ const buttonsList = {
   }
 } 
 
+// 征信查询
+const getCredit = async () => {
+  const { buttonId,viewId }  = buttonsList.credit
+  await postButtonApi(buttonId,String(formStore.goUserDetailInfo!.id),viewId)
+}
 </script>
 
 <template>
@@ -181,7 +195,7 @@ const buttonsList = {
   </view>
   <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
-    <uni-forms ref="Form" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
+    <uni-forms ref="Form" :border="true" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
     <view class="content">
       <view v-for="item in inputFormArray"
         :key="item.id">

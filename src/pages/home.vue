@@ -6,12 +6,12 @@ import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
 import {  webSoketInit,closeSocket  } from '@/utils/webSocket'
 
-onShow(() => {
-  webSoketInit();
-});
-onHide(() => {
-  closeSocket()
-});
+// onShow(() => {
+//   webSoketInit();
+// });
+// onHide(() => {
+//   closeSocket()
+// });
 
 const userStore = useUserStore()
 const store = useCountStore()
@@ -29,7 +29,6 @@ onShow(async () => {
   await formStore.getClientFormInfo()
   await clientStore.getTabTotal()
   await userStore.getCompany()
-  await userStore.getUserInfo()
   selectTab.value = "全部"
   refresh = false
 })

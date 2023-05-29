@@ -33,8 +33,12 @@ export const useUserStore = defineStore("user-Store", () => {
     // @ts-ignore
     companyInfo.value = data
   }
+
+  //uuid
+  const uuid = ref<string>()
+
   return {
-    getUserInfo,userInfo,deparmtmentInfo,positionInfo,getCompany,companyInfo
+    getUserInfo,userInfo,deparmtmentInfo,positionInfo,getCompany,companyInfo,uuid
   }
 },{
   // @ts-ignore

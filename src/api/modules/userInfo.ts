@@ -21,3 +21,8 @@ export function getUserPositionApi(usernameId:number): AxiosPromise<userDepartme
 export function getUserCompanyApi(): AxiosPromise<userCompany>{
   return http.get('/robin/company/790241614973665283')
 }
+
+// 订阅WebSocket 
+export function subWebSocket(ID: string): AxiosPromise{
+  return http.get('/sabot/emqx/autoSubscribe/' + ID)
+}

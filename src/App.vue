@@ -6,6 +6,7 @@ onLaunch(() => {
 onShow(() => {
 });
 onHide(() => {
+  
 });
 </script>
 <style lang="scss">
