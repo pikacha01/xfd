@@ -49,6 +49,7 @@ const changeSelect = (e) => {
     formStore.currentFormSteps!.data.initData[props.data.id] = []
     formStore.currentFormSteps!.data.initData[props.data.id][0] = e
     // 改变赋值
+    formStore.changeForm[props.data.id] = []
     formStore.changeForm[props.data.id][0] = e
   }
 }

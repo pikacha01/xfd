@@ -166,23 +166,38 @@ const formStep = {
 const buttonsList = {
   // 征信查询
   "草稿": {
-    name: "进入征询查询，若通过将自动进入踏勘环节！是否确定？",
     buttonId: "798189658066092035",
     viewId: "797391751834271746"
   },
+  "踏勘": {
+    buttonId: "792802926181580801",
+    viewId: "792522818534965249"
+  },
+  "提交审核": {
+    buttonId: "797346147391209473",
+    viewId: "790599731258425345"
+  },
+  "签约购销协议": {
+    buttonId: "810920227109928961",
+    viewId: "810917561500073985"
+  },
+  "签约运维协议": {
+    buttonId: "811713355155210242",
+    viewId: "810917561500073985"
+  }
 
 } 
 
-// 征信查询
-const getCredit = async () => {
-  const { buttonId,viewId }  = buttonsList["草稿"]
-  await postButtonApi(buttonId,String(formStore.goUserDetailInfo!.id),viewId)
+// 按钮查询
+const getButton = async (buttonId:string,viewId:string) => {
+  await postButtonApi(buttonId,String(formStore.currentFormSteps!.data.initData.id),viewId)
 }
 
 // 
 
 // 保存表单
 const saveForm = async () => {
+  if(Object.entries(formStore.changeForm).length === 0)  return 
   formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
   try {
     const res = await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
@@ -195,38 +210,93 @@ const saveForm = async () => {
 
 const Form = ref(null)
 
+// 每一个步骤的文字
+const textList = ["保存信息并进入征询查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核？是否确定？"]
 //保存并提交表单
 const saveSubmitForm = () => {
    //@ts-ignore
   Form.value.validate().then(async res => {
-    formStore.goUserDetailInfo?.label
     uni.showModal({
     title: '提示',
-    content: buttonsList[formStore.goUserDetailInfo!.label].name,
+    content: textList[Math.floor(formStore.userSelectStep!)-1],
     confirmColor: "#C7000B",
-    success: function (res) {
-        if (res.confirm) {
-
-        } else if (res.cancel) {
-          uni.showToast({
-            title: '取消退出',
-            icon: 'none',
-            duration: 2000
-          })
+    success: async function (res) {
+      if (res.confirm) {
+        if (Object.entries(formStore.changeForm).length !== 0) { 
+          formStore.changeForm['id'] = formStore.currentFormSteps?.data.initData.id
+          await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+        } 
+        if (Math.floor(formStore.userSelectStep!) === 1) {
+          await checkCrediGo()
+        } else if (Math.floor(formStore.userSelectStep!)=== 2) {
+          await submitReview()
         }
+      } else if (res.cancel) {
+        uni.showToast({
+          title: '取消退出',
+          icon: 'none',
+          duration: 2000
+        })
+      }
       }
     });
   })
 }
 
+// 检查征信并进入踏勘
+const checkCrediGo = async () => {
+  uni.showLoading({ title: '验证中' })
+  if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
+    const { buttonId, viewId } = buttonsList["踏勘"]
+    await getButton(buttonId,viewId)
+    formStore.userSelectStep = formStore.userSelectStep! + 1 
+    await getFormInfo()
+    uni.hideLoading()
+    uni.showToast({
+      title: "已进入下一步",
+    })
+  } else {
+    const { buttonId,viewId }  = buttonsList["草稿"]
+    await getButton(buttonId,viewId)
+    await getFormInfo()
+    if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
+      const { buttonId, viewId } = buttonsList["踏勘"]
+      await getButton(buttonId,viewId)
+      formStore.userSelectStep = formStore.userSelectStep! + 1 
+      await getFormInfo()
+      uni.hideLoading()
+      uni.showToast({
+        title: "已进入下一步",
+      })
+    } else {
+      uni.hideLoading()
+      uni.showToast({
+        title: "审核未通过",
+        icon: "error"
+      })
+    }
+  }
+}
+
+// 提交审核
+const submitReview = async () => {
+  uni.showLoading({ title: '提交信息中' })
+  const { buttonId,viewId }  = buttonsList["提交审核"]
+  await getButton(buttonId, viewId)
+  uni.hideLoading()
+}
+
+
 // 是否展示按钮
 const isShowButtons = computed(() => {
-  if (formStore.goUserDetailInfo?.label === "草稿") {
+  if (Math.floor(formStore.userSelectStep!) === 1) {
     if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
-      // return false
+      return false
     } else {
       return true
     }
+  } else if (Math.floor(formStore.userSelectStep!) === 2) {
+    
   }
   return true
 })
@@ -302,6 +372,14 @@ const isShowButtons = computed(() => {
       </view>
       <view class="submit" @click="saveSubmitForm">
         保存并提交
+      </view>
+    </view>
+    <view class="buttons">
+      <view class="save">
+        签约购销协议
+      </view>
+      <view class="submit">
+        签约运维协议
       </view>
     </view>
   </view> 

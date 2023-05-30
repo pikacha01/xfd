@@ -84,9 +84,6 @@ export function postButtonApi(buttonId: string, userIds: string,viewId:string ):
     selectedAll: false,
     selectedIds: [userIds],
     userCondition: {
-      fieldName: "id",
-      operator: "EQUALS",
-      recordId: userIds,
     },
     viewId
   })
