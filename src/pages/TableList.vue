@@ -28,6 +28,7 @@ const selectionChange = (e) => {
 
 // 删除
 const deleteCode = () => {
+  if(checkedList.value.length === 0 ) return
   if (readonly.value === "true") {
     uni.showToast({
       title: '当前只读状态！',
@@ -128,6 +129,7 @@ const scanCode = () => {
 .content {
   margin: 0 32rpx;
   padding-bottom: 190rpx;
+  min-height: 100vh;
 }
 .table {
   width: 100%;

@@ -30,11 +30,25 @@ onMounted(async() => {
 const changeRegin = (e) => {
   formStore.currentFormSteps!.data.initData[props.data.id] = e.detail.code
   reginSelect.value = e.detail.value
+  // 改变赋值
+  formStore.changeForm[props.data.id] = e.detail.code
 }
 </script>
 
 <template>
-  <uni-forms-item :label="data.label" :name="data.id" :required="data.required" >
+  <uni-forms-item v-if="data.id === 'PhoneField_9'" :label="data.label" :name="data.id" :required="data.required" >
+    <picker :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" class="picker" mode="region" :value="data" @change="changeRegin">
+      <view class="date" v-if="reginSelect">
+        {{ reginSelect[0]? `${reginSelect[0]} ${reginSelect[1]} ${reginSelect[2]}` : "请输入地址" }}
+      </view>
+    </picker>
+  </uni-forms-item>
+  <uni-forms-item v-else :label="data.label" :name="data.id" :rules="[
+    {
+      required: data.required,
+      errorMessage: `${data.label}不能为空`,
+    },
+  ]" >
     <picker :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" class="picker" mode="region" :value="data" @change="changeRegin">
       <view class="date" v-if="reginSelect">
         {{ reginSelect[0]? `${reginSelect[0]} ${reginSelect[1]} ${reginSelect[2]}` : "请输入地址" }}

@@ -164,7 +164,7 @@ const submit = () => {
 }
 .attention{
   width: 100%;
-  margin-top: 400rpx;
+  margin-top: 555rpx;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -59,6 +59,7 @@ const goMap = () => {
       const statiPic = await getMapImg(tempPosition.location)
       tempPosition.staticPic = statiPic
       formStore.currentFormSteps!.data.initData.PositionField_67 = tempPosition
+      formStore.changeForm["PositionField_67"] = tempPosition
     }
   })
     
@@ -68,6 +69,8 @@ const goMap = () => {
 const deletePosition = () => {
   if(props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   formStore.currentFormSteps!.data.initData.PositionField_67 = null
+  // 改变赋值
+  formStore.changeForm["PositionField_67"] = null
 }
 
 </script>

@@ -38,7 +38,6 @@ const getTotal = async () =>{
   const res = await getUserDetailStepAPi(formStore.newFormSteps!.processId,formStore.newFormSteps!.stepId,formView.form,formView.viewId)
   //@ts-ignore
   total.value = res.data.initData["NumberField_74"]  ? res.data.initData["NumberField_74"] : 0
-
 }
 
 // 跳转页面

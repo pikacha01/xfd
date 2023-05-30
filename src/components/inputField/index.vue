@@ -14,18 +14,37 @@ const props = defineProps({
     required: true
   },
 });
-// 
+// 映射对应的值
 const inputData = ref(formStore.currentFormSteps?.data.initData[props.data.id])
 
 watch(() => {
-  return inputData
+  return inputData.value
 },()=>{
+  // 改变对应的值
   formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+  // 改变赋值
+  formStore.changeForm[props.data.id] = inputData.value
 })
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :required="data.required" :name="data.id">
+<uni-forms-item v-if="data.id === 'PhoneField_9' || data.id === 'IdentityField_15'" :label="data.label" :required="data.required" :name="data.id">
+  <uni-easyinput 
+   placeholderStyle="font-size:28rpx;" 
+   v-model="inputData"
+   :inputBorder="false"  
+   :placeholder="data.placeholder" 
+   :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
+   />
+</uni-forms-item>
+<uni-forms-item v-else :label="data.label" 
+  :rules="[
+      {
+        required: data.required,
+        errorMessage: `${data.label}不能为空`,
+      },
+    ]"
+  :name="data.id">
   <uni-easyinput 
    placeholderStyle="font-size:28rpx;" 
    v-model="inputData"

@@ -62,12 +62,14 @@ watch(()=>{
 }, () => {
   if(!saleValue.value.length) return
   formStore.contractForm!.data.initData.GroupField_22 = saleValue.value
+  formStore.constractFieldForm["GroupField_22"] = saleValue.value
 })
 watch(()=>{
   return operationValue.value
 }, () => {
   if(!operationValue.value) return
   formStore.contractForm!.data.initData.GroupField_40 = operationValue.value
+  formStore.constractFieldForm["GroupField_40"] = operationValue.value
 })
 
 const preview = (fileLink) => {
@@ -106,7 +108,7 @@ const preview = (fileLink) => {
     <view class="title">
       <view class="left">3.1 合同签定</view>
     </view>
-    <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)">
+    <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly">
       <uni-data-select
         :disabled="saleStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)"
         v-model="saleValue"

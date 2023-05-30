@@ -41,6 +41,9 @@ onMounted(() => {
 })
 
 const select = async (e) => {
+  if (!formStore.currentFormSteps?.data.initData[props.data.id]) {
+    formStore.currentFormSteps!.data.initData[props.data.id] = []
+  }
   for (const key of e.tempFiles) {
     //@ts-ignore
     await user.getObsKey().then(async (data: IfObsKey) => {
@@ -74,12 +77,19 @@ watch(() => {
       ImgList.value.push(temp)
     })
   }
+  // 改变赋值
+  formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
 },{deep:true})
 
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :required="data.required" :name="data.id">
+<uni-forms-item :label="data.label" :rules="[
+    {
+      required: data.required,
+      errorMessage: `${data.label}不能为空`,
+    },
+  ]" :name="data.id">
   <uni-file-picker @delete="deleteImg" @select="select"  file-mediatype="image" :readonly="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" :modelValue="ImgList"></uni-file-picker>
 </uni-forms-item>
 </template>

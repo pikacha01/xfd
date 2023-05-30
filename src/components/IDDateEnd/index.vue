@@ -24,15 +24,22 @@ const IDlength = ref([{
 
 const idLength = ref<string []>([])
 
-watch(() => {
-  return idLength[0]
-}, () => {
-  idLength.value[0] === "1" ? formStore.currentFormSteps!.data.initData.SelectField_58 = ["1"] : formStore.currentFormSteps!.data.initData.SelectField_58 = null
-})
+const change = (e) => {
+  if (e.detail.value[0]) {
+    formStore.currentFormSteps!.data.initData.SelectField_58 = ["1"] 
+    // 改变赋值
+    formStore.changeForm["SelectField_58"] = ["1"]
+  } else {
+    formStore.currentFormSteps!.data.initData.SelectField_58 = null
+    formStore.changeForm["SelectField_58"] = null
+  }
+}
 
 // 改变身份起止时间
 const changeIDCardEnd = (e) => {
   formStore.currentFormSteps!.data.initData.DateField_17 = e.detail.value
+  // 改变赋值
+  formStore.changeForm["DateField_17"] = e.detail.value
 }
 
 </script>
@@ -47,7 +54,7 @@ const changeIDCardEnd = (e) => {
       </view>
     </picker>
     <view class="idDateLength">
-      <uni-data-checkbox selectedColor="#d4151f" multiple v-model="idLength" :localdata="IDlength"></uni-data-checkbox>
+      <uni-data-checkbox @change="change" selectedColor="#d4151f" multiple v-model="idLength" :localdata="IDlength"></uni-data-checkbox>
     </view>
   </view>
 </uni-forms-item>

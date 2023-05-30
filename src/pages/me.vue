@@ -17,30 +17,32 @@ onMounted(() => {
 
 // 退出登录
 const loginOut = () => {
-  Dialog.value.open()
-}
-
-const dialogConfirm = () => {
-  console.log("dialogConfirm")
-  store.$patch(v => (v.token = ''))
-  disConnection()
-  uni.navigateTo({
-    url: '/pages/login'
-  })
-}
-
-const dialogClose = () => {
-  console.log("Close")
+  uni.showModal({
+    title: '提示',
+    content: '是否要退出登录？',
+    confirmColor: "#C7000B",
+    success: function (res) {
+        if (res.confirm) {
+          store.$patch(v => (v.token = ''))
+          disConnection()
+          uni.navigateTo({
+            url: '/pages/login'
+          })
+        } else if (res.cancel) {
+          uni.showToast({
+            title: '取消退出',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      }
+    });
 }
 
 </script>
 
 <template>
   <view class="body">
-    <uni-popup ref="Dialog" type="dialog">
-      <uni-popup-dialog type="warn" cancelText="关闭" confirmText="确认" content="是否确认退出账号？" @confirm="dialogConfirm"
-        @close="dialogClose"></uni-popup-dialog>
-    </uni-popup>
     <view class="content">
       <view class="infoHeader">
         <view class="avator">

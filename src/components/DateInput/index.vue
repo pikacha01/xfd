@@ -20,12 +20,19 @@ const props = defineProps({
 
 const changeDate = (e) => {
   formStore.currentFormSteps!.data.initData[props.data.id] = e.detail.value
+  // 改变赋值
+  formStore.changeForm[props.data.id] = e.detail.value
 }
 
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :name="data.id" :required="data.required">
+<uni-forms-item :label="data.label" :name="data.id" :rules="[
+    {
+      required: data.required,
+      errorMessage: `${data.label}不能为空`,
+    },
+  ]">
   <picker class="picker" :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)" mode="date" :value="formStore.currentFormSteps?.data.initData[data.id]" @change="changeDate">
     <view class="date">
       {{ formStore.currentFormSteps?.data.initData[data.id] ? formStore.currentFormSteps?.data.initData[data.id].substr(0,10) : data.placeholder}}

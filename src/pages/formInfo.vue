@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted,ref,onUnmounted } from 'vue'
+import {onMounted,ref,computed } from 'vue'
 import { useFormStore,useUserStore } from "@/store"
 import Steps from '@/components/steps/index.vue'
 import FormGrid from '@/components/FormGrid/index.vue'
@@ -18,7 +18,7 @@ import constractField from '@/components/contractField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
 import ChildTableField from '@/components/ChildField/index.vue'
 import { onShow, onHide } from "@dcloudio/uni-app";
-import { postButtonApi } from '@/api/modules/formInfo'
+import { postButtonApi,stepUploadApi } from '@/api/modules/formInfo'
 
 onShow(() => {
   // uni.connectSocket({
@@ -33,9 +33,6 @@ onShow(() => {
   //   })
   // });
  
-});
-onUnmounted(() => {
-  console.log("logout")
 });
 
 const formStore = useFormStore()
@@ -86,7 +83,6 @@ const idFormRules = {
       errorMessage: '地区不能为空'
     }]
   }
-
 }
 
 
@@ -105,6 +101,9 @@ const inputFormChangeArray = (node) => {
 const inputFormArray = ref()
 
 onMounted(async () => {
+  // 改变的值为归为空数组
+  formStore.changeForm = {}
+
   uni.setNavigationBarTitle({
     title: formStore.goUserDetailInfo!.TextField_1
   })
@@ -113,10 +112,6 @@ onMounted(async () => {
     backgroundColor: '#ffffff'
   })
   await getFormInfo()
-  if (formStore.goUserDetailInfo?.label === "草稿") {
-    console.log("征信查询")
-    await getCredit()
-  }
 })
 
 // 获取表单详情
@@ -139,6 +134,7 @@ const currentStepFormData = ref<newClientStep[]>([])
 
 // 改变步骤
 const changeStep = (index: number) => {
+  formStore.changeForm = {}
   formStore.userSelectStep = index + 1
   getFormInfo()
 }
@@ -169,17 +165,71 @@ const formStep = {
 // 按钮列表
 const buttonsList = {
   // 征信查询
-  credit: {
+  "草稿": {
+    name: "进入征询查询，若通过将自动进入踏勘环节！是否确定？",
     buttonId: "798189658066092035",
     viewId: "797391751834271746"
-  }
+  },
+
 } 
 
 // 征信查询
 const getCredit = async () => {
-  const { buttonId,viewId }  = buttonsList.credit
+  const { buttonId,viewId }  = buttonsList["草稿"]
   await postButtonApi(buttonId,String(formStore.goUserDetailInfo!.id),viewId)
 }
+
+// 
+
+// 保存表单
+const saveForm = async () => {
+  formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
+  try {
+    const res = await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+  } catch (error) {
+    uni.showToast({ title: "保存失败", icon: "none" });
+    return 
+  }
+  uni.showToast({ title: "保存成功" });
+}
+
+const Form = ref(null)
+
+//保存并提交表单
+const saveSubmitForm = () => {
+   //@ts-ignore
+  Form.value.validate().then(async res => {
+    formStore.goUserDetailInfo?.label
+    uni.showModal({
+    title: '提示',
+    content: buttonsList[formStore.goUserDetailInfo!.label].name,
+    confirmColor: "#C7000B",
+    success: function (res) {
+        if (res.confirm) {
+
+        } else if (res.cancel) {
+          uni.showToast({
+            title: '取消退出',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      }
+    });
+  })
+}
+
+// 是否展示按钮
+const isShowButtons = computed(() => {
+  if (formStore.goUserDetailInfo?.label === "草稿") {
+    if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
+      // return false
+    } else {
+      return true
+    }
+  }
+  return true
+})
 </script>
 
 <template>
@@ -203,7 +253,7 @@ const getCredit = async () => {
           <TextField :data="item"></TextField>
         </template>
         <template v-else-if ="item.tag === 'FormGrid'">
-          <FormGrid :data="item" :step="Math.floor(formStore.userCurrentStep!)"></FormGrid>
+          <FormGrid :data="item" :step="Math.floor(formStore.userSelectStep!)"></FormGrid>
         </template>
         <template v-else-if ="item.tag === 'PhoneField'">
           <TextField :data="item"></TextField>
@@ -229,7 +279,7 @@ const getCredit = async () => {
         <template v-else-if ="item.id === 'JoinFormField_80'">
           <JoinFormField :data="item"></JoinFormField>
         </template>
-        <template v-else-if ="item.tag === 'PicField' && item.id !== 'PicField_44'">
+        <template v-else-if ="item.tag === 'PicField' && item.label !== '身份证国徽面'">
           <PicField :data="item"></PicField>
         </template>
         <template v-else-if ="item.tag === 'FileField'">
@@ -246,11 +296,11 @@ const getCredit = async () => {
         <constractField />
       </view>
     </template>
-    <view class="buttons">
-      <view class="save">
+    <view class="buttons" v-if="isShowButtons">
+      <view class="save" @click="saveForm">
         保存
       </view>
-      <view class="submit">
+      <view class="submit" @click="saveSubmitForm">
         保存并提交
       </view>
     </view>

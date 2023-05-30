@@ -23,6 +23,8 @@ watch(()=>{
 }, () => {
   if (formStore.currentFormSteps!.data.initData[props.data.id]) {
     formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+    // 改变赋值
+    formStore.changeForm[props.data.id] = inputData.value
   }
 })
 
@@ -36,7 +38,12 @@ const selectList = props.data.items!.map((item) => {
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :required="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
+<uni-forms-item :label="data.label" :rules="[
+    {
+      required: data.required,
+      errorMessage: `${data.label}不能为空`,
+    },
+  ]" :name="data.id">
   <uni-data-select
       :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
       v-model="inputData"

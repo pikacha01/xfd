@@ -71,8 +71,10 @@ const addFile =async () => {
             const fileObj = await OBSupload(key, data);
             if (!formStore.currentFormSteps?.data.initData[props.data.id]) {
               formStore.currentFormSteps!.data.initData[props.data.id] = []
+              formStore.changeForm[props.data.id] = []
             }
             formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
+            formStore.changeForm[props.data.id].push(fileObj)
         });
       }
       uni.hideLoading();
@@ -86,12 +88,20 @@ const deleteFile = (item) => {
   formStore.currentFormSteps!.data.initData[props.data.id] = formStore.currentFormSteps!.data.initData[props.data.id].filter((data) => {
     return item.url !== data.url
   })
+  formStore.changeForm[props.data.id] = formStore.currentFormSteps!.data.initData[props.data.id].filter((data) => {
+    return item.url !== data.url
+  })
 }
 
 </script>
 
 <template>
-<uni-forms-item :label="data.label" :required="data.required" :name="data.id">
+<uni-forms-item :label="data.label" :rules="[
+      {
+        required: data.required,
+        errorMessage: `${data.label}不能为空`,
+      },
+    ]" :name="data.id">
   <view class="right">
     <template  v-for="item in formStore .currentFormSteps?.data.initData[props.data.id]" :key="item.url">
       <view class="delete">
