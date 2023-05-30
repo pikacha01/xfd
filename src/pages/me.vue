@@ -1,44 +1,73 @@
 <script setup lang="ts">
-import { useUserStore } from '@/store'
-import {onMounted} from 'vue'
+import { useUserStore,useCountStore } from '@/store'
+import {onMounted,ref} from 'vue'
+import { disConnection } from '@/utils/webSocket'
 
-const store = useUserStore()
+const userStore = useUserStore()
+
+// 获取自定义的store
+const store = useCountStore();
+
+const Dialog = ref<any>(null);
 
 onMounted(() => {
-  store.getCompany()
+  userStore.getCompany()
 })
+
+
+// 退出登录
+const loginOut = () => {
+  Dialog.value.open()
+}
+
+const dialogConfirm = () => {
+  console.log("dialogConfirm")
+  store.$patch(v => (v.token = ''))
+  disConnection()
+  uni.navigateTo({
+    url: '/pages/login'
+  })
+}
+
+const dialogClose = () => {
+  console.log("Close")
+}
 
 </script>
 
 <template>
-  <view>
+  <view class="body">
+    <uni-popup ref="Dialog" type="dialog">
+      <uni-popup-dialog type="warn" cancelText="关闭" confirmText="确认" content="是否确认退出账号？" @confirm="dialogConfirm"
+        @close="dialogClose"></uni-popup-dialog>
+    </uni-popup>
     <view class="content">
       <view class="infoHeader">
         <view class="avator">
-          <image :src="store.userInfo?.avatar"></image>
+          <image :src="userStore.userInfo?.avatar"></image>
         </view>
         <view class="info">
-          <view class="name">{{ store.userInfo?.name }}</view>
-          <view class="company">{{ store.companyInfo?.name }}</view>
+          <view class="name">{{ userStore.userInfo?.name }}</view>
+          <view class="company">{{ userStore.companyInfo?.name }}</view>
         </view>
       </view>
       <view class="sperate" style="margin-top: 60rpx;"></view>
       <view class="phone">
         <view class="label">手机</view>
-        <view class="phoneNumber">{{ store.userInfo?.phone }}</view>
+        <view class="phoneNumber">{{ userStore.userInfo?.phone }}</view>
       </view>
       <view class="sperate"></view>
       <view class="department">
         <view class="label">部门</view>
         <scroll-view scroll-x="true" style="white-space: nowrap;" class="tagList">
-          <view class="tag" v-for="item in store.deparmtmentInfo" :key="item.id">{{ item.name }}</view>
+          <view class="tag" v-for="item in userStore.deparmtmentInfo" :key="item.id">{{ item.name }}</view>
         </scroll-view>
       </view>
       <view class="sperate"></view>
       <view class="department">
         <view class="label">职务</view>
         <scroll-view scroll-x="true" style="white-space: nowrap;" class="tagList">
-          <view class="tag" v-for="item in store.positionInfo" :key="item.id">{{ item.name }}</view>
+          <view class="tag" v-for="item in userStore.positionInfo" :key="item.id">{{ item.name }}</view>
         </scroll-view>
       </view>
       <view class="sperate"></view>
@@ -49,12 +78,44 @@ onMounted(() => {
         </view>
       </view>
     </view>
+    <view class="loginOut">
+      <view class="loginOutButton" @click="loginOut">
+        退出登录
+      </view>
+    </view>
   </view>
+
 </template>
 <style scoped lang="scss">
+.body {
+  background: #F6F7F9;
+  width: 100vw;
+  height: 100vh;
+  .loginOut {
+    margin-top: 340rpx;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .loginOutButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240rpx;
+    height: 80rpx;
+    color: #221815;
+    font-size: 28rpx;
+    border-radius: 8rpx;
+    border: 2rpx solid #221815;
+  }
+
+}
 .content {
-  margin-top: 200rpx;
-  padding: 0 55rpx;
+  
+  padding: 200rpx 55rpx 40rpx;
+  background-color: #fff;
+
   .infoHeader {
     display: flex;
     .avator {

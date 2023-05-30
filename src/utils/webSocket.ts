@@ -42,7 +42,7 @@ const connectmqtt = () => {
     //信息监听
   client.on('message', function (topic, massage) {
     console.log("123")
-    console.log('收到' + JSON.parse(massage))
+    console.log('收到' + massage)
   })
   client.on('reconnect', (error) => {
     console.log('正在重连', error)
@@ -72,6 +72,9 @@ const  mqttSend = (msg)=> {
 
 // 关闭mqtt
 const disConnection = () => {
+  client.on("close", function () {
+    console.log("已断开连接")
+  });
   client && client.end(true);
 }
 

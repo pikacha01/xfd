@@ -26,3 +26,18 @@ export function getUserCompanyApi(): AxiosPromise<userCompany>{
 export function subWebSocket(ID: string): AxiosPromise{
   return http.get('/sabot/emqx/autoSubscribe/' + ID)
 }
+
+// 用户是否存在 
+export function checkUserApi(phone: string): AxiosPromise<{status:number}>{
+  return http.get('/robin/api/check_users/' + phone)
+}
+
+// 获取图片验证码
+export function sendCodeApi(phone: string): AxiosPromise<{data:string}>{
+  return http.get('/robin/api/verifyImg/' + phone)
+}
+
+// 图片验证码校验
+export function checkCodeImgApi(phone: string,code:string): AxiosPromise<{msg:string,status: number}>{
+  return http.post(`/robin/api/sendVerifyCode/${phone}/${code}`)
+}

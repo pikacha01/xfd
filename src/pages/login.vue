@@ -42,6 +42,11 @@
             required: true,
             errorMessage: `密码不能为空`,
           },
+          {
+            minLength: 6,
+            maxLength: 20,
+            errorMessage: '密码长度在6到20个字符',
+          }
         ]"
       >
         <uni-easyinput
@@ -63,7 +68,7 @@
         登录
       </button>
     </uni-forms>
-    <view class="forgetPWD">忘记密码？</view>
+    <view class="forgetPWD" @click="gotoForgetPWD">忘记密码？</view>
   </div>
   <view class="attention" >点击登录表示同意<text class="agreement">《用户协议》</text>和<text class="agreement">《隐私协议》</text></view>
 </template>
@@ -96,6 +101,13 @@ onReady(() => {
     title: "登录",
   });
 });
+
+// 跳转忘记密码页面
+const gotoForgetPWD = () => {
+  uni.navigateTo({
+    url: '/pages/forgetPWD'
+  })
+}
 
 const submit = () => {
   if(isLoading.value) return 
@@ -168,6 +180,5 @@ const submit = () => {
   justify-content: center;
   align-items: center;
   margin-top: 85rpx;
-
 }
 </style>

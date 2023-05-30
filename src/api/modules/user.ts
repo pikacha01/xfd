@@ -50,6 +50,21 @@ function getToken(data: string, phone: string, password: string): Promise<{
   })
 }
 
+// 修改密码
+function changePassword(data: string, phone: string, password: string,code:string): Promise<{
+  status: number,
+  msg: string,
+}> {
+  const rsaObj = new JsEncrypt();
+  rsaObj.setPublicKey(data);
+  const mPass = rsaObj.encrypt(md5(password));
+  return http.post('/robin/api/setPassword', {
+    username: phone,
+    password: mPass,
+    code: code
+  })
+}
+
 // 获取公钥
 function getRsaPublicKey(): Promise<{ status: number, data: string }> {
   return http.get("/robin/api/getRsaPublicKey")
@@ -142,5 +157,6 @@ export default {
   getAreaData,
   getObsKey,
   getPlace,
-  getUniqueData
+  getUniqueData,
+  changePassword
 }

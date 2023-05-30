@@ -16,6 +16,9 @@
 			"path": "pages/login"
 		},
     {
+			"path": "pages/forgetPWD"
+		},
+    {
       "path": "pages/TableList",
       "title": "组件列表"
     },

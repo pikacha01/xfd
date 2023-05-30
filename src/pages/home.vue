@@ -4,7 +4,6 @@ import { watch, ref } from 'vue'
 import { onShow,onReachBottom,onHide } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
-import {  webSoketInit,closeSocket  } from '@/utils/webSocket'
 
 // onShow(() => {
 //   webSoketInit();
@@ -109,7 +108,7 @@ onReachBottom(async () => {
   await clientStore.getClientInfo()
   refresh = false
 })
-let searchTimer: number | null = null;
+let searchTimer: any = null;
 // 搜索姓名
 const searchName = (e) => {
   if (searchTimer) {

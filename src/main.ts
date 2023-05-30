@@ -21,7 +21,7 @@ import uniPopup from "../node_modules/@dcloudio/uni-ui/lib/uni-popup/uni-popup.v
 import uniTransition from "../node_modules/@dcloudio/uni-ui/lib/uni-transition/uni-transition.vue"
 import uniSearchBar from "../node_modules/@dcloudio/uni-ui/lib/uni-search-bar/uni-search-bar.vue"
 import uniTable from '../node_modules/@dcloudio/uni-ui/lib/uni-table/uni-table.vue'
-
+import uniPopupDialog from '../node_modules/@dcloudio/uni-ui/lib/uni-popup-dialog/uni-popup-dialog.vue'
 
 import '../node_modules/@dcloudio/uni-ui/lib/uni-scss/variables.scss'
 
@@ -50,6 +50,7 @@ export function createApp() {
   app.component("uni-transition", uniTransition)
   app.component("uni-search", uniSearchBar)
   app.component("uni-table", uniTable)
+  app.component("uni-popup-dialog", uniPopupDialog)
 
   app.use(pinia)
   return {
