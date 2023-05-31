@@ -74,9 +74,13 @@ export const useFormStore = defineStore("form-Store", () => {
   //合同表的值
   const constractFieldForm = ref<Object>({})
 
+  // 业务表步骤数
+  const stepIndex = ref<number>(1)
+
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
-    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm,changeForm,constractFieldForm
+    userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm,changeForm,constractFieldForm,
+    stepIndex
   }
 },{
   // @ts-ignore

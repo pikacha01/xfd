@@ -156,6 +156,7 @@ const preview = (fileLink) => {
   height: 40rpx;
   font-size: 28rpx;
   padding: 30rpx 0;
+  font-weight: 700;
 }
 .pdfContent{
   margin-bottom: 22px;

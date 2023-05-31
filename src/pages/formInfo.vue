@@ -3,20 +3,10 @@ import {onMounted,ref,computed } from 'vue'
 import { useFormStore,useUserStore } from "@/store"
 import Steps from '@/components/steps/index.vue'
 import FormGrid from '@/components/FormGrid/index.vue'
-import TextField from '@/components/inputField/index.vue'
-import DateField from '@/components/DateInput/index.vue'
-import GroupField from '@/components/PickerSelect/index.vue'
-import IDField  from '@/components/IDField/index.vue'
-import RegionField from '@/components/RegionInput/index.vue'
-import IDDateEnd  from '@/components/IDDateEnd/index.vue'
-import PositionField  from '@/components/PositionComponent/index.vue'
-import JoinFormField  from '@/components/JoinFormField/index.vue'
-import PicField  from '@/components/ImgField/index.vue'
+
+import constractField from '@/components/contractField/index.vue'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
-import constractField from '@/components/contractField/index.vue'
-import FileField from '@/components/FileInput/index.vue'
-import ChildTableField from '@/components/ChildField/index.vue'
 import { onShow, onHide } from "@dcloudio/uni-app";
 import { postButtonApi,stepUploadApi } from '@/api/modules/formInfo'
 
@@ -98,9 +88,10 @@ const inputFormChangeArray = (node) => {
   return result;
 }
 
-const inputFormArray = ref()
+const inputFormArray = ref<any>([])
 
 onMounted(async () => {
+  formStore.stepIndex  =  1
   // 改变的值为归为空数组
   formStore.changeForm = {}
 
@@ -116,6 +107,7 @@ onMounted(async () => {
 
 // 获取表单详情
 const getFormInfo = async () => {
+  uni.showLoading({title:"加载中"})
   currentStepFormData.value = []
   await formStore.getuserInfoStep()
   if (Math.floor(formStore.userSelectStep!) !== 1) {
@@ -126,17 +118,23 @@ const getFormInfo = async () => {
       // currentStepFormData.value.push(res)
     }
   }
-  inputFormArray.value = inputFormChangeArray(formStore.currentFormSteps!.data.inputForm)
+  if (formStore.currentFormSteps!.data.inputForm === undefined) {
+    inputFormArray.value = []
+  } else {
+    inputFormArray.value = formStore.currentFormSteps!.data.inputForm.children
+  }
+  uni.hideLoading();
 }
 
 // 当前页面表单数据
 const currentStepFormData = ref<newClientStep[]>([])
 
 // 改变步骤
-const changeStep = (index: number) => {
+const changeStep = async (index: number) => {
   formStore.changeForm = {}
   formStore.userSelectStep = index + 1
-  getFormInfo()
+  formStore.stepIndex  =  1
+  await getFormInfo()
 }
 
 // 每个步骤对应的表单
@@ -150,8 +148,8 @@ const formStep = {
   ],
   3: [
     { 
-      viewId: "790599731258425345",
-      form: "JoinFormField_73"
+      viewId: "810917561500073985",
+      form: "JoinFormField_74"
     }
   ],
   4: [
@@ -177,13 +175,28 @@ const buttonsList = {
     buttonId: "797346147391209473",
     viewId: "790599731258425345"
   },
-  "签约购销协议": {
+  // 签约购销协议
+  "buy": {
     buttonId: "810920227109928961",
     viewId: "810917561500073985"
   },
-  "签约运维协议": {
+  // 签约运维协议
+  "operation": {
     buttonId: "811713355155210242",
     viewId: "810917561500073985"
+  },
+  "安装完成": {
+    buttonId: "869823621114658817",
+    viewId: "796495087814901763"
+  },
+  // 自检完成
+  "自检完成": {
+    buttonId: "821927705639976962",
+    viewId: "792600570030522369"
+  },
+  "并网完成": {
+    buttonId: "821958840828592130",
+    viewId: "792604619072372737"
   }
 
 } 
@@ -197,12 +210,15 @@ const getButton = async (buttonId:string,viewId:string) => {
 
 // 保存表单
 const saveForm = async () => {
-  if(Object.entries(formStore.changeForm).length === 0)  return 
+  if (Object.entries(formStore.changeForm).length === 0) {
+    uni.showToast({ title: "暂无修改", icon: "none" });
+    return
+  }
   formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
   try {
     const res = await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
   } catch (error) {
-    uni.showToast({ title: "保存失败", icon: "none" });
+    uni.showToast({ title: "保存失败", icon: "error" });
     return 
   }
   uni.showToast({ title: "保存成功" });
@@ -211,7 +227,7 @@ const saveForm = async () => {
 const Form = ref(null)
 
 // 每一个步骤的文字
-const textList = ["保存信息并进入征询查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核？是否确定？"]
+const textList = ["保存信息并进入征信查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核！是否确定？","","确定是否并网？"]
 //保存并提交表单
 const saveSubmitForm = () => {
    //@ts-ignore
@@ -230,6 +246,14 @@ const saveSubmitForm = () => {
           await checkCrediGo()
         } else if (Math.floor(formStore.userSelectStep!)=== 2) {
           await submitReview()
+        } else if (Math.floor(formStore.userSelectStep!) === 3) {
+          if (formStore.goUserDetailInfo?.label === "安装") {
+            complete()
+          } else if (formStore.goUserDetailInfo?.label === "自检") {
+            myTest()
+          }
+        } else if (Math.floor(formStore.userSelectStep!) === 4) {
+          UtilityGridConnect()
         }
       } else if (res.cancel) {
         uni.showToast({
@@ -286,6 +310,24 @@ const submitReview = async () => {
   uni.hideLoading()
 }
 
+// 完成安装
+const complete = async () => {
+  const { buttonId,viewId }  = buttonsList["安装完成"]
+  await getButton(buttonId, viewId)
+}
+
+// 安装自检
+const myTest = async () => {
+  const { buttonId,viewId }  = buttonsList["自检完成"]
+  await getButton(buttonId, viewId)
+}
+
+
+// 安装自检
+const UtilityGridConnect = async () => {
+  const { buttonId,viewId }  = buttonsList["并网完成"]
+  await getButton(buttonId, viewId)
+}
 
 // 是否展示按钮
 const isShowButtons = computed(() => {
@@ -296,10 +338,36 @@ const isShowButtons = computed(() => {
       return true
     }
   } else if (Math.floor(formStore.userSelectStep!) === 2) {
-    
+    if(formStore.goUserDetailInfo?.label === "踏勘") return true
+    return false
   }
   return true
 })
+
+
+// 签约合同
+const signContract = (type:string) => {
+  const { buttonId, viewId } = buttonsList[type]
+  uni.showModal({
+    title: '提示',
+    content: "是否发送协议",
+    confirmColor: "#C7000B",
+    success: async function (res) {
+      if (res.confirm) {
+        uni.showLoading({ title: '发送合同中' })
+        await postButtonApi(buttonId, String(formStore.contractForm!.data.initData.id), viewId)
+        uni.hideLoading()
+      } else if (res.cancel) {
+        uni.showToast({
+          title: '取消退出',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+      }
+    });
+}
+
 </script>
 
 <template>
@@ -317,47 +385,15 @@ const isShowButtons = computed(() => {
   <view class="FormContent">
     <uni-forms ref="Form" :border="true" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
     <view class="content">
-      <view v-for="item in inputFormArray"
+      <view v-for="(item,index) in inputFormArray"
         :key="item.id">
-        <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField' || item.tag === 'NumberField'">
-          <TextField :data="item"></TextField>
+        <template v-if ="item.tag === 'FormGrid' && item.label !== '所属业务员'">
+          <FormGrid :data="item" :step="Math.floor(formStore.userSelectStep!)"
+            :index="index" :component-list="item.children"
+          >
+          </FormGrid>
         </template>
-        <template v-else-if ="item.tag === 'FormGrid'">
-          <FormGrid :data="item" :step="Math.floor(formStore.userSelectStep!)"></FormGrid>
-        </template>
-        <template v-else-if ="item.tag === 'PhoneField'">
-          <TextField :data="item"></TextField>
-        </template>
-        <template v-else-if ="item.tag === 'DateField' &&  item.id === 'DateField_17'">
-          <IDDateEnd :data="item"></IDDateEnd>
-        </template>
-        <template v-else-if ="item.tag === 'DateField'">
-          <DateField :data="item"></DateField>
-        </template>
-        <template v-else-if ="item.tag === 'GroupField'">
-          <GroupField :data="item"></GroupField>
-        </template>
-        <template v-else-if ="item.tag === 'PicField' && item.id === 'PicField_43'">
-          <IDField :data="item"></IDField>
-        </template>
-        <template v-else-if ="item.tag === 'RegionField'">
-          <RegionField :data="item"></RegionField>
-        </template>
-        <template v-else-if ="item.tag === 'PositionField'">
-          <PositionField :data="item"></PositionField>
-        </template>
-        <template v-else-if ="item.id === 'JoinFormField_80'">
-          <JoinFormField :data="item"></JoinFormField>
-        </template>
-        <template v-else-if ="item.tag === 'PicField' && item.label !== '身份证国徽面'">
-          <PicField :data="item"></PicField>
-        </template>
-        <template v-else-if ="item.tag === 'FileField'">
-          <FileField :data="item"></FileField>
-        </template>
-        <template v-else-if ="item.tag === 'ChildTableField'">
-          <ChildTableField :data="item"></ChildTableField>
-        </template>
+
       </view>
     </view>
 		</uni-forms>  
@@ -374,11 +410,15 @@ const isShowButtons = computed(() => {
         保存并提交
       </view>
     </view>
-    <view class="buttons">
-      <view class="save">
+    <view class="buttons" v-if="Math.floor(formStore.userSelectStep!) === 2 &&
+    (formStore.contractForm?.data.initData['GroupField_22'] ===  '1' || formStore.contractForm?.data.initData['GroupField_40'] ===  '1')">
+      <view class="submit" @click="signContract('buy')" 
+        v-if="Object.entries(formStore.contractForm?.data.initData).length !== 0 && formStore.contractForm?.data.initData['GroupField_22'] ===  '1'">
         签约购销协议
-      </view>
-      <view class="submit">
+      </view> 
+      <view class="submit" @click="signContract('operation')"
+      v-if="Object.entries(formStore.contractForm?.data.initData).length !== 0 && formStore.contractForm?.data.initData['GroupField_40'] ===  '1'"
+      >
         签约运维协议
       </view>
     </view>

@@ -3,7 +3,7 @@ import App from "./App.vue";
 import pinia from '@/store'
 import dayjs from 'dayjs'
 import uniBadge from "../node_modules/@dcloudio/uni-ui/lib/uni-badge/uni-badge.vue"
-import uniFormsItem from "../node_modules/@dcloudio/uni-ui/lib/uni-forms-item/uni-forms-item.vue";
+import uniFormsItem from "@/uniComponents/uni-forms-items/uni-forms-item.vue";
 import uniEasyinput from "../node_modules/@dcloudio/uni-ui/lib/uni-easyinput/uni-easyinput.vue";
 import uniRate from "../node_modules/@dcloudio/uni-ui/lib/uni-rate/uni-rate.vue";
 import uniCons from "../node_modules/@dcloudio/uni-ui/lib/uni-icons/uni-icons.vue";

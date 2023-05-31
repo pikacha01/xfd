@@ -101,9 +101,14 @@ const deletePosition = () => {
 
 <style scoped lang="scss">
 .positionCard {
+  min-height: 36px;
+  border-top: 2rpx solid #E9E9E9;
+  padding: 10px 0;
   .showMap {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    line-height: 36px;
     .left {
       font-size: 28rpx;
       font-weight: 400;
