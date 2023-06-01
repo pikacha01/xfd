@@ -100,15 +100,28 @@ const preview = (fileLink) => {
     }
   })
 }
+
+// 拉伸和收缩
+const isShow = ref<boolean>(true)
+
+// 展示更多
+const showMore = () => {
+  isShow.value  = !isShow.value
+}
 </script>
 
 <template>
 <view>
   <uni-forms ref="contractform"  :modelValue="formStore.contractForm?.data.initData" label-width="200rpx">
-    <view class="title">
+    <view class="title" @click="showMore">
       <view class="left">3.1 合同签定</view>
+      <view class="right">
+      <uni-icons type="top" size="22" v-if="isShow"></uni-icons>
+      <uni-icons type="bottom" size="22" v-else></uni-icons>
     </view>
-    <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly">
+    </view>
+    <view class="showInfo" :class="[isShow ? '' : 'hiddenInfo']">
+      <uni-forms-item :label="saleStatus.label" :required="saleStatus.readonly">
       <uni-data-select
         :disabled="saleStatus.readonly || (Object.entries(formStore.contractForm!.data.initData).length === 0)"
         v-model="saleValue"
@@ -141,6 +154,7 @@ const preview = (fileLink) => {
       <view class="right">
         <image v-for="item in formStore.contractForm?.data.initData.FileField_43" :key="item.url" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_pdf.png"></image>
       </view>
+    </view>
     </view>
   </uni-forms>  
 </view>
@@ -177,6 +191,22 @@ const preview = (fileLink) => {
       margin-top: 10rpx;
       width: 33.33%;
     }
+  }
+}
+.showInfo {
+  width:100%;
+  animation: expand 0.5s;
+}
+.hiddenInfo {
+  overflow: hidden;
+  height: 0;
+}
+@keyframes expand {
+  from {
+    height: 0;
+  }
+  to {
+    height: 200px;
   }
 }
 </style>

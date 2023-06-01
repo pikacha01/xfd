@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { PropType,ref } from 'vue'
 import { FormCompnentData } from '@/constants/form'
 import { IfFormGrid } from '@/constants/form'
 import TextField from '@/components/inputField/index.vue'
@@ -33,20 +33,26 @@ const props = defineProps({
   }
 });
 
+// 拉伸和收缩
+const isShow = ref<boolean>(true)
 
+// 展示更多
+const showMore = () => {
+  isShow.value  = !isShow.value
+}
 
 </script>
 
 <template>
 <view>
-  <view class="title">
+  <view class="title"  @click="showMore">
     <view class="left">{{ step }}.{{index + 1 }} {{ data.label }}</view>
     <view class="right">
-      <uni-icons type="top" size="22"></uni-icons>
-      <!-- <uni-icons type="bottom" size="22"></uni-icons> -->
+      <uni-icons type="top" size="22" v-if="isShow"></uni-icons>
+      <uni-icons type="bottom" size="22" v-else></uni-icons>
     </view>
   </view>
-  <template v-for="item in componentList">
+  <view class="showInfo"  v-for="item in componentList" :class="[isShow ? '' : 'hiddenInfo']" :key="item.id">
     <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField' || item.tag === 'NumberField'">
       <TextField :data="item"></TextField>
     </template>
@@ -83,7 +89,7 @@ const props = defineProps({
     <template v-else-if ="item.tag === 'ChildTableField'">
       <ChildTableField :data="item"></ChildTableField>
     </template>
-  </template>
+  </view>
 </view>
 
 </template>
@@ -100,4 +106,20 @@ const props = defineProps({
   padding: 30rpx 0;
   font-weight: bold;
 }
-</style>
+.showInfo {
+  width:100%;
+  animation: expand 0.5s;
+}
+.hiddenInfo {
+  overflow: hidden;
+  height: 0;
+}
+@keyframes expand {
+  from {
+    height: 0;
+  }
+  to {
+    height: 200px;
+  }
+}
+</style>  

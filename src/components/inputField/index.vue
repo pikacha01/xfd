@@ -15,15 +15,26 @@ const props = defineProps({
   },
 });
 // 映射对应的值
-const inputData = ref(formStore.currentFormSteps?.data.initData[props.data.id])
+const inputData = ref()
+
+inputData.value = formStore.currentFormSteps?.data.initData[props.data.id]
+
+// 防抖
+let Timer : any = null
 
 watch(() => {
   return inputData.value
-},()=>{
-  // 改变对应的值
-  formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
-  // 改变赋值
-  formStore.changeForm[props.data.id] = inputData.value
+}, () => {
+  if (Timer) {
+    clearTimeout(Timer);
+  }
+  Timer = setTimeout(() => {
+    // 改变对应的值
+    formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+    // 改变赋值
+    if(formStore.currentFormSteps?.data.initData[props.data.id] === inputData.value) return
+    formStore.changeForm[props.data.id] = inputData.value
+  }, 300);
 })
 </script>
 

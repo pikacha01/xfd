@@ -3,7 +3,7 @@ import {onMounted,ref,computed } from 'vue'
 import { useFormStore,useUserStore } from "@/store"
 import Steps from '@/components/steps/index.vue'
 import FormGrid from '@/components/FormGrid/index.vue'
-
+import guidence from '@/components/Guidence/index.vue'
 import constractField from '@/components/contractField/index.vue'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
@@ -149,7 +149,7 @@ const formStep = {
   3: [
     { 
       viewId: "810917561500073985",
-      form: "JoinFormField_74"
+      form: "JoinFormField_73"
     }
   ],
   4: [
@@ -185,14 +185,9 @@ const buttonsList = {
     buttonId: "811713355155210242",
     viewId: "810917561500073985"
   },
-  "安装完成": {
+  "安装自检完成": {
     buttonId: "869823621114658817",
     viewId: "796495087814901763"
-  },
-  // 自检完成
-  "自检完成": {
-    buttonId: "821927705639976962",
-    viewId: "792600570030522369"
   },
   "并网完成": {
     buttonId: "821958840828592130",
@@ -227,7 +222,7 @@ const saveForm = async () => {
 const Form = ref(null)
 
 // 每一个步骤的文字
-const textList = ["保存信息并进入征信查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核！是否确定？","","确定是否并网？"]
+const textList = ["保存信息并进入征信查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核！是否确定？","确定是否安装自检完成？","确定是否并网？"]
 //保存并提交表单
 const saveSubmitForm = () => {
    //@ts-ignore
@@ -244,16 +239,21 @@ const saveSubmitForm = () => {
         } 
         if (Math.floor(formStore.userSelectStep!) === 1) {
           await checkCrediGo()
-        } else if (Math.floor(formStore.userSelectStep!)=== 2) {
+        } else if (Math.floor(formStore.userSelectStep!) === 2) {
           await submitReview()
         } else if (Math.floor(formStore.userSelectStep!) === 3) {
-          if (formStore.goUserDetailInfo?.label === "安装") {
-            complete()
-          } else if (formStore.goUserDetailInfo?.label === "自检") {
-            myTest()
+          if (formStore.newFormSteps?.data.initData.TextField_78 !== "审批通过") {
+            uni.showToast({
+              title: '银行审核未通过',
+              icon: 'error',
+              duration: 2000
+            })
+            return
+          } else {
+            await complete()
           }
         } else if (Math.floor(formStore.userSelectStep!) === 4) {
-          UtilityGridConnect()
+          await UtilityGridConnect()
         }
       } else if (res.cancel) {
         uni.showToast({
@@ -308,25 +308,35 @@ const submitReview = async () => {
   const { buttonId,viewId }  = buttonsList["提交审核"]
   await getButton(buttonId, viewId)
   uni.hideLoading()
+  uni.showToast({
+    title: '已提交审核',
+    icon: 'success',
+    duration: 2000
+  })
 }
 
-// 完成安装
+// 完成安装自检完成
 const complete = async () => {
-  const { buttonId,viewId }  = buttonsList["安装完成"]
+  const { buttonId,viewId }  = buttonsList["安装自检完成"]
   await getButton(buttonId, viewId)
+  uni.showToast({
+    title: '已提交安装自检',
+    icon: 'success',
+    duration: 2000
+  })
 }
 
-// 安装自检
-const myTest = async () => {
-  const { buttonId,viewId }  = buttonsList["自检完成"]
-  await getButton(buttonId, viewId)
-}
 
 
-// 安装自检
+// 并网
 const UtilityGridConnect = async () => {
   const { buttonId,viewId }  = buttonsList["并网完成"]
   await getButton(buttonId, viewId)
+  uni.showToast({
+    title: '已提交并网完成',
+    icon: 'success',
+    duration: 2000
+  })
 }
 
 // 是否展示按钮
@@ -338,8 +348,20 @@ const isShowButtons = computed(() => {
       return true
     }
   } else if (Math.floor(formStore.userSelectStep!) === 2) {
-    if(formStore.goUserDetailInfo?.label === "踏勘") return true
+    if (formStore.goUserDetailInfo?.label === "踏勘") return true
     return false
+  } else if (Math.floor(formStore.userSelectStep!) === 3) {
+    if (Math.floor(formStore.userCurrentStep!) === 2 || Math.floor(formStore.userCurrentStep!) === 3) {
+      return true
+    } else {
+      return false
+    }
+  } else if (Math.floor(formStore.userSelectStep!) === 4) {
+    if (formStore.goUserDetailInfo?.label === "并网") {
+      return true
+    } else {
+      return false
+    }
   }
   return true
 })
@@ -401,6 +423,9 @@ const signContract = (type:string) => {
       <view class="content">
         <constractField />
       </view>
+    </template >
+    <template v-if="Math.floor(formStore.userSelectStep!) === 1"> 
+      <guidence :credit="formStore.currentFormSteps?.data.initData['GroupField_70'] === '2'"></guidence>
     </template>
     <view class="buttons" v-if="isShowButtons">
       <view class="save" @click="saveForm">

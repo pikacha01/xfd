@@ -582,7 +582,7 @@
 		margin-bottom: 0;
 		padding: 10px 0;
 		// padding-bottom: 0;
-		border-top: 1px #eee solid;
+		border-bottom: 1px #eee solid;
 
 		/* #ifndef APP-NVUE */
 		.uni-forms-item__content {

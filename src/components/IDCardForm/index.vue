@@ -200,6 +200,14 @@ const IDform = ref(null)
 const submitForm = async () => {
     //@ts-ignore
   IDform.value.validate().then(async res => {
+    if (!formStore.IDCardInfo.PicField_43[0] || !formStore.IDCardInfo.PicField_44[0]) {
+      uni.showToast({
+        title: '请上传身份证',
+        icon: "error",
+        duration: 2000,
+      })
+      return
+    }
     const data = await formStore.validateForm(clientStore.IDCardForm)
     //@ts-ignore
     if (data.success) {
