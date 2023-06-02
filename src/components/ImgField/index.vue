@@ -78,6 +78,7 @@ watch(() => {
     })
   }
   // 改变赋值
+  if(formStore.currentFormSteps?.data.initData[props.data.id] === undefined) return 
   formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
 },{deep:true})
 

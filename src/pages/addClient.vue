@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {onMounted} from 'vue'
+import {onMounted,watch} from 'vue'
 import Steps from '@/components/steps/index.vue'
 import IDForm from '@/components/IDCardForm/index.vue'
 import {useFormStore,useClientStore} from '@/store'
-import { onLoad,onUnload } from "@dcloudio/uni-app"
+import { onLoad } from "@dcloudio/uni-app"
 
 
 const formStore = useFormStore()
@@ -14,7 +14,17 @@ onLoad(() => {
     title: "新增农户"
   })
   formStore.getNewClient()
+
+  watch(() => {
+    return clientStore.IDCardForm
+  }, () => {
+    //@ts-ignore
+    wx.enableAlertBeforeUnload({
+      message: "当前页面有未保存的数据，是否返回",
+    })
+  }, { deep: true })
 })
+
 onMounted(() => {
   formStore.IDCardInfo.PicField_43 = []
   formStore.IDCardInfo.PicField_44 = []
@@ -43,9 +53,6 @@ onMounted(() => {
   }
 })  
 
-onUnload(() => {
-  
-})
 
 </script>
 

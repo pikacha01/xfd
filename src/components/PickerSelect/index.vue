@@ -21,6 +21,7 @@ const inputData = ref(formStore.currentFormSteps?.data.initData[props.data.id])
 watch(()=>{
   return inputData.value
 }, () => {
+  if(inputData.value === "") return
   if (Object.entries(formStore.currentFormSteps!.data.initData).length !== 0) {
     formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
     // 改变赋值

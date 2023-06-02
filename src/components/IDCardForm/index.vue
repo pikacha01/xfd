@@ -401,6 +401,7 @@ watch(() => {
               <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>
             </view>
           </picker>
+          <view class="sperate"></view>
           <view class="idDateLength">
             <uni-data-checkbox selectedColor="#d4151f" multiple v-model="idLength" :localdata="IDlength"></uni-data-checkbox>
           </view>
@@ -447,7 +448,8 @@ watch(() => {
         </PositionMap>
       </template>
       <button class="saveButton" type="submit" @click="submitForm">保存</button>
-		</uni-forms>  
+		</uni-forms>
+    <view></view>  
   </view>
 </template>
 
@@ -465,8 +467,10 @@ watch(() => {
     justify-content: space-between;
     color: #221815;
     line-height: 40rpx;
-    height: 40rpx;
+    min-height: 40rpx;
     font-size: 28rpx;
+    padding: 30rpx 0;
+    font-weight: bold;
   }
   .IDCard {
     margin-top: 16rpx;
@@ -557,6 +561,7 @@ watch(() => {
   }
 }
 .positionCard {
+  margin-top: 10px;
   .showMap {
     display: flex;
     justify-content: space-between;
@@ -576,5 +581,9 @@ watch(() => {
   display: flex;
   align-items: center;
 }
-
+.sperate {
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+}
 </style>

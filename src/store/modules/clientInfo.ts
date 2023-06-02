@@ -5,6 +5,8 @@ import { ref } from 'vue'
 import { clienData,userInfo } from '@/constants/client'
 import { IDUpload,newClientStep } from '@/constants/form'
 import { useFormStore } from "@/store"
+import { cancelAxios } from '@/api/http'
+
 
 function formatDateTime(dateTimeStr) {
   const date = new Date(dateTimeStr);
@@ -86,6 +88,8 @@ export const useClientStore = defineStore("client-Store", () => {
   const search = ref<string>("")
   // 获取人员列表
   const getClientInfo = async () => {
+    // 取消之前的请求
+    cancelAxios()
     const formStore = useFormStore()
     const res = await getClientInfoApi(start.value, end.value,search.value,statusFilter.value)
     for (const item of res.datas) {

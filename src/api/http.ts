@@ -54,7 +54,7 @@ const instance = axios.create({
 })
 
 // 用于存储每个请求的 CancelToken
-const requests:any = [];
+const requests: any = [];
 /**
  * 请求拦截
  */
@@ -134,5 +134,13 @@ instance.interceptors.response.use((v) => {
   // alert(v.statusText, '网络错误')
   return Promise.reject(v)
 })
+
+export const cancelAxios = () => {
+  if (requests.length !== 0) {
+    requests.forEach(source => {
+      source.cancel('请求被取消');
+    });
+  }
+}
 
 export default new ThrottleAxios(instance)

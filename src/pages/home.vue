@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { watch, ref } from 'vue'
+import { watch, ref,onMounted } from 'vue'
 import { onShow,onReachBottom,onHide } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
@@ -12,14 +12,15 @@ import { clienData } from '@/constants/client'
 //   closeSocket()
 // });
 
+let refresh = true
+
 const userStore = useUserStore()
 const store = useCountStore()
 const formStore = useFormStore()
 const clientStore = useClientStore()
 
 // 控制重复是否重复刷新
-let refresh = true
-onShow(async () => {
+onMounted(async() => {
   if (!store.token) {
     uni.navigateTo({
       url:"/pages/login"
@@ -31,6 +32,7 @@ onShow(async () => {
   selectTab.value = "全部"
   refresh = false
 })
+
 
 // 选中项
 const selectTab = ref<string>("")
@@ -89,7 +91,7 @@ const selectOptionChange = async (e: string) => {
 
 
 
-// 触底刷新
+// 触底加载
 onReachBottom(async () => {
   if (refresh) {
     return 

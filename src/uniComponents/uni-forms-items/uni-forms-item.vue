@@ -4,8 +4,8 @@
 		<slot name="label">
 			<view class="uni-forms-item__label" :class="{'no-label':!label && !isRequired}"
 				:style="{width:localLabelWidth,justifyContent: localLabelAlign}">
-				<text v-if="isRequired" class="is-required">*</text>
-				<text>{{label}}</text>
+				<text style="margin-top: 9px;" v-if="isRequired" class="is-required">*</text>
+				<text style="margin-top: 9px;">{{label}}</text>
 			</view>
 		</slot>
 		<!-- #ifndef APP-NVUE -->
@@ -472,7 +472,7 @@
 		&__label {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
+			// align-items: center;
 			text-align: left;
 			font-size: 28rpx;
 			color: #595757;

@@ -109,18 +109,9 @@ const showMore = () => {
 }
 .showInfo {
   width:100%;
-  animation: expand 0.5s;
 }
 .hiddenInfo {
   overflow: hidden;
   height: 0;
-}
-@keyframes expand {
-  from {
-    height: 0;
-  }
-  to {
-    height: 200px;
-  }
 }
 </style>  

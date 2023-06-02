@@ -53,6 +53,7 @@ const changeIDCardEnd = (e) => {
         <uni-icons class="pickerIcons" type="calendar" color="#A9A9A9" size="22"></uni-icons>
       </view>
     </picker>
+    <view class="sperate"></view>
     <view class="idDateLength">
       <uni-data-checkbox @change="change" selectedColor="#d4151f" multiple v-model="idLength" :localdata="IDlength"></uni-data-checkbox>
     </view>
@@ -78,6 +79,11 @@ const changeIDCardEnd = (e) => {
 .IdDate {
   height: 78rpx;
 
+}
+.sperate {
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
 }
 .idDateLength {
   height: 78rpx;

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import {onMounted,ref,computed } from 'vue'
-import { useFormStore,useUserStore } from "@/store"
+import {onMounted,ref,computed,watch } from 'vue'
+import { useFormStore } from "@/store"
 import Steps from '@/components/steps/index.vue'
 import FormGrid from '@/components/FormGrid/index.vue'
 import guidence from '@/components/Guidence/index.vue'
 import constractField from '@/components/contractField/index.vue'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
-import { onShow, onHide } from "@dcloudio/uni-app";
+// import { onShow, onHide } from "@dcloudio/uni-app";
 import { postButtonApi,stepUploadApi } from '@/api/modules/formInfo'
 
-onShow(() => {
+// onShow(() => {
   // uni.connectSocket({
   //   url: 'wss://zhuyiyun.com/mqtt',
   //   success: (()=> {
@@ -23,10 +23,9 @@ onShow(() => {
   //   })
   // });
  
-});
+// });
 
 const formStore = useFormStore()
-const userStore = useUserStore()
 
 //校验规则
 const idFormRules = {
@@ -131,10 +130,31 @@ const currentStepFormData = ref<newClientStep[]>([])
 
 // 改变步骤
 const changeStep = async (index: number) => {
-  formStore.changeForm = {}
-  formStore.userSelectStep = index + 1
-  formStore.stepIndex  =  1
-  await getFormInfo()
+  if (Object.entries(formStore.changeForm).length !== 0) {
+    uni.showModal({
+    title: '提示',
+    content: '当前页面尚未保存？ 是否跳转',
+    success: async function (res) {
+        if (res.confirm) {
+          formStore.changeForm = {}
+          formStore.userSelectStep = index + 1
+          formStore.stepIndex  =  1
+          await getFormInfo()
+        } else if (res.cancel) {
+          uni.showToast({
+            title: '取消跳转',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      }
+    });
+  } else {
+    formStore.changeForm = {}
+    formStore.userSelectStep = index + 1
+    formStore.stepIndex  =  1
+    await getFormInfo()
+  }
 }
 
 // 每个步骤对应的表单
@@ -210,11 +230,12 @@ const saveForm = async () => {
   formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
   try {
     await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+    uni.showToast({ title: "保存成功" });
+    formStore.changeForm = {}
   } catch (error) {
     uni.showToast({ title: "保存失败", icon: "error" });
     return 
   }
-  uni.showToast({ title: "保存成功" });
 }
 
 const Form = ref(null)
@@ -234,6 +255,7 @@ const saveSubmitForm = () => {
         if (Object.entries(formStore.changeForm).length !== 0) { 
           formStore.changeForm['id'] = formStore.currentFormSteps?.data.initData.id
           await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+          formStore.changeForm = {}
         } 
         if (Math.floor(formStore.userSelectStep!) === 1) {
           await checkCrediGo()
@@ -365,6 +387,23 @@ const buttonIsShow = {
   }
 }
 
+//监听是否有数据修改
+watch(() => {
+  return formStore.changeForm 
+}, () => {
+  console.log(formStore.changeForm)
+  if (Object.entries(formStore.changeForm).length === 0) {
+    //@ts-ignore
+    wx.disableAlertBeforeUnload({
+    })
+  } else {
+    //@ts-ignore
+    wx.enableAlertBeforeUnload({
+        message: "当前页面有未保存的数据，是否返回",
+    })
+  }
+}, { deep: true })
+
 
 // 签约合同
 const signContract = (type:string) => {
@@ -414,7 +453,6 @@ const signContract = (type:string) => {
           >
           </FormGrid>
         </template>
-
       </view>
     </view>
 		</uni-forms>  
