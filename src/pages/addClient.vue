@@ -3,7 +3,7 @@ import {onMounted} from 'vue'
 import Steps from '@/components/steps/index.vue'
 import IDForm from '@/components/IDCardForm/index.vue'
 import {useFormStore,useClientStore} from '@/store'
-import { onLoad } from "@dcloudio/uni-app"
+import { onLoad,onUnload } from "@dcloudio/uni-app"
 
 
 const formStore = useFormStore()
@@ -42,6 +42,10 @@ onMounted(() => {
     TextField_87:null,
   }
 })  
+
+onUnload(() => {
+  
+})
 
 </script>
 

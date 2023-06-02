@@ -13,6 +13,7 @@ import JoinFormField  from '@/components/JoinFormField/index.vue'
 import PicField  from '@/components/ImgField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
 import ChildTableField from '@/components/ChildField/index.vue'
+import NumberField from '@/components/NumField/index.vue'
 
 const props = defineProps({
   data: {
@@ -53,11 +54,11 @@ const showMore = () => {
     </view>
   </view>
   <view class="showInfo"  v-for="item in componentList" :class="[isShow ? '' : 'hiddenInfo']" :key="item.id">
-    <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField' || item.tag === 'NumberField'">
+    <template v-if="item.tag === 'TextField' || item.tag === 'IdentityField'">
       <TextField :data="item"></TextField>
     </template>
-    <template v-else-if ="item.tag === 'PhoneField'">
-      <TextField :data="item"></TextField>
+    <template v-else-if ="item.tag === 'PhoneField'  || item.tag === 'NumberField'">
+      <NumberField :data="item"></NumberField>
     </template>
     <template v-else-if ="item.tag === 'DateField' &&  item.id === 'DateField_17'">
       <IDDateEnd :data="item"></IDDateEnd>

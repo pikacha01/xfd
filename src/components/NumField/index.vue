@@ -45,7 +45,6 @@ watch(() => {
 <template>
 <uni-forms-item v-if="data.id === 'PhoneField_9' || data.id === 'IdentityField_15'" :label="data.label" :required="data.required" :name="data.id">
   <uni-easyinput 
-   trim="all"
    placeholderStyle="font-size:28rpx;" 
    v-model="inputData"
    :inputBorder="false"  
@@ -62,7 +61,9 @@ watch(() => {
     ]"
   :name="data.id">
   <uni-easyinput 
+    trim="all"
    placeholderStyle="font-size:28rpx;" 
+   type="number"
    v-model="inputData"
    :inputBorder="false"  
    :placeholder="data.placeholder" 

@@ -201,8 +201,6 @@ const getButton = async (buttonId:string,viewId:string) => {
   await postButtonApi(buttonId,String(formStore.currentFormSteps!.data.initData.id),viewId)
 }
 
-// 
-
 // 保存表单
 const saveForm = async () => {
   if (Object.entries(formStore.changeForm).length === 0) {
@@ -211,7 +209,7 @@ const saveForm = async () => {
   }
   formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
   try {
-    const res = await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+    await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
   } catch (error) {
     uni.showToast({ title: "保存失败", icon: "error" });
     return 
@@ -341,30 +339,31 @@ const UtilityGridConnect = async () => {
 
 // 是否展示按钮
 const isShowButtons = computed(() => {
-  if (Math.floor(formStore.userSelectStep!) === 1) {
-    if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
-      return false
-    } else {
-      return true
-    }
-  } else if (Math.floor(formStore.userSelectStep!) === 2) {
-    if (formStore.goUserDetailInfo?.label === "踏勘") return true
-    return false
-  } else if (Math.floor(formStore.userSelectStep!) === 3) {
-    if (Math.floor(formStore.userCurrentStep!) === 2 || Math.floor(formStore.userCurrentStep!) === 3) {
-      return true
-    } else {
-      return false
-    }
-  } else if (Math.floor(formStore.userSelectStep!) === 4) {
-    if (formStore.goUserDetailInfo?.label === "并网") {
-      return true
-    } else {
-      return false
-    }
+  if (buttonIsShow[Math.floor(formStore.userSelectStep!)].value.includes(formStore.currentFormSteps?.data.initData[buttonIsShow[Math.floor(formStore.userSelectStep!)].name])) {
+    return true
   }
-  return true
+  return false
 })
+
+// 展示按钮对象
+const buttonIsShow = {
+  1: {
+    name: "GroupField_70",
+    value: ["1","3","4"]
+  },
+  2: {
+    name: "GroupField_47",
+    value: ["1","4"]
+  },
+  3: {
+    name: "GroupField_25",
+    value: ["1"]
+  },
+  4 : {
+    name: "GroupField_28",
+    value: ["1","4"]
+  }
+}
 
 
 // 签约合同
