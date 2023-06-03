@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { watch, ref,onMounted } from 'vue'
-import { onShow,onReachBottom,onHide } from "@dcloudio/uni-app"
+import { onShow,onReachBottom,onHide,onPullDownRefresh } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
 
@@ -89,7 +89,39 @@ const selectOptionChange = async (e: string) => {
   refresh = false
 }
 
-
+// 下拉刷新
+onPullDownRefresh(() => {
+  uni.startPullDownRefresh({
+    async success() {
+      if (refresh) {
+        uni.showToast({
+          title: "正在加载中",
+          icon: "error",
+          duration: 2000
+        })
+        return 
+      }
+      refresh = true
+      uni.showLoading({ title: '加载中' })
+      await formStore.getClientFormInfo()
+      refresh = false
+      uni.hideLoading()
+      uni.showToast({
+          title: "数据加载成功",
+          icon: "success",
+          duration: 2000
+        })
+    }, fail() {
+      uni.hideLoading()
+      uni.showToast({
+        title: "刷新失败",
+        icon: "error",
+        duration: 2000
+      })
+    }
+  })
+  uni.stopPullDownRefresh()
+})
 
 // 触底加载
 onReachBottom(async () => {

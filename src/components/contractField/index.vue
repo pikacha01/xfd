@@ -74,7 +74,6 @@ watch(()=>{
 
 const preview = (fileLink) => {
   if (!fileLink) return
-  console.log(fileLink)
   uni.showLoading({ title: '加载中' })
   uni.downloadFile({
     url: fileLink,
