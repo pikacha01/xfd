@@ -47,6 +47,8 @@ const preview = (fileLink) => {
   })
 }
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
 
 // 添加文件
 const addFile =async () => {
@@ -74,9 +76,11 @@ const addFile =async () => {
               formStore.changeForm[props.data.id] = []
             }
             formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
-            formStore.changeForm[props.data.id].push(fileObj)
+            // 检测表单子传父事件
+            emits("checkForm")
         });
       }
+      formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
       uni.hideLoading();
     }
   })
@@ -91,6 +95,8 @@ const deleteFile = (item) => {
   formStore.changeForm[props.data.id] = formStore.currentFormSteps!.data.initData[props.data.id].filter((data) => {
     return item.url !== data.url
   })
+  // 检测表单子传父事件
+  emits("checkForm")
 }
 
 </script>

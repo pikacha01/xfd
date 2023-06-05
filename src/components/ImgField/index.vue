@@ -18,6 +18,9 @@ const props = defineProps({
   },
 });
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
+
 const ImgList = ref<{
   name: string,
   extname: string,
@@ -80,6 +83,8 @@ watch(() => {
   // 改变赋值
   if(formStore.currentFormSteps?.data.initData[props.data.id] === undefined) return 
   formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
+  // 检测表单子传父事件
+  emits("checkForm")
 },{deep:true})
 
 </script>

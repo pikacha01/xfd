@@ -9,6 +9,9 @@ import { storeToRefs } from "pinia";
 const store = useCountStore();
 const formStore = useFormStore()
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
+
 // 取需要的 state
 const { companyId, formId } = storeToRefs(store);
 const props = defineProps({
@@ -22,6 +25,8 @@ const changeDate = (e) => {
   formStore.currentFormSteps!.data.initData[props.data.id] = e.detail.value
   // 改变赋值
   formStore.changeForm[props.data.id] = e.detail.value
+   // 检测表单子传父事件
+   emits("checkForm")
 }
 
 </script>

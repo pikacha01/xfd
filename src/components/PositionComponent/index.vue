@@ -44,6 +44,9 @@ function getMapImg(location:string): Promise<string> {
   });
 }
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
+
 // 去地图重新定位
 const goMap = () => {
   if(props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
@@ -60,6 +63,8 @@ const goMap = () => {
       tempPosition.staticPic = statiPic
       formStore.currentFormSteps!.data.initData.PositionField_67 = tempPosition
       formStore.changeForm["PositionField_67"] = tempPosition
+      // 检测表单子传父事件
+      emits("checkForm")
     }
   })
     
@@ -71,6 +76,8 @@ const deletePosition = () => {
   formStore.currentFormSteps!.data.initData.PositionField_67 = null
   // 改变赋值
   formStore.changeForm["PositionField_67"] = null
+  // 检测表单子传父事件
+  emits("checkForm")
 }
 
 </script>

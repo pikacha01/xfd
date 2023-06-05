@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 export  const useCountStore = defineStore('storeId', {
   // arrow function recommended for full type inference
+  unistorage: true, // 是否持久化
   state: () => ({
     // all these properties will have their type inferred automatically
     FormGrid: [] as Array<IfDataItem>,

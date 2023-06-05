@@ -42,7 +42,7 @@ const getTotal = async () =>{
 
 // 跳转页面
 const goToScan = () => {
-  if(props.data.readonly  || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
+  // if(props.data.readonly  || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   uni.navigateTo({
     url: `/pages/TableList?readonly=${props.data.readonly}`
   })

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { boolean } from 'mathjs';
 import {} from 'vue'
 
 const props = defineProps({

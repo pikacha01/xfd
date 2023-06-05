@@ -19,6 +19,9 @@ const props = defineProps({
 
 const  reginSelect = ref<string[]>()
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
+
 onMounted(async() => {
   const res = await getAddressDetailApi(formStore.currentFormSteps!.data.initData[props.data.id])
   //@ts-ignore
@@ -32,6 +35,8 @@ const changeRegin = (e) => {
   reginSelect.value = e.detail.value
   // 改变赋值
   formStore.changeForm[props.data.id] = e.detail.code
+  // 检测表单子传父事件
+  emits("checkForm")
 }
 </script>
 

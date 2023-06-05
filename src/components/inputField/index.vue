@@ -7,6 +7,10 @@ import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
 // 获取自定义的store
 const formStore = useFormStore()
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
+
+
 // 取需要的 state
 const props = defineProps({
   data: {
@@ -33,11 +37,13 @@ const debounce = (fn: Function) => {
 watch(() => {
   return inputData.value
 }, debounce(() => {
-      if(formStore.currentFormSteps?.data.initData[props.data.id] === inputData.value) return
-      // 改变对应的值
-      formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
-      // 改变赋值
-      formStore.changeForm[props.data.id] = inputData.value
+    if(formStore.currentFormSteps?.data.initData[props.data.id] === inputData.value) return
+    // 改变对应的值
+    formStore.currentFormSteps!.data.initData[props.data.id] = inputData.value
+    // 改变赋值
+    formStore.changeForm[props.data.id] = inputData.value
+    // 检测表单子传父事件
+    emits("checkForm")
   })
 )
 </script>

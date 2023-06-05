@@ -34,6 +34,8 @@ const formStore = useFormStore()
 // 选中的逆变器
 const inverterSelect = ref<number>()
 
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
 
 watch(() => {
   return formStore.currentFormSteps?.data.initData[props.data.id]
@@ -51,6 +53,8 @@ const changeSelect = (e) => {
     // 改变赋值
     formStore.changeForm[props.data.id] = []
     formStore.changeForm[props.data.id][0] = e
+    // 检测表单子传父事件
+    emits("checkForm")
   }
 }
 </script>

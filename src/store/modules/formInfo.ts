@@ -77,10 +77,13 @@ export const useFormStore = defineStore("form-Store", () => {
   // 业务表步骤数
   const stepIndex = ref<number>(1)
 
+  // 所有表单校验结果
+  const allFormCheck = ref({})
+
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
     userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm,changeForm,constractFieldForm,
-    stepIndex
+    stepIndex,allFormCheck
   }
 },{
   // @ts-ignore

@@ -27,52 +27,6 @@ import { postButtonApi,stepUploadApi } from '@/api/modules/formInfo'
 
 const formStore = useFormStore()
 
-//校验规则
-const idFormRules = {
-  // 手机号码 
-  PhoneField_9: {
-    rules: [{
-      format: 'string',
-      required: true,
-      errorMessage: '请输入手机号码',
-      validateTrigger: "blur"
-    }, {
-      validateFunction: function (rule, value, data, callback) {
-        return new Promise((resolve, reject) => {
-          if (!/^1[3456789]\d{9}$/.test(value)) {
-            reject(new Error('手机号码输入错误'))
-          }
-          //@ts-ignore
-          resolve()
-        })
-      }
-    }]
-  },
-  // 身份证号码验证
-  IdentityField_15: {
-    rules: [{
-      format: 'string',
-      validateTrigger: "blur"
-    }, {
-      validateFunction: function(rule, value, data, callback) {
-        return new Promise((resolve, reject) => {
-          if (!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
-            reject(new Error('身份证号码输入错误'))
-          }
-          //@ts-ignore
-          resolve()
-        })
-      }
-    }]
-  },
-  // 地区选择
-  RegionField_20: {
-    rules: [{
-      required: true,
-      errorMessage: '地区不能为空'
-    }]
-  }
-}
 
 
 // 处理inputForm成数组
@@ -90,6 +44,8 @@ const inputFormChangeArray = (node) => {
 const inputFormArray = ref<any>([])
 
 onMounted(async () => {
+  formStore.allFormCheck = {}
+
   formStore.stepIndex  =  1
   // 改变的值为归为空数组
   formStore.changeForm = {}
@@ -135,7 +91,9 @@ const changeStep = async (index: number) => {
     title: '提示',
     content: '当前页面尚未保存？ 是否跳转',
     success: async function (res) {
-        if (res.confirm) {
+      if (res.confirm) {
+        // 表单校验的
+          formStore.allFormCheck = {}
           formStore.changeForm = {}
           formStore.userSelectStep = index + 1
           formStore.stepIndex  =  1
@@ -238,14 +196,21 @@ const saveForm = async () => {
   }
 }
 
-const Form = ref(null)
 
 // 每一个步骤的文字
 const textList = ["保存信息并进入征信查询，若通过将自动进入踏勘环节！是否确定？","保存信息并提交审核！是否确定？","确定是否安装自检完成？","确定是否并网？"]
+
+// 检查
+const isCheck = ref(true)
 //保存并提交表单
 const saveSubmitForm = () => {
-   //@ts-ignore
-  Form.value.validate().then(async res => {
+  let isCheck = true
+  inputFormArray.value.forEach(item => {
+    if (formStore.allFormCheck[item.id] !== true) {
+      isCheck = false
+    }
+  })
+  if (isCheck) {
     uni.showModal({
     title: '提示',
     content: textList[Math.floor(formStore.userSelectStep!)-1],
@@ -282,9 +247,15 @@ const saveSubmitForm = () => {
           duration: 2000
         })
       }
-      }
+    }
     });
-  })
+  } else {
+    uni.showToast({
+      title: "表单未填写完毕",
+      icon: "error",
+      duration: 2000
+    });
+  }
 }
 
 // 检查征信并进入踏勘
@@ -346,8 +317,6 @@ const complete = async () => {
   })
 }
 
-
-
 // 并网
 const UtilityGridConnect = async () => {
   const { buttonId,viewId }  = buttonsList["并网完成"]
@@ -391,7 +360,6 @@ const buttonIsShow = {
 watch(() => {
   return formStore.changeForm 
 }, () => {
-  console.log(formStore.changeForm)
   if (Object.entries(formStore.changeForm).length === 0) {
     //@ts-ignore
     wx.disableAlertBeforeUnload({
@@ -443,7 +411,7 @@ const signContract = (type:string) => {
   </view>
   <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
-    <uni-forms ref="Form" :border="true" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx">
+    <!-- <uni-forms ref="Form" :border="true" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx"> -->
     <view class="content">
       <view v-for="(item,index) in inputFormArray"
         :key="item.id">
@@ -455,7 +423,7 @@ const signContract = (type:string) => {
         </template>
       </view>
     </view>
-		</uni-forms>  
+		<!-- </uni-forms>   -->
     <template v-if="Math.floor(formStore.userSelectStep!) === 2">
       <view class="content">
         <constractField />

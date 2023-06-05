@@ -2,6 +2,7 @@
 import { useFormStore } from "@/store";
 import { ref } from 'vue'
 import { onLoad } from "@dcloudio/uni-app";
+import { stepUploadApi } from '@/api/modules/formInfo'
 
 const readonly = ref<string>()
 
@@ -26,6 +27,10 @@ const selectionChange = (e) => {
   checkedList.value = e.detail.value
 }
 
+// 设备列表
+const deviceList = ref(formStore.currentFormSteps!.data.initData['ChildTableField_28'])
+
+
 // 删除
 const deleteCode = () => {
   if(checkedList.value.length === 0 ) return
@@ -42,18 +47,23 @@ const deleteCode = () => {
     confirmColor: "#C7000B",
     success: function (res) {
         if (res.confirm) {
-          checkedList.value.forEach((item) => {
+          checkedList.value.forEach(async (item) => {
             const index = formStore.currentFormSteps!.data.initData['ChildTableField_28'].findIndex((data)=> data === item )
-            formStore.currentFormSteps!.data.initData['ChildTableField_28'].splice(index,1)
-          })
-          } else if (res.cancel) {
-            uni.showToast({
-              title: '删除失败',
-              icon: 'none',
-              duration: 2000
+            formStore.currentFormSteps!.data.initData['ChildTableField_28'].splice(index, 1)
+            deviceList.value.splice(index, 1)
+            await stepUploadApi(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, {
+              ChildTableField_28: deviceList.value,
+              id : formStore.goUserDetailInfo!.id
             })
-          }
+          })
+        } else if (res.cancel) {
+          uni.showToast({
+            title: '删除失败',
+            icon: 'none',
+            duration: 2000
+          })
         }
+      }
     });
 }
 
@@ -67,7 +77,7 @@ const scanCode = () => {
     return
   }
   uni.scanCode({
-    success: function (res) {
+    success: async function (res) {
       if (formStore.currentFormSteps!.data.initData['ChildTableField_28'] === null) {
         formStore.currentFormSteps!.data.initData['ChildTableField_28'] = []
       }
@@ -79,6 +89,11 @@ const scanCode = () => {
         })
       } else {
         formStore.currentFormSteps!.data.initData['ChildTableField_28'].push(res.result)
+        deviceList.value.push(res.result)
+        await stepUploadApi(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, {
+          ChildTableField_28: deviceList.value,
+          id : formStore.goUserDetailInfo!.id
+        })
         uni.showToast({
           title: '扫码成功',
           icon:'success',
@@ -98,7 +113,7 @@ const scanCode = () => {
 
 <template>
 <view class="all">
-  <view class="content">
+  <view class="content" :class="{'Bottom': readonly !== 'true'}">
     <checkbox-group @change="selectionChange">
       <view class="table" v-for="item in formStore.currentFormSteps?.data.initData['ChildTableField_28']" :key="item">
         <checkbox :value="item"  color="#C7000B" style="transform:scale(0.7)" />
@@ -107,7 +122,7 @@ const scanCode = () => {
       </view>
     </checkbox-group>
   </view>
-  <view class="button">
+  <view class="button" v-if="readonly !== 'true'">
     <view class="buttons">
       <view class="delete" @click="deleteCode">
         删除
@@ -128,8 +143,10 @@ const scanCode = () => {
 }
 .content {
   margin: 0 32rpx;
-  padding-bottom: 190rpx;
   min-height: 100vh;
+}
+.Bottom {
+  padding-bottom: 190rpx;
 }
 .table {
   width: 100%;

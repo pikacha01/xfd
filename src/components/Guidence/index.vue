@@ -48,7 +48,7 @@ const showMore = () => {
 <template>
 <view class="body">
   <view class="title"  @click="showMore">
-    <view class="left">征信审核</view>
+    <view class="left">1.9 征信审核</view>
     <view class="right">
       <view class="credit" v-if="credit">已通过，请进入踏勘环节</view>
       <uni-icons type="top" size="22" v-if="isShow"></uni-icons>

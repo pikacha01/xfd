@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted,ref,watch } from 'vue'
+import { onMounted,ref,watch,computed } from 'vue'
 import { useFormStore } from '@/store'
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import uniDataSelect from '@/uniComponents/uni-data-select/uni-data-select.vue'
@@ -107,6 +107,12 @@ const isShow = ref<boolean>(true)
 const showMore = () => {
   isShow.value  = !isShow.value
 }
+
+// 是否完成
+const isComplete = computed(() => {
+  if(formStore.contractForm!.data.initData.GroupField_40 === "3" && formStore.contractForm!.data.initData.GroupField_22 === "3") return true
+  return false
+})
 </script>
 
 <template>
@@ -115,6 +121,9 @@ const showMore = () => {
     <view class="title" @click="showMore">
       <view class="left">3.1 合同签定</view>
       <view class="right">
+        <view class="complete" v-if="isComplete">
+          <uni-icons type="checkmarkempty" size="15" color="#ffffff"></uni-icons>
+        </view>
       <uni-icons type="top" size="22" v-if="isShow"></uni-icons>
       <uni-icons type="bottom" size="22" v-else></uni-icons>
     </view>
@@ -200,12 +209,18 @@ const showMore = () => {
   overflow: hidden;
   height: 0;
 }
-@keyframes expand {
-  from {
-    height: 0;
-  }
-  to {
-    height: 200px;
-  }
+.complete {
+  width: 38rpx;
+  height: 38rpx;
+  background-color: #c7000b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 26rpx;
+  border-radius:50%;
+}
+.right {
+  display: flex;
+  align-items: center;
 }
 </style>
