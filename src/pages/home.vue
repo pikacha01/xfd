@@ -296,16 +296,12 @@ const oldScrollTop = ref(0)
 let isComplete = false
 // 回到顶部
 const gotoTop = () => {
-  console.log(6666666666666666666)
-  // if(oldScrollTop.value <= 80) return
   if (!isTopShow) return
   if(isComplete) return
   isComplete = true
   scrollTop.value = oldScrollTop.value
   nextTick(() => {
     scrollTop.value = 0 
-    console.log("GotoTop")
-    console.log(isComplete)
     isComplete = false
   })
 }
@@ -321,7 +317,7 @@ const isTopShow = ref(false)
           <view class="name">{{ userStore.userInfo?.name }}</view>
           <view class="company">{{ userStore.companyInfo?.name }}</view>
         </view>
-        <view :class="{warningLeft: isWarning === true}">
+        <view :class="{warningLeft: isWarning === true}" class="warningFixed">
           <view class="warning">
             <image  class="warningPng" src="@/static/images/notice@2x.png"></image>
             <view class="notice">5</view>
@@ -365,6 +361,11 @@ const isTopShow = ref(false)
 </template>
 
 <style scoped lang="scss">
+.warningFixed{
+  position: fixed;
+  top: 13%;
+  right: 5%;
+}   
 .toTop {
   position: fixed;
   right: 5%;
@@ -382,8 +383,8 @@ const isTopShow = ref(false)
 }
 
 .warningLeft {
-  margin-top: 160rpx;
-  margin-left: 150rpx;
+ top: 7%;
+ left: 20%;
 }
 .header {
   display: flex;
@@ -416,12 +417,9 @@ const isTopShow = ref(false)
   }
   .warning {
     width: 32rpx;
-    height: 100%;
     display: flex;
     align-items: center;
-    margin-right: 40rpx;
     position: relative;
-    margin-top: 50rpx;
     .warningPng {
       width: 32rpx;
       height: 32rpx;
@@ -433,7 +431,7 @@ const isTopShow = ref(false)
       text-align: center;
       position: absolute;
       font-size: 20rpx;
-      top: 43%;
+      top: -30%;;
       right: -45%;
       background-color: #fff;
       border-radius: 50%;
