@@ -25,7 +25,7 @@ const loginOut = () => {
         if (res.confirm) {
           store.$patch(v => (v.token = ''))
           disConnection()
-          uni.navigateTo({
+          uni.redirectTo({
             url: '/pages/login'
           })
         } else if (res.cancel) {

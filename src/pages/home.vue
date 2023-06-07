@@ -1,9 +1,10 @@
 
 <script setup lang="ts">
-import { watch, ref,onMounted } from 'vue'
-import { onShow,onReachBottom,onHide,onPullDownRefresh } from "@dcloudio/uni-app"
+import { watch, ref,onMounted,getCurrentInstance,nextTick,defineExpose } from 'vue'
+import { onReachBottom,onPullDownRefresh } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
+import { connectmqtt } from '@/utils/webSocket'
 
 // onShow(() => {
 //   webSoketInit();
@@ -19,20 +20,29 @@ const store = useCountStore()
 const formStore = useFormStore()
 const clientStore = useClientStore()
 
+// 需要监听定位的dom
+// const instance = getCurrentInstance()
+// let header : any = null
+// let title: any = null
+
 // 控制重复是否重复刷新
 onMounted(async() => {
   if (!store.token) {
-    uni.navigateTo({
+    uni.redirectTo({
       url:"/pages/login"
     })
+  } else {
+    await connectmqtt()
   }
   await formStore.getClientFormInfo()
   await clientStore.getTabTotal()
   await userStore.getCompany()
   selectTab.value = "全部"
   refresh = false
+  // const query = uni.createSelectorQuery().in(instance);
+  // header = query.select("#header")
+  // title = query.select("#title")
 })
-
 
 // 选中项
 const selectTab = ref<string>("")
@@ -142,6 +152,26 @@ onReachBottom(async () => {
   await clientStore.getClientInfo()
   refresh = false
 })
+
+const handleScrollToLower = async () => {
+  if (refresh) {
+    return 
+  }
+  if (clientStore.end >= clientStore.total!) {
+    uni.showToast({
+      title: "暂无数据了",
+      icon: "error"
+    })
+    setTimeout(() => {
+      uni.hideToast();
+    }, 2000)
+    return 
+  }
+  refresh = true
+  await clientStore.getClientInfo()
+  refresh = false
+}
+
 let searchTimer: any = null;
 // 搜索姓名
 const searchName = (e) => {
@@ -221,54 +251,140 @@ const goUserDetail = (item:clienData,userCurrentStep) => {
     url:"/pages/formInfo"
   })
 }
-</script>
 
+// 修改滚动的样式
+const showName = ref(true)
+const headerPosition = ref("relative")
+const headerMargin = ref("0rpx")
+const TabsPosition = ref("static")
+const TabsMargin = ref("0rpx")
+const filterPosition = ref("static")
+const filterMargin = ref("0rpx")
+const title = ref("45%")
+const isWarning = ref(false)
+// 监听页面滑动
+const onScroll = (e) => {
+  oldScrollTop.value = e.detail.scrollTop
+  if (e.detail.scrollTop >= 80) {
+    headerPosition.value = "fixed"
+    headerMargin.value = "-200rpx"
+    TabsPosition.value =  "fixed"
+    filterPosition.value = "fixed"
+    TabsMargin.value = "200rpx"
+    filterMargin.value = "310rpx"
+    title.value = "3%"
+    showName.value = false
+    isWarning.value = true
+    isTopShow.value = true
+  } else {
+    headerPosition.value = "relative"
+    headerMargin.value = "0rpx"
+    TabsPosition.value =  "static"
+    filterPosition.value = "static"
+    TabsMargin.value = "0rpx"
+    filterMargin.value = "0rpx"
+    title.value = "45%"
+    showName.value = true
+    isWarning.value = false
+    isTopShow.value = false
+  }
+}
+
+// 滚动距离
+const scrollTop = ref(0)
+const oldScrollTop = ref(0)
+let isComplete = false
+// 回到顶部
+const gotoTop = () => {
+  console.log(6666666666666666666)
+  // if(oldScrollTop.value <= 80) return
+  if (!isTopShow) return
+  if(isComplete) return
+  isComplete = true
+  scrollTop.value = oldScrollTop.value
+  nextTick(() => {
+    scrollTop.value = 0 
+    console.log("GotoTop")
+    console.log(isComplete)
+    isComplete = false
+  })
+}
+// 回到顶部按钮是否展示
+const isTopShow = ref(false)
+</script>
 <template>
   <view>
-    <view class="header">
-      <view class="title">兴伏贷</view>
-      <view class="userinfo">
-        <view class="name">{{ userStore.userInfo?.name }}</view>
-        <view class="company">{{ userStore.companyInfo?.name }}</view>
-      </view>
-      <view class="warning">
-        <image  class="warningPng" src="@/static/images/notice@2x.png"></image>
-        <view class="notice">5</view>
-      </view>
-    </view>
-    <view class="Tabs">
-      <view class="tab" v-for="item in clientStore.TabList" :key="item.text" @click="changeTab(item.text)">
-        <view class="num" :class="{select:selectTab === item.text }">{{ item.value }}</view>
-        <view class="text" :class="{select:selectTab === item.text }">{{ item.text }}</view>
-      </view>
-    </view>
-    <view class="filter">
-      <view class="search">
-        <uni-search @input="searchName" radius="100" bgColor="#fff" placeholder="搜索" cancelButton="none"></uni-search>
-      </view>
-      <view class="selectOption">
-        <uni-data-select :localdata="selectOptions" v-model="clientStore.selectOption" @change="selectOptionChange" :clear="false"></uni-data-select>
-      </view>
-    </view>
-    <view class="content">
-      <view class="userInfo" @click="goUserDetail(item,clientStore.steps[item.label])" v-for="item in clientStore.userList" :key="item.id">
-        <view class="left">
-          <view class="name">{{ item.TextField_1 }}<text class="companyName">兴伏贷</text></view>
-          <view class="holder">{{ item.owner }}</view>
-        </view> 
-        <view class="right">
-          <view class="status" :class="{isDraft: item.GroupField_69 === '0' }">
-            {{ clientStore.steps[item.label] }}
-            {{ item.label }}
+    <scroll-view class="scroll-view" :scroll-top="scrollTop" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
+      <view class="header" id="header" :style="{'position': headerPosition,'margin-top': headerMargin}">
+          <view class="title" id="title" :style="{'left': title}">兴伏贷</view>  
+        <view class="userinfo" v-if="showName">
+          <view class="name">{{ userStore.userInfo?.name }}</view>
+          <view class="company">{{ userStore.companyInfo?.name }}</view>
+        </view>
+        <view :class="{warningLeft: isWarning === true}">
+          <view class="warning">
+            <image  class="warningPng" src="@/static/images/notice@2x.png"></image>
+            <view class="notice">5</view>
           </view>
-          <view class="time">{{ item.DateField_4 }}</view>
         </view>
       </view>
-    </view>
+      <view class="Tabs" :style="{'position': TabsPosition,'margin-top': TabsMargin}">
+        <view class="tab" v-for="item in clientStore.TabList" :key="item.text" @click.stop="changeTab(item.text)">
+          <view class="num" :class="{select:selectTab === item.text }">{{ item.value }}</view>
+          <view class="text" :class="{select:selectTab === item.text }">{{ item.text }}</view>
+        </view>
+      </view>
+      <view class="filter" :style="{'position': filterPosition,'margin-top': filterMargin}">
+        <view class="search">
+          <uni-search @input="searchName" radius="100" bgColor="#fff" placeholder="搜索" cancelButton="none"></uni-search>
+        </view>
+        <view class="selectOption">
+          <uni-data-select :localdata="selectOptions" v-model="clientStore.selectOption" @change="selectOptionChange" :clear="false"></uni-data-select>
+        </view>
+      </view>
+      <view class="content">
+        <view class="userInfo" @click.stop="goUserDetail(item,clientStore.steps[item.label])" v-for="item in clientStore.userList" :key="item.id">
+          <view class="left">
+            <view class="name">{{ item.TextField_1 }}<text class="companyName">兴伏贷</text></view>
+            <view class="holder">{{ item.owner }}</view>
+          </view> 
+          <view class="right">
+            <view class="status" :class="{isDraft: item.GroupField_69 === '0' }">
+              {{ clientStore.steps[item.label] }}
+              {{ item.label }}
+            </view>
+            <view class="time">{{ item.DateField_4 }}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="toTop"  v-if="isTopShow" @click="gotoTop" @touchstart.prevet>
+        <uni-icons type="top" size="30" ></uni-icons>
+      </view>
   </view>
 </template>
 
 <style scoped lang="scss">
+.toTop {
+  position: fixed;
+  right: 5%;
+  bottom: 20%;
+  width: 68rpx;
+  height: 68rpx;
+  background-color: #f6f7f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.scroll-view {
+  height: calc(100vh - 150rpx);
+  // margin-bottom: calc(env(safe-area-inset-bottom) + 40px);
+}
+
+.warningLeft {
+  margin-top: 160rpx;
+  margin-left: 150rpx;
+}
 .header {
   display: flex;
   background: url("@/static/images/topBj@2x.png") no-repeat center center;
@@ -278,12 +394,13 @@ const goUserDetail = (item:clienData,userCurrentStep) => {
   justify-content: space-between;
   position: relative;
   .title {
-    position: absolute;
+    position: fixed;
     color: #fff;
     font-size: 35rpx;
-    top: 28%;
+    top: 6.5%;
     left: 45%;
     font-weight: bold;
+    animation: slide-in 0.5s ease;
   }
   .userinfo {
     margin-top: 250rpx;
@@ -350,6 +467,8 @@ const goUserDetail = (item:clienData,userCurrentStep) => {
   justify-content: space-between;
   height: 50px;
   padding: 0 16rpx;
+  box-sizing: border-box;
+  width: 100%;
   .search {
     width: 414rpx;
   }
@@ -365,7 +484,7 @@ const goUserDetail = (item:clienData,userCurrentStep) => {
   flex-direction: column;
   align-items: center;
   min-height: 60vh;
-  margin-bottom: calc(env(safe-area-inset-bottom) + 40px);
+  
   .userInfo {
     margin-top: 16rpx;
     width: 100%;

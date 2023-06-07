@@ -134,12 +134,12 @@ const upLoadCard = async (direction:string) => {
   if (formStore.IDCardInfo.PicField_43.length !== 0 && formStore.IDCardInfo.PicField_44.length !== 0) {
     formStore.IDCardInfo.TextField_87 = formStore.newFormSteps?.data.initData.TextField_87 as string
     await formStore.stepUpload(formStore.IDCardInfo)
-    if (formStore.newFormSteps?.stepId === "_end_id") {
-      uni.showToast({
-        title: "用户已存在",
-        icon: "error"
-      })
-    }
+    // if (formStore.newFormSteps?.stepId === "_end_id") {
+    //   uni.showToast({
+    //     title: "用户已存在",
+    //     icon: "error"
+    //   })
+    // }
   }
   for (let index in res[0].words_result) {
     if (index.includes("日期") || index === "出生") {

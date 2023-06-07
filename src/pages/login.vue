@@ -70,6 +70,19 @@
     </uni-forms>
     <view class="forgetPWD" @click="gotoForgetPWD">忘记密码？</view>
   </div>
+  <view class="wxlogin">
+    <view class="elseLogin">
+      <view class="sperate"></view>
+      <view class="content">其他方式登录</view>
+      <view class="sperate"></view>
+    </view>
+    <view class="wx" @click="getPhoneNumber">
+      <view>
+        <image mode="aspectFill" class="wxImg" src="@/static/images/wxlogo.jpg"></image>
+      </view>
+      <view class="wxText">微信登录</view>
+    </view>
+  </view>
   <view class="attention" >点击登录表示同意<text class="agreement">《用户协议》</text>和<text class="agreement">《隐私协议》</text></view>
 </template>
 <script setup lang="ts">
@@ -140,6 +153,22 @@ const submit = () => {
     });
   });
 };
+
+// 获取手机号码
+const getPhoneNumber = () => {
+  uni.showToast({
+    title: "功能开发中",
+    icon: "error",
+    duration: 2000
+  });
+  // uni.login({
+  //   success: (res) => {
+  //     if (res.code) {
+  //       console.log(res.code)
+  //     }
+  //   }
+  // })
+}
 </script>
 <style scoped lang="scss">
 .uni-forms {
@@ -164,7 +193,7 @@ const submit = () => {
 }
 .attention{
   width: 100%;
-  margin-top: 555rpx;
+  margin-top: 90rpx;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -180,5 +209,45 @@ const submit = () => {
   justify-content: center;
   align-items: center;
   margin-top: 85rpx;
+}
+.wxlogin{
+  margin: 250rpx 55rpx 0;
+  .elseLogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 34rpx;
+    .sperate {
+      flex: 1;
+      height: 2rpx;
+      border: 2rpx solid #E9E9E9;
+      background-color: #E9E9E9;
+    }
+    .content {
+      font-size: 24rpx;
+      line-height: 34rpx;
+      padding: 0 32rpx;
+      color: #A9A9A9;
+    }
+  }
+  .wx { 
+    margin-top: 30rpx;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .wxImg { 
+      width: 76rpx;
+      height: 76rpx;
+    }
+    .wxText { 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #A9A9A9;
+      font-size: 24rpx;
+    }
+  }
 }
 </style>

@@ -13,7 +13,7 @@ onLoad(() => {
   uni.setNavigationBarTitle({
     title: "新增农户"
   })
-  formStore.getNewClient()
+  // formStore.getNewClient()
 
   watch(() => {
     return clientStore.IDCardForm

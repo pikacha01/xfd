@@ -26,7 +26,7 @@
 		{
 			"path": "pages/home",
       "style": {
-        "onReachBottomDistance": 300,
+        // "onReachBottomDistance": 300,
         "enablePullDownRefresh": true
       }
 		},

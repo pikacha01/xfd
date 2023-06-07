@@ -91,8 +91,10 @@ const model: Model = reactive({
 
 const formRef = ref(null);
 
-const selected = index => {
+const selected = async index => {
   if (index === 1) {
+    await formStore.getNewClient()
+    if(formStore.newFormSteps?.stepId === "_end_id") return
     uni.navigateTo({
       url: "/pages/addClient"
     })

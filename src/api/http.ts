@@ -100,8 +100,16 @@ instance.interceptors.request.use((config) => {
  * 响应拦截
  */
 instance.interceptors.response.use((v) => {
+  // 获取自定义的store
+  const store = useCountStore();
   // @ts-ignore
   if (v.statusCode === 401) {
+    store.$patch(v => (v.token = ''));
+    uni.showToast({
+      title: '身份已过期！',
+      icon: 'error',
+      duration: 2000
+    })
     // 取消其他请求
     requests.forEach(source => {
       source.cancel('请求被取消');
@@ -121,7 +129,7 @@ instance.interceptors.response.use((v) => {
     // alert('即将跳转登录页。。。', '登录过期')
     // setTimeout(redirectHome, 1500)
     if(routes[routes.length - 1].route === "pages/login") return v.data
-    uni.navigateTo({
+    uni.redirectTo({
       url:"/pages/login"
     })
     return v.data
