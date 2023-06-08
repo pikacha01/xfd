@@ -81,7 +81,8 @@ watch(() => {
     })
   }
   // 改变赋值
-  if(formStore.currentFormSteps?.data.initData[props.data.id] === undefined) return 
+  if (formStore.currentFormSteps?.data.initData[props.data.id] === undefined) return 
+  if(props.data.id === "PicField_44" || props.data.id === "PicField_43") return
   formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
   // 检测表单子传父事件
   emits("checkForm")

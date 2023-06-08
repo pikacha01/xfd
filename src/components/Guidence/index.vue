@@ -109,7 +109,6 @@ const showMore = () => {
   height: 0;
 }
 .credit {
-  width: 260rpx;
   background: #C7000B;
   border-radius: 20rpx;
   color:#FFFFFF;

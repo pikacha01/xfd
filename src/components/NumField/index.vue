@@ -45,6 +45,14 @@ watch(() => {
     emits("checkForm")
   })
 )
+if (props.data.tag === "PhoneField") {
+  watch(() => {
+    return formStore.currentFormSteps?.data.initData
+  }, () => {
+    inputData.value = formStore.currentFormSteps?.data.initData[props.data.id]
+  })
+}
+
 </script>
 
 <template>
