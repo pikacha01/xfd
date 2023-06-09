@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref,onMounted,nextTick,watch } from 'vue'
-import {useClientStore,useFormStore} from '@/store'
+import {useClientStore,useFormStore,useUserStore } from '@/store'
 import { OcrIdCard } from '@/utils/baiduAi'
 import uniEasyinput from "@/uniComponents/uni-easyinput/uni-easyinput.vue"
 import QQMapWX from '../../utils/qqmap-wx-jssdk'
@@ -10,6 +10,7 @@ import { previewImg } from '@/utils/imgPreview'
 
 const clientStore = useClientStore()
 const formStore = useFormStore()
+const userStore = useUserStore()
 
 onMounted(() =>{
   nextTick(()=>{
@@ -198,6 +199,7 @@ const changeRegin = (e) => {
 const IDform = ref(null)
 // 表单提交
 const submitForm = async () => {
+  console.log(clientStore.IDCardForm.MemberField_48)
     //@ts-ignore
   IDform.value.validate().then(async res => {
     if (!formStore.IDCardInfo.PicField_43[0] || !formStore.IDCardInfo.PicField_44[0]) {
@@ -208,6 +210,7 @@ const submitForm = async () => {
       })
       return
     }
+    clientStore.IDCardForm.MemberField_48 = String(userStore.userInfo!.id)
     const data = await formStore.validateForm(clientStore.IDCardForm)
     //@ts-ignore
     if (data.success) {
@@ -383,7 +386,7 @@ watch(() => {
         <uni-easyinput v-model="clientStore.IDCardForm.TextField_21" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入名称" />
       </uni-forms-item>
       <uni-forms-item label="证件号码" name="IdentityField_15">
-        <uni-easyinput v-model="clientStore.IDCardForm.IdentityField_15" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入名称" />
+        <uni-easyinput type="digit" v-model="clientStore.IDCardForm.IdentityField_15" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入名称" />
       </uni-forms-item>
       <uni-forms-item label="证件有效期起">
         <picker class="picker" mode="date" :value="clientStore.IDCardForm.DateField_16" @change="changeIDCardStart">
@@ -408,7 +411,7 @@ watch(() => {
         </view>
       </uni-forms-item>
       <uni-forms-item label="手机号码" required  name="PhoneField_9">
-        <uni-easyinput v-model="clientStore.IDCardForm.PhoneField_9" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入手机号码" />
+        <uni-easyinput type="digit" v-model="clientStore.IDCardForm.PhoneField_9" placeholderStyle="font-size:28rpx;" :inputBorder="false"  placeholder="请输入手机号码" />
       </uni-forms-item>
       <view class="title">
         <view class="left">1.2 电站地址</view>

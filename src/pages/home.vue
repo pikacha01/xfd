@@ -1,14 +1,13 @@
-
 <script setup lang="ts">
-import { watch, ref,onMounted,getCurrentInstance,nextTick,defineExpose } from 'vue'
-import { onReachBottom,onPullDownRefresh } from "@dcloudio/uni-app"
+import { watch, ref,onMounted,nextTick } from 'vue'
+import { onReachBottom,onShow } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
 import { connectmqtt } from '@/utils/webSocket'
 
-// onShow(() => {
-//   webSoketInit();
-// });
+onShow(async () => {
+  await clientStore.getClientInfo()
+});
 // onHide(() => {
 //   closeSocket()
 // });
@@ -100,38 +99,29 @@ const selectOptionChange = async (e: string) => {
 }
 
 // 下拉刷新
-onPullDownRefresh(() => {
-  uni.startPullDownRefresh({
-    async success() {
-      if (refresh) {
-        uni.showToast({
-          title: "正在加载中",
-          icon: "error",
-          duration: 2000
-        })
-        return 
-      }
-      refresh = true
-      uni.showLoading({ title: '加载中' })
-      await formStore.getClientFormInfo()
-      refresh = false
-      uni.hideLoading()
-      uni.showToast({
-          title: "数据加载成功",
-          icon: "success",
-          duration: 2000
-        })
-    }, fail() {
-      uni.hideLoading()
-      uni.showToast({
-        title: "刷新失败",
-        icon: "error",
-        duration: 2000
-      })
-    }
+const triggered = ref(false)
+
+const onPullDownRefresh = async () => {
+  if (refresh) {
+    uni.showToast({
+      title: "正在加载中",
+      icon: "error",
+      duration: 2000
+    })
+    return 
+  }
+  refresh = true
+  uni.showLoading({ title: '加载中' })
+  await formStore.getClientFormInfo()
+  refresh = false
+  uni.hideLoading()
+  triggered.value = false
+  uni.showToast({
+    title: "数据加载成功",
+    icon: "success",
+    duration: 2000
   })
-  uni.stopPullDownRefresh()
-})
+}
 
 // 触底加载
 onReachBottom(async () => {
@@ -310,7 +300,7 @@ const isTopShow = ref(false)
 </script>
 <template>
   <view>
-    <scroll-view class="scroll-view" :scroll-top="scrollTop" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
+    <scroll-view class="scroll-view" @refresherrefresh="onPullDownRefresh" :refresher-triggered="triggered" :scroll-top="scrollTop" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
       <view class="header" id="header" :style="{'position': headerPosition,'margin-top': headerMargin}">
           <view class="title" id="title" :style="{'left': title}">兴伏贷</view>  
         <view class="userinfo" v-if="showName">

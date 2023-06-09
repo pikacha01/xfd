@@ -16,18 +16,37 @@ const props = defineProps({
 const selectList = ref<{ value: number, text: string }[]>()
 let start = 0
 let end = 60
+let selectArray = []
 
-onMounted(async () => {
-  if(formStore.currentFormSteps?.data.initData[props.data.id]) inverterSelect.value = formStore.currentFormSteps?.data.initData[props.data.id][0]
+const getSelectList = async () => { 
   const res  = await getInverterApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.currentFormSteps?.data.initData,start,end)
   //@ts-ignore
-  selectList.value = res.datas.map(item => {
-    return {
-      value: item.id,
-      text: item.TextField_1
-    }
-  })
+  selectArray = [...selectArray, ...res.datas]
+  //@ts-ignore
+  if (selectArray.length < res.total) {
+    start = end + 60
+    end = end + 60
+    getSelectList()
+  } else {
+    selectList.value = selectArray.map(item => {
+      return {
+        //@ts-ignore
+        value: item.id,
+        //@ts-ignore
+        text: item.TextField_1
+      }
+    })
+  }
+}
+
+onMounted(async () => {
+  selectArray = []
+  start = 0
+  end = 60
+  if(formStore.currentFormSteps?.data.initData[props.data.id]) inverterSelect.value = formStore.currentFormSteps?.data.initData[props.data.id][0]
+  await getSelectList()
 })
+
 
 // 获取自定义的store
 const formStore = useFormStore()

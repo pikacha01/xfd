@@ -77,6 +77,7 @@ const getFormInfo = async () => {
     inputFormArray.value = []
   } else {
     inputFormArray.value = formStore.currentFormSteps!.data.inputForm.children
+    inputFormArray.value = inputFormArray.value.filter(item => item.id !== "FormGrid_47" && item.label !== "所属业务员")
   }
   uni.hideLoading();
 }
@@ -178,6 +179,8 @@ const buttonsList = {
 const getButton = async (buttonId:string,viewId:string) => {
   await postButtonApi(buttonId,String(formStore.currentFormSteps!.data.initData.id),viewId)
 }
+// 是否在保存表单
+let isSave = false
 
 // 保存表单
 const saveForm = async () => {
@@ -185,13 +188,19 @@ const saveForm = async () => {
     uni.showToast({ title: "暂无修改", icon: "none" });
     return
   }
+  if(isSave) return
+  isSave = true
+  uni.showLoading({ title: '保存中' })
   formStore.changeForm['id'] = formStore.goUserDetailInfo!.id
   try {
-    await stepUploadApi(formStore.currentFormSteps!.processId,formStore.currentFormSteps!.stepId,formStore.changeForm)
+    await stepUploadApi(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, formStore.changeForm)
+    uni.hideLoading()
     uni.showToast({ title: "保存成功" });
+    isSave = false
     formStore.changeForm = {}
   } catch (error) {
     uni.showToast({ title: "保存失败", icon: "error" });
+    isSave = false
     return 
   }
 }
@@ -210,7 +219,9 @@ const saveSubmitForm = () => {
       isCheck = false
     }
   })
+  if (isSave) return
   if (isCheck) {
+    isSave = true
     uni.showModal({
     title: '提示',
     content: textList[Math.floor(formStore.userSelectStep!)-1],
@@ -233,6 +244,7 @@ const saveSubmitForm = () => {
               icon: 'error',
               duration: 2000
             })
+            isSave = false
             return
           } else {
             await complete()
@@ -240,12 +252,14 @@ const saveSubmitForm = () => {
         } else if (Math.floor(formStore.userSelectStep!) === 4) {
           await UtilityGridConnect()
         }
+        isSave = false
       } else if (res.cancel) {
         uni.showToast({
           title: '取消退出',
           icon: 'none',
           duration: 2000
         })
+        isSave = false
       }
     }
     });

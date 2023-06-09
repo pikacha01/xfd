@@ -76,7 +76,7 @@ if (props.data.tag === "PhoneField") {
   <uni-easyinput 
     trim="all"
    placeholderStyle="font-size:28rpx;" 
-   type="number"
+   type="digit"
    v-model="inputData"
    :inputBorder="false"  
    :placeholder="data.placeholder" 
