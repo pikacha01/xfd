@@ -1,71 +1,67 @@
 <template>
   <view class="uni-form-item">
     <uni-forms-item
-      :name="props.item.id"
+      :label="data.label"
+      :name="data.id"
       :rules="[
         {
-          required: props.item.required,
-          errorMessage: `${props.item.label}不能为空`,
-        },
+        required: data.required,
+        errorMessage: `${data.label}不能为空`,
+      },
       ]"
     >
-      <template #label>
-        <custom-label :item="props.item"></custom-label>
-      </template>
-      <checkbox-group @change="onChange" :disabled="props.item.readonly">
-        <label v-for="list in props.item.items" :key="list.label" class="mr20">
-          <checkbox
-            :value="list.value"
-            :checked="
-              list.checked || props.value[props.item.id]
-                ? props.value[props.item.id].includes(list.value)
-                : false
-            "
-            color="#2977ff"
-          />
-          <text :style="{ color: props.item.color ? list.color : '' }">
-            {{ list.label }}
-          </text>
-        </label>
-      </checkbox-group>
+      <uni-data-checkbox multiple v-model="selectData" :localdata="localData"></uni-data-checkbox>
     </uni-forms-item>
   </view>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import {  PropType,onMounted,ref,watch } from "vue";
+import { FormCompnentData } from '@/constants/form'
+import { useFormStore } from "@/store";
 
+// 取需要的 state
 const props = defineProps({
-  item: {
-    type: Object,
-    required: true,
-  },
-  value: {
-    type: Object,
-    required: true,
+  data: {
+    type:  Object as PropType<FormCompnentData>,
+    required: true
   },
 });
 
-const onChange = e => {
-  props.value[props.item.id] = e.detail.value;
-};
+// 获取自定义的store
+const formStore = useFormStore()
+// 数据
+const localData = ref<{
+  text: string,
+  value: string,
+  disable: boolean
+}[]>([])
+
+// 选择的数据
+const selectData = ref<string[]>([])
+
+// 检测表单子传父事件
+const emits = defineEmits(["checkForm"])
 
 onMounted(() => {
-  props.item.items.map(({ value, checked }) => {
-    if (checked) {
-      props.value[props.item.id] = value;
+  localData.value = props.data.items!.map(item => {
+    return {
+      text: item.label,
+      value: item.value,
+      disable: props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)
     }
-  });
+  })
+  selectData.value = formStore.currentFormSteps?.data.initData[props.data.id]
+  watch(() => {
+    return selectData.value
+  }, () => { 
+    // 改变赋值
+    formStore.changeForm[props.data.id] = selectData.value
+    // 检测表单子传父事件
+    emits("checkForm")
+  },{deep: true})
 });
 </script>
 
 <style lang="scss">
-.mr20 {
-  text {
-    font-size: 22rpx;
-  }
-}
-uni-checkbox {
-  vertical-align: 4px;
-}
 </style>

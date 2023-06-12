@@ -14,6 +14,7 @@ import PicField  from '@/components/ImgField/index.vue'
 import FileField from '@/components/FileInput/index.vue'
 import ChildTableField from '@/components/ChildField/index.vue'
 import NumberField from '@/components/NumField/index.vue'
+import SelectField from '@/components/SelectField/index.vue'
 import { useFormStore } from "@/store"
 
 const formStore = useFormStore()
@@ -233,6 +234,9 @@ const checkForm = () => {
         </template>
         <template v-else-if ="item.tag === 'ChildTableField'">
           <ChildTableField :data="item"></ChildTableField>
+        </template>
+        <template v-else-if ="item.tag === 'SelectField'">
+          <SelectField :data="item" @check-form="checkForm"></SelectField>
         </template>
       </view>
 		</uni-forms>  
