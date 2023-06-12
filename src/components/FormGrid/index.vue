@@ -71,6 +71,24 @@ const idFormRules = {
       }
     }]
   },
+  PhoneField_13: {
+    rules: [{
+      format: 'string',
+      required: true,
+      errorMessage: '请输入手机号码',
+      validateTrigger: "blur"
+    }, {
+      validateFunction: function (rule, value, data, callback) {
+        return new Promise((resolve, reject) => {
+          if (!/^1[3456789]\d{9}$/.test(value)) {
+            reject(new Error('手机号码输入错误'))
+          }
+          //@ts-ignore
+          resolve()
+        })
+      }
+    }]
+  },
   // 身份证号码验证
   IdentityField_15: {
     rules: [{

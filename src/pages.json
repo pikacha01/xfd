@@ -36,6 +36,14 @@
       "title": "新增农户"
 		},
     {
+			"path": "pages/privacy",
+      "title": "隐私协议"
+		},
+    {
+			"path": "pages/userAgreement",
+      "title": "用户协议"
+		},
+    {
 			"path": "pages/formInfo",
       "title": "客户档案"
 		},

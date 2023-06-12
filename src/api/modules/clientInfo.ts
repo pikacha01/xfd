@@ -96,7 +96,7 @@ export function getPermissionListApi(): AxiosPromise<tabsList[]> {
 }
 
 // 获取客户拥有者
-export function getClientOwnerApi(id:string): AxiosPromise<clientOwner>{
+export function getClientOwnerApi(id:string | number): AxiosPromise<clientOwner>{
   return http.get('/robin/api/users/' + id)
 }
 

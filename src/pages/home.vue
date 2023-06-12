@@ -6,7 +6,13 @@ import { clienData } from '@/constants/client'
 import { connectmqtt } from '@/utils/webSocket'
 
 onShow(async () => {
+  if (refresh) {
+    return 
+  }
+  refresh = true
+  clientStore.userList = []
   await clientStore.getClientInfo()
+  refresh = false
 });
 // onHide(() => {
 //   closeSocket()
@@ -124,24 +130,24 @@ const onPullDownRefresh = async () => {
 }
 
 // 触底加载
-onReachBottom(async () => {
-  if (refresh) {
-    return 
-  }
-  if (clientStore.end >= clientStore.total!) {
-    uni.showToast({
-      title: "暂无数据了",
-      icon: "error"
-    })
-    setTimeout(() => {
-      uni.hideToast();
-    }, 2000)
-    return 
-  }
-  refresh = true
-  await clientStore.getClientInfo()
-  refresh = false
-})
+// onReachBottom(async () => {
+//   if (refresh) {
+//     return 
+//   }
+//   if (clientStore.end >= clientStore.total!) {
+//     uni.showToast({
+//       title: "暂无数据了",
+//       icon: "error"
+//     })
+//     setTimeout(() => {
+//       uni.hideToast();
+//     }, 2000)
+//     return 
+//   }
+//   refresh = true
+//   await clientStore.getClientInfo()
+//   refresh = false
+// })
 
 const handleScrollToLower = async () => {
   if (refresh) {
@@ -229,7 +235,10 @@ watch(() => {
     }
   })
   clientStore.selectOption = ""
+  refresh = true
+  clientStore.userList = []
   await clientStore.getClientInfo()
+  refresh = false
 })
 
 // 详情页跳转
@@ -299,7 +308,7 @@ const gotoTop = () => {
 const isTopShow = ref(false)
 </script>
 <template>
-  <view>
+  <view class="bodyBGC">
     <scroll-view class="scroll-view" @refresherrefresh="onPullDownRefresh" :refresher-triggered="triggered" :scroll-top="scrollTop" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
       <view class="header" id="header" :style="{'position': headerPosition,'margin-top': headerMargin}">
           <view class="title" id="title" :style="{'left': title}">兴伏贷</view>  
@@ -351,6 +360,10 @@ const isTopShow = ref(false)
 </template>
 
 <style scoped lang="scss">
+
+.bodyBGC {
+  background-color: #F6F7F9;
+}
 .warningFixed{
   position: fixed;
   top: 13%;
@@ -471,8 +484,6 @@ const isTopShow = ref(false)
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 60vh;
-  
   .userInfo {
     margin-top: 16rpx;
     width: 100%;

@@ -56,7 +56,7 @@ if (props.data.tag === "PhoneField") {
 </script>
 
 <template>
-<uni-forms-item v-if="data.id === 'PhoneField_9' || data.id === 'IdentityField_15'" :label="data.label" :required="data.required" :name="data.id">
+<uni-forms-item v-if="data.id === 'PhoneField_9' || data.id === 'IdentityField_15' || data.id === 'PhoneField_13' " :label="data.label" :required="data.required" :name="data.id">
   <uni-easyinput 
    placeholderStyle="font-size:28rpx;" 
    v-model="inputData"

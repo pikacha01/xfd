@@ -83,7 +83,7 @@
       <view class="wxText">微信登录</view>
     </view>
   </view>
-  <view class="attention" >点击登录表示同意<text class="agreement">《用户协议》</text>和<text class="agreement">《隐私协议》</text></view>
+  <view class="attention" >点击登录表示同意<text class="agreement" @click="gotoUser">《用户协议》</text>和<text class="agreement" @click="gotoAgreement">《隐私协议》</text></view>
 </template>
 <script setup lang="ts">
 import { userApi } from "@/api";
@@ -108,7 +108,6 @@ const formRef = ref(null);
 const store = useCountStore();
 
 // 保存菜单选项
-const clientStore = useClientStore()
 onReady(() => {
   uni.setNavigationBarTitle({
     title: "登录",
@@ -153,6 +152,20 @@ const submit = () => {
     });
   });
 };
+
+// 用户协议
+const gotoUser = () => {
+  uni.navigateTo({
+    url: '/pages/userAgreement'
+  })
+}
+
+// 用户隐私
+const gotoAgreement = () => {
+  uni.navigateTo({
+    url: '/pages/privacy'
+  })
+}
 
 // 获取手机号码
 const getPhoneNumber = () => {

@@ -95,8 +95,8 @@ export const useClientStore = defineStore("client-Store", () => {
     for (const item of res.datas) {
       item.DateField_4 = formatDateTime(item.DateField_4);
       // 客户拥有者
-      if (item.MemberField_48 !== undefined) {
-        const data = await getClientOwnerApi(item.MemberField_48[0]);
+      if (item.MemberField_5 !== undefined) {
+        const data = await getClientOwnerApi(item.MemberField_5);
         // @ts-ignore
         item.owner = data.name;
       }
