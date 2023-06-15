@@ -1,6 +1,6 @@
 import http from '../http'
 import { AxiosPromise } from "axios";
-import { clientFormInfoInfo,userInfo } from '@/constants/client'
+import { clientFormInfoInfo,userInfo,SNList } from '@/constants/client'
 import { formTree,newClientStep,addressInfo,InverterList } from '@/constants/form'
 
 // 获取具体工作表信息
@@ -86,5 +86,37 @@ export function postButtonApi(buttonId: string, userIds: string,viewId:string ):
     userCondition: {
     },
     viewId
+  })
+}
+
+//SN码上传
+export function upCodeStep(id:string,stepId:string): AxiosPromise<newClientStep>{
+  return http.post(`/zoro/start-flowinnerflow/790241614973665283/${id}/${stepId}/ChildTableField_28
+  `, {
+    buttonId:"add",
+    menuId: "",
+    viewId: "796495087814901763"
+  })
+}
+
+//SN码删除
+export function deleteCodeStep(id:string,stepId:string,selectedId:string[]): AxiosPromise<newClientStep>{
+  return http.post(`/zoro/start-flowinnerflow/790241614973665283/${id}/${stepId}/ChildTableField_28
+  `, {
+    buttonId:"delete",
+    menuId: "",
+    selectedAll: false,
+    viewId: "796495087814901763",
+    selectedIds: selectedId,
+  })
+}
+
+// 获取sn码列表
+export function getSNCodeList(id:string,stepId:string): AxiosPromise<SNList>{
+  return http.post(`/zoro/joinList/790241614973665283/${id}/${stepId}/ChildTableField_28
+  `, {
+    buttonId:"add",
+    menuId: "",
+    viewId: ""
   })
 }

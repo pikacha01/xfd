@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { PropType,computed,onMounted,ref } from 'vue'
 import { FormCompnentData } from '@/constants/form'
-import { ValidtorUniqueData } from "@/utils/validate";
 import { useFormStore } from "@/store";
 import { getUserDetailStepAPi } from '@/api/modules/formInfo'
+import { getSNCodeList } from '@/api/modules/formInfo'
+
 
 // 获取自定义的store
 const formStore = useFormStore()
@@ -24,13 +25,17 @@ const formView =  {
   form: "JoinField_59"
 }
 
-onMounted(() => {
+
+onMounted(async () => {
   getTotal()
+  const res = await getSNCodeList(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId)
+  //@ts-ignore
+  formStore.SNCurrentTotal = res.total
 })
 
 const percentage = computed(() => {
-  if(formStore.currentFormSteps?.data.initData[props.data.id] === null || formStore.currentFormSteps!.data.initData[props.data.id] === undefined) return 0
-  return Number((formStore.currentFormSteps?.data.initData[props.data.id].length / total.value * 100).toFixed(2))
+  if(formStore.SNCurrentTotal === null || formStore.SNCurrentTotal === undefined) return 0
+  return Number((formStore.SNCurrentTotal / total.value * 100).toFixed(2))
 })
 
 // 获取总数
@@ -54,7 +59,7 @@ const goToScan = () => {
 <uni-forms-item :label="data.label" :name="data.id" :required="data.required">
   <view class="progressBox" @click="goToScan">
     <progress class="progress" :percent="percentage" stroke-width="3" activeColor="#C7000B"/>
-    <view class="num">{{ formStore.currentFormSteps!.data.initData[props.data.id] === null || formStore.currentFormSteps!.data.initData[props.data.id] === undefined ? 0 : Number(formStore.currentFormSteps?.data.initData[props.data.id].length) }} / {{ total }}</view>
+    <view class="num">{{ formStore.SNCurrentTotal  === null || formStore.SNCurrentTotal === undefined ? 0 : formStore.SNCurrentTotal }} / {{ total }}</view>
     <uni-icons class="num" type="camera" color="#A9A9A9" size="22"></uni-icons>
     <uni-icons class="num" type="forward" color="#A9A9A9" size="22"></uni-icons>
   </view>

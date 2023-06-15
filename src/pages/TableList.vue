@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useFormStore } from "@/store";
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { onLoad } from "@dcloudio/uni-app";
-import { stepUploadApi } from '@/api/modules/formInfo'
+import { stepUploadApi,upCodeStep,getSNCodeList,deleteCodeStep } from '@/api/modules/formInfo'
 
 const readonly = ref<string>()
 
@@ -11,10 +11,20 @@ onLoad((option) => {
 })
 
 
+onMounted(async () => {
+  const res = await getSNCodeList(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId)
+  if(res.data === null) return
+  //@ts-ignore
+  deviceList.value = res.datas
+  //@ts-ignore
+  formStore.SNCurrentTotal = res.total
+})
+
+
 // 获取自定义的store
 const formStore = useFormStore()
 
-const checkedList = ref<number[]>([])
+const checkedList = ref<string[]>([])
 
 const selectionChange = (e) => {
   if (readonly.value === "true") {
@@ -28,7 +38,10 @@ const selectionChange = (e) => {
 }
 
 // 设备列表
-const deviceList = ref(formStore.currentFormSteps!.data.initData['ChildTableField_28'])
+const deviceList = ref<{
+  TextField_1: string,
+  id: number
+}[]>()
 
 
 // 删除
@@ -45,16 +58,16 @@ const deleteCode = () => {
     title: '提示',
     content: '确定需要删除吗？',
     confirmColor: "#C7000B",
-    success: function (res) {
+    success: async function (res) {
         if (res.confirm) {
           checkedList.value.forEach(async (item) => {
             const index = formStore.currentFormSteps!.data.initData['ChildTableField_28'].findIndex((data)=> data === item )
             formStore.currentFormSteps!.data.initData['ChildTableField_28'].splice(index, 1)
-            deviceList.value.splice(index, 1)
-            await stepUploadApi(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, {
-              ChildTableField_28: deviceList.value,
-              id : formStore.goUserDetailInfo!.id
+            deviceList.value = deviceList.value!.filter(filter => {
+              return String(filter.id) !== item
             })
+            await deleteCodeStep(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, [item])
+            formStore.SNCurrentTotal = formStore.SNCurrentTotal - 1
           })
         } else if (res.cancel) {
           uni.showToast({
@@ -77,23 +90,26 @@ const scanCode = () => {
     return
   }
   uni.scanCode({
-    success: async function (res) {
-      if (formStore.currentFormSteps!.data.initData['ChildTableField_28'] === null) {
-        formStore.currentFormSteps!.data.initData['ChildTableField_28'] = []
-      }
-      const index = formStore.currentFormSteps!.data.initData['ChildTableField_28'].findIndex(item => item === res.result)
+    success: async function (code) {
+      const index = deviceList.value!.findIndex(item => String(item.TextField_1) === code.result)
       if (index !== -1) {
         uni.showToast({
           title: '已存在！',
           icon:'error'
         })
       } else {
-        formStore.currentFormSteps!.data.initData['ChildTableField_28'].push(res.result)
-        deviceList.value.push(res.result)
-        await stepUploadApi(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId, {
-          ChildTableField_28: deviceList.value,
-          id : formStore.goUserDetailInfo!.id
+        const data = await upCodeStep(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId)
+        //@ts-ignore
+        await stepUploadApi(data!.processId, data!.stepId, {
+          //@ts-ignore
+          JoinField_9: data.data.initData.JoinField_9,
+          TextField_1: code.result,
+          TextField_2: null
         })
+        const res = await getSNCodeList(formStore.currentFormSteps!.processId, formStore.currentFormSteps!.stepId)
+        //@ts-ignore
+        deviceList.value = res.datas
+        formStore.SNCurrentTotal = formStore.SNCurrentTotal + 1
         uni.showToast({
           title: '扫码成功',
           icon:'success',
@@ -115,10 +131,10 @@ const scanCode = () => {
 <view class="all">
   <view class="content" :class="{'Bottom': readonly !== 'true'}">
     <checkbox-group @change="selectionChange">
-      <view class="table" v-for="item in formStore.currentFormSteps?.data.initData['ChildTableField_28']" :key="item">
-        <checkbox :value="item"  color="#C7000B" style="transform:scale(0.7)" />
+      <view class="table" v-for="item in deviceList" :key="item.id">
+        <checkbox :value="item.id"  color="#C7000B" style="transform:scale(0.7)" />
         <text class="SN">组件SN</text>
-        <text class="Code">{{ item }}</text>
+        <text class="Code">{{ item.TextField_1 }}</text>
       </view>
     </checkbox-group>
   </view>

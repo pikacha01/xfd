@@ -138,3 +138,29 @@ export interface userInfo {
   TextField_88: null;
   id: null;
 }
+
+// SN码列表
+export interface SNList {
+  group: null,
+  start: number,
+  end: number,
+  total: number,
+  data: {
+    MemberField_3: number,
+    MemberField_5: number,
+    id: number,
+    TextField_1: string,
+    DateField_4:string
+  } []
+}
+
+// SN码添加
+export interface NewSNAdd {
+  data: {
+    initData: {
+      JoinField_9: number[]
+    }
+  },
+  processId: string,
+  stepId: string
+}

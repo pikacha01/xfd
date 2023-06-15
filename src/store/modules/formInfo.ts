@@ -80,10 +80,13 @@ export const useFormStore = defineStore("form-Store", () => {
   // 所有表单校验结果
   const allFormCheck = ref({})
 
+  // 当前SN数量
+  const SNCurrentTotal = ref<number>(0)
+
   return {
     getClientFormInfo,goUserDetailInfo, formInfo, selectOption, getNewClient, newFormSteps,stepUpload,IDCardInfo,validateForm,
     userCurrentStep,getuserInfoStep,userSelectStep,currentFormSteps,contractForm,changeForm,constractFieldForm,
-    stepIndex,allFormCheck
+    stepIndex,allFormCheck,SNCurrentTotal
   }
 },{
   // @ts-ignore
