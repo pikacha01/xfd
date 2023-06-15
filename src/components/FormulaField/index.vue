@@ -289,8 +289,8 @@ function getLatestValue(lastedValue: Record<string, any>) {
     const res = [METHOD.ADDANDBETWWEN, METHOD.MINANDTOTADAY].some(
       item => item === props.item.method
     )
-      ? dateModeMap.get(props.item.dateUnit!)?.res(result)
-      : selfDateModeMap.get(props.item.betweenMode!)?.getRes(result);
+      ? dateModeMap.get(props.item.dateUnit!)?.res(result as number)
+      : selfDateModeMap.get(props.item.betweenMode!)?.getRes(result as number);
 
     value = typeof res === "string" || typeof res === "number" ? res : null;
   }

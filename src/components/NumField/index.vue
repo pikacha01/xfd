@@ -57,13 +57,16 @@ if (props.data.tag === "PhoneField") {
 
 <template>
 <uni-forms-item v-if="data.id === 'PhoneField_9' || data.id === 'IdentityField_15' || data.id === 'PhoneField_13' " :label="data.label" :required="data.required" :name="data.id">
-  <uni-easyinput 
-   placeholderStyle="font-size:28rpx;" 
-   v-model="inputData"
-   :inputBorder="false"  
-   :placeholder="data.placeholder" 
-   :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
-   />
+   <view class="inputContainer">
+    <uni-easyinput 
+      placeholderStyle="font-size:28rpx;" 
+      v-model="inputData"
+      :inputBorder="false"  
+      :placeholder="data.placeholder" 
+      :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
+      />
+    <view v-if="data.unit">{{ data.unit }}</view>
+  </view>
 </uni-forms-item>
 <uni-forms-item v-else :label="data.label" 
   :rules="[
@@ -73,18 +76,24 @@ if (props.data.tag === "PhoneField") {
       },
     ]"
   :name="data.id">
-  <uni-easyinput 
+   <view class="inputContainer">
+    <uni-easyinput 
     trim="all"
-   placeholderStyle="font-size:28rpx;" 
-   type="digit"
-   v-model="inputData"
-   :inputBorder="false"  
-   :placeholder="data.placeholder" 
-   :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
-   />
+    placeholderStyle="font-size:28rpx;" 
+    type="digit"
+    v-model="inputData"
+    :inputBorder="false"  
+    :placeholder="data.placeholder" 
+    :disabled="data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)"
+    />
+    <view v-if="data.unit">{{ data.unit }}</view>
+  </view>
 </uni-forms-item>
 </template>
 
 <style scoped lang="scss">
-
+.inputContainer {
+  display: flex;
+  align-items: center;
+}
 </style>

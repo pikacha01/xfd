@@ -16,6 +16,10 @@ import ChildTableField from '@/components/ChildField/index.vue'
 import NumberField from '@/components/NumField/index.vue'
 import SelectField from '@/components/SelectField/index.vue'
 import { useFormStore } from "@/store"
+import FormulaField_3 from '@/components/FormulaField_3/index.vue'
+import FormulaField_75 from '@/components/FormulaField_75/index.vue'
+import FormulaField_91 from '@/components/FormulaField_91/index.vue'
+import FormulaField_74 from '@/components/FormulaField_74/index.vue'
 
 const formStore = useFormStore()
 
@@ -237,6 +241,18 @@ const checkForm = () => {
         </template>
         <template v-else-if ="item.tag === 'SelectField'">
           <SelectField :data="item" @check-form="checkForm"></SelectField>
+        </template>
+        <template v-else-if ="item.id === 'FormulaField_3'">
+          <FormulaField_3 :data="item"></FormulaField_3>
+        </template>
+        <template v-else-if ="item.id === 'FormulaField_75'">
+          <FormulaField_75 :data="item"></FormulaField_75>
+        </template>
+        <template v-else-if ="item.id === 'FormulaField_91'">
+          <FormulaField_91 :data="item"></FormulaField_91>
+        </template>
+        <template v-else-if ="item.id === 'FormulaField_74'">
+          <FormulaField_74 :data="item"></FormulaField_74>
         </template>
       </view>
 		</uni-forms>  

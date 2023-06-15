@@ -511,6 +511,7 @@ export interface FormCompnentData {
   verifyResult: boolean;
   visible: boolean;
   width: number;
+  unit: null | string;
 }
 
 export interface InverterList {
