@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType,ref,onMounted,watch } from 'vue'
+import { PropType,ref,onMounted } from 'vue'
 import { FormCompnentData } from '@/constants/form'
 import { IfFormGrid } from '@/constants/form'
 import TextField from '@/components/inputField/index.vue'
@@ -239,7 +239,7 @@ const checkForm = () => {
         <template v-else-if ="item.tag === 'ChildTableField'">
           <ChildTableField :data="item"></ChildTableField>
         </template>
-        <template v-else-if ="item.tag === 'SelectField'">
+        <template v-else-if ="item.tag === 'SelectField' && item.id !== 'SelectField_58'">
           <SelectField :data="item" @check-form="checkForm"></SelectField>
         </template>
         <template v-else-if ="item.id === 'FormulaField_3'">

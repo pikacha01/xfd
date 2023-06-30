@@ -34,7 +34,9 @@ onMounted(async () => {
 
 // 获取对应的数据
 const getUserDetail = async () => {
+  console.log("contractField")
   const res = await getUserDetailStepAPi(formStore.newFormSteps!.processId,formStore.newFormSteps!.stepId,formView.form,formView.viewId)
+  console.log(res)
   //@ts-ignore
   formStore.contractForm = res
   // 赋值
@@ -116,7 +118,7 @@ const isComplete = computed(() => {
 </script>
 
 <template>
-<view>
+<view  v-if="formStore.contractForm?.data !== '记录不存在'">
   <uni-forms ref="contractform"  :modelValue="formStore.contractForm?.data.initData" label-width="200rpx">
     <view class="title" @click="showMore">
       <view class="left">3.1 合同签定</view>

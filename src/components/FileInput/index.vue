@@ -99,6 +99,7 @@ const deleteFile = (item) => {
   emits("checkForm")
 }
 
+
 </script>
 
 <template>
@@ -109,7 +110,7 @@ const deleteFile = (item) => {
       },
     ]" :name="data.id">
   <view class="right">
-    <template  v-for="item in formStore .currentFormSteps?.data.initData[props.data.id]" :key="item.url">
+    <template  v-for="item in formStore.currentFormSteps?.data.initData[props.data.id]" :key="item.url">
       <view class="delete">
         <view class="box">
           <image v-if="item.fileType.toLowerCase() === 'pdf'" @click="preview(item.url)" class="icon" mode="aspectFill" src="@/static/images/file_pdf.png"></image>
@@ -121,6 +122,7 @@ const deleteFile = (item) => {
         <view class="deleteIcon" v-if="!data.readonly && !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
           <image class="icon" src="@/static/images/delete@2x.png" @click="deleteFile(item)"></image>
         </view>
+        <!-- <view class="fileName">{{ item.fileName }}</view> -->
       </view>
     </template>
     <view class="delete"  v-if="!data.readonly && !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
@@ -144,7 +146,6 @@ const deleteFile = (item) => {
   .delete {
     position: relative;
     width: 33.3%;
-    height: 0;
     padding-top: 33.33%;
     box-sizing: border-box;
     .box {
@@ -173,6 +174,14 @@ const deleteFile = (item) => {
         width: 36rpx;
         height: 36rpx;
       }
+    }
+    .fileName {
+      height: 30rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 10px;
     }
   }
   

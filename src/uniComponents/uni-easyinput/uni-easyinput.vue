@@ -182,7 +182,7 @@
 				default () {
 					return {
 						color: '#333',
-						disableColor: '#F7F6F6',
+						// disableColor: '#F7F6F6',
 						borderColor: '#e5e5e5'
 					}
 				}

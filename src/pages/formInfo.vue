@@ -87,6 +87,15 @@ const currentStepFormData = ref<newClientStep[]>([])
 
 // 改变步骤
 const changeStep = async (index: number) => {
+  if (index + 1 > formStore.userCurrentStep!) {
+    uni.showModal({
+    title: '提示',
+      content: '还暂未到此流程哦！',
+      showCancel: false
+
+    });
+    return
+  }
   if (Object.entries(formStore.changeForm).length !== 0) {
     uni.showModal({
     title: '提示',
@@ -344,6 +353,7 @@ const UtilityGridConnect = async () => {
 
 // 是否展示按钮
 const isShowButtons = computed(() => {
+  if(formStore.currentFormSteps?.data === "流程分支节点分支，无可执行的条件!") return false
   if (buttonIsShow[Math.floor(formStore.userSelectStep!)].value.includes(formStore.currentFormSteps?.data.initData[buttonIsShow[Math.floor(formStore.userSelectStep!)].name])) {
     return true
   }
@@ -415,7 +425,7 @@ const signContract = (type:string) => {
 <template>
   <view class="header">
     <view class="title">
-      <view class="content">兴伏贷</view>
+      <view class="content">兴福宝</view>
       <view class="currentStep">{{formStore.goUserDetailInfo?.label}}</view>
     </view>
     <view class="date">
@@ -425,8 +435,11 @@ const signContract = (type:string) => {
   </view>
   <Steps @change-step="changeStep" :select-step="Math.floor(formStore.userSelectStep!)-1"  :current-step="Math.floor(formStore.userCurrentStep!)-1"></Steps>
   <view class="FormContent">
+    <view v-if="formStore.currentFormSteps?.data === '流程分支节点分支，无可执行的条件!'">
+      <view class="noData">流程分支节点分支，无可执行的条件!</view>
+    </view>
     <!-- <uni-forms ref="Form" :border="true" :rules="idFormRules"  :modelValue="formStore.currentFormSteps?.data.initData" label-width="200rpx"> -->
-    <view class="content">
+    <view class="content" v-else>
       <view v-for="(item,index) in inputFormArray"
         :key="item.id">
         <template v-if ="item.tag === 'FormGrid' && item.label !== '所属业务员'">
@@ -454,7 +467,7 @@ const signContract = (type:string) => {
         保存并提交
       </view>
     </view>
-    <view class="buttons" v-if="Math.floor(formStore.userSelectStep!) === 2 &&
+    <view class="buttons" v-if="Math.floor(formStore.userSelectStep!) === 2 && formStore.contractForm?.data !== '记录不存在' &&
     (formStore.contractForm?.data.initData['GroupField_22'] ===  '1' || formStore.contractForm?.data.initData['GroupField_40'] ===  '1')">
       <view class="submit" @click="signContract('buy')" 
         v-if="Object.entries(formStore.contractForm?.data.initData).length !== 0 && formStore.contractForm?.data.initData['GroupField_22'] ===  '1'">
@@ -511,6 +524,11 @@ const signContract = (type:string) => {
   background-color: #f6f7f9;
   .content {
     margin: 24rpx 32rpx;
+  }
+  .noData {
+    text-align: center;
+    background-color: #fff;
+    margin-top: 300rpx;
   }
 }
 .buttons {

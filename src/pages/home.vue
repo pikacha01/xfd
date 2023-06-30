@@ -11,6 +11,7 @@ onShow(async () => {
   }
   refresh = true
   clientStore.userList = []
+  clientStore.startZero()
   await clientStore.getClientInfo()
   refresh = false
 });
@@ -299,19 +300,24 @@ const gotoTop = () => {
   if(isComplete) return
   isComplete = true
   scrollTop.value = oldScrollTop.value
+  toView.value = 'userInfo0'
+  isComplete = false
   nextTick(() => {
-    scrollTop.value = 0 
-    isComplete = false
+    // scrollTop.value = 0 
+    toView.value = ''
   })
 }
+
+const toView = ref()
+
 // 回到顶部按钮是否展示
 const isTopShow = ref(false)
 </script>
 <template>
   <view class="bodyBGC">
-    <scroll-view class="scroll-view" @refresherrefresh="onPullDownRefresh" :refresher-triggered="triggered" :scroll-top="scrollTop" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
+    <scroll-view class="scroll-view" :scroll-into-view="toView" :scroll-with-animation="true" @refresherrefresh="onPullDownRefresh" :refresher-triggered="triggered" scroll-y @scroll="onScroll" style="overflow: scroll;" @scrolltolower="handleScrollToLower">
       <view class="header" id="header" :style="{'position': headerPosition,'margin-top': headerMargin}">
-          <view class="title" id="title" :style="{'left': title}">兴伏贷</view>  
+          <view class="title" id="title" :style="{'left': title}">兴福宝</view>  
         <view class="userinfo" v-if="showName">
           <view class="name">{{ userStore.userInfo?.name }}</view>
           <view class="company">{{ userStore.companyInfo?.name }}</view>
@@ -338,9 +344,9 @@ const isTopShow = ref(false)
         </view>
       </view>
       <view class="content">
-        <view class="userInfo" @click.stop="goUserDetail(item,clientStore.steps[item.label])" v-for="item in clientStore.userList" :key="item.id">
+        <view class="userInfo" :id="'userInfo'+index" @click.stop="goUserDetail(item,clientStore.steps[item.label])" v-for="(item,index) in clientStore.userList" :key="item.id">
           <view class="left">
-            <view class="name">{{ item.TextField_1 }}<text class="companyName">兴伏贷</text></view>
+            <view class="name">{{ item.TextField_1 }}<text class="companyName">兴福宝</text></view>
             <view class="holder">{{ item.owner }}</view>
           </view> 
           <view class="right">

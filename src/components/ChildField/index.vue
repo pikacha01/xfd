@@ -49,7 +49,7 @@ const getTotal = async () =>{
 const goToScan = () => {
   // if(props.data.readonly  || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
   uni.navigateTo({
-    url: `/pages/TableList?readonly=${props.data.readonly}`
+    url: `/pages/TableList?readonly=${props.data.readonly  || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)}`
   })
 }
 

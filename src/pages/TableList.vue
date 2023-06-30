@@ -41,7 +41,7 @@ const selectionChange = (e) => {
 const deviceList = ref<{
   TextField_1: string,
   id: number
-}[]>()
+}[]>([])
 
 
 // 删除
@@ -91,7 +91,10 @@ const scanCode = () => {
   }
   uni.scanCode({
     success: async function (code) {
-      const index = deviceList.value!.findIndex(item => String(item.TextField_1) === code.result)
+      if(!deviceList.value) {
+        deviceList.value = []
+      }
+      const index = deviceList.value.findIndex(item => String(item.TextField_1) === code.result)
       if (index !== -1) {
         uni.showToast({
           title: '已存在！',

@@ -448,7 +448,7 @@ export interface newClientStep {
     inputForm: IfForm,
     viewId: number,
     appId: number,
-  }
+  } | any
   processId: string,
   stepId: string,
   state: number,
