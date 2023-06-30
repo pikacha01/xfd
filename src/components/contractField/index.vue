@@ -34,9 +34,7 @@ onMounted(async () => {
 
 // 获取对应的数据
 const getUserDetail = async () => {
-  console.log("contractField")
   const res = await getUserDetailStepAPi(formStore.newFormSteps!.processId,formStore.newFormSteps!.stepId,formView.form,formView.viewId)
-  console.log(res)
   //@ts-ignore
   formStore.contractForm = res
   // 赋值
