@@ -47,8 +47,7 @@ const connectmqtt = () => {
   } 
   client = mqtt.connect(url, options)
   client.on('connect', async (e) => {
-      await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
-      console.log('服务器连接成功', e)
+    await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
       // client.subscribe('abc', { qos: 2 }, function (err) {
       //   if (!err) {
       //     console.log('订阅成功')
@@ -56,8 +55,9 @@ const connectmqtt = () => {
       // })
     })
     //信息监听
-  client.on('message', function (topic, massage:string) {
+  client.on('message', function (topic, massage: string) {
     const data: CMsg = JSON.parse(massage)
+    if(data.type === "commond") return
       uni.showModal({
         title: '提示',
         content: data.data.text,

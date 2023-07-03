@@ -55,9 +55,6 @@
       "title": "地图搜索"
     },
 		{
-			"path": "pages/formField/index"
-		},
-		{
 			"path": "pages/showFile/index"
 		},
 		{

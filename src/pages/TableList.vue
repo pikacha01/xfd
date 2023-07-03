@@ -132,7 +132,7 @@ const scanCode = () => {
 
 <template>
 <view class="all">
-  <view class="content" :class="{'Bottom': readonly !== 'true'}">
+  <view class="content" :class="{'Bottom': readonly !== 'true'}" v-if="deviceList.length > 0">
     <checkbox-group @change="selectionChange">
       <view class="table" v-for="item in deviceList" :key="item.id">
         <checkbox :value="item.id"  color="#C7000B" style="transform:scale(0.7)" />
@@ -141,6 +141,7 @@ const scanCode = () => {
       </view>
     </checkbox-group>
   </view>
+  <view class="noSNData">暂无数据哦！</view>
   <view class="button" v-if="readonly !== 'true'">
     <view class="buttons">
       <view class="delete" @click="deleteCode">
@@ -163,6 +164,12 @@ const scanCode = () => {
 .content {
   margin: 0 32rpx;
   min-height: 100vh;
+}
+.noSNData {
+  width: 100%;
+  text-align: center;
+  margin-top: 300rpx;
+  background-color: #fff;
 }
 .Bottom {
   padding-bottom: 190rpx;

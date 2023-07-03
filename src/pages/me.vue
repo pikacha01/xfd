@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useUserStore,useCountStore } from '@/store'
+import { useUserStore,useCountStore,useClientStore } from '@/store'
 import {onMounted,ref} from 'vue'
 import { disConnection } from '@/utils/webSocket'
 
+const clientStore = useClientStore()
 const userStore = useUserStore()
 
 // 获取自定义的store
@@ -25,6 +26,12 @@ const loginOut = () => {
         if (res.confirm) {
           store.$patch(v => (v.token = ''))
           disConnection()
+          clientStore.userList = []
+          clientStore.TabList = [{ text: "全部", value: "0" },
+      { text: "预审", value: "0" },
+      { text: "踏勘", value: "0" },
+      { text: "安装", value: "0" },
+      { text: "并网", value: "0" }]
           uni.redirectTo({
             url: '/pages/login'
           })
