@@ -23,6 +23,7 @@ import uniSearchBar from "../node_modules/@dcloudio/uni-ui/lib/uni-search-bar/un
 import uniTable from '../node_modules/@dcloudio/uni-ui/lib/uni-table/uni-table.vue'
 import '../node_modules/@dcloudio/uni-ui/lib/uni-scss/variables.scss'
 
+
 dayjs().format()
 
 export function createApp() {

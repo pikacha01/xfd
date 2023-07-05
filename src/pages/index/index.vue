@@ -44,12 +44,13 @@
 import { computed, reactive, ref } from "vue";
 import { Menu } from "@/constants/form";
 import { userApi } from "@/api";
-import { onShow } from "@dcloudio/uni-app";
 import { storeToRefs } from "pinia";
 import { useCountStore,useFormStore } from "@/store";
 import Home from "@/pages/home.vue";
 import Me from "@/pages/me.vue";
 import Add from "@/pages/add.vue";
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
 type tabItem = {
   selected: boolean;
   iconPath: string;
@@ -61,6 +62,13 @@ interface Model {
   menu: Menu[];
   tabList: Array<tabItem>;
 }
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 const model: Model = reactive({
   menu: [],

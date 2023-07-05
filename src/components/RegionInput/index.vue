@@ -24,6 +24,7 @@ const emits = defineEmits(["checkForm"])
 
 onMounted(async() => {
   const res = await getAddressDetailApi(formStore.currentFormSteps!.data.initData[props.data.id])
+  console.log(res)
   //@ts-ignore
   reginSelect.value = res.map(item => {
     return item.name

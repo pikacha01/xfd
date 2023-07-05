@@ -37,15 +37,15 @@ export function addUserValidateApi(id:string,stepId:string,userInfo:userInfo): A
 
 // 获取地理位置 
 export function getAddressDetailApi(address: number[]): AxiosPromise<addressInfo[]>{
-  // let tempAddress = `/roger/getAreaByIds/`
-  // address.forEach((item, index) => {
-  //   if (index !== 0) {
-  //     tempAddress = tempAddress + '-'
-  //   } 
-  //   tempAddress = tempAddress + item
-  // })
-  // return http.get(tempAddress)
-  return http.post(`/roger/getAreaByIds`, {ids:address})
+  let tempAddress = `/roger/getAreaByIds/`
+  address.forEach((item, index) => {
+    if (index !== 0) {
+      tempAddress = tempAddress + '-'
+    } 
+    tempAddress = tempAddress + item
+  })
+  return http.get(tempAddress)
+  // return http.post(`/roger/getAreaByIds`, {ids:address})
 }
 
 // 获取表单详情

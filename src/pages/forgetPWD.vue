@@ -114,14 +114,22 @@
 </template>
 <script setup lang="ts">
 import { userApi } from "@/api";
-import { useCountStore, useClientStore,useUserStore } from "@/store";
+import { useCountStore, useClientStore } from "@/store";
 import { smartPhoneValidator } from "@/utils/validate";
 import { onReady } from "@dcloudio/uni-app";
 import { reactive, ref,watch } from "vue";
 import uniFormsItem from '@/uniComponents/uni-forms-item/uni-forms-item.vue'
 import { checkUserApi,sendCodeApi,checkCodeImgApi } from '@/api/modules/userInfo'
+import {onShareAppMessage } from '@dcloudio/uni-app'
 
-const userStore = useUserStore()
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+
+})
+
 
 const isLoading = ref(false)
 // 弹出框

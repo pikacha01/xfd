@@ -4,6 +4,14 @@ import Steps from '@/components/steps/index.vue'
 import IDForm from '@/components/IDCardForm/index.vue'
 import {useFormStore,useClientStore} from '@/store'
 import { onLoad } from "@dcloudio/uni-app"
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 
 const formStore = useFormStore()

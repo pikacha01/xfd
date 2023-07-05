@@ -3,6 +3,14 @@ import { useFormStore } from "@/store";
 import { ref,onMounted } from 'vue'
 import { onLoad } from "@dcloudio/uni-app";
 import { stepUploadApi,upCodeStep,getSNCodeList,deleteCodeStep } from '@/api/modules/formInfo'
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 const readonly = ref<string>()
 

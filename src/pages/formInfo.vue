@@ -9,6 +9,14 @@ import { getUserDetailStepAPi } from '@/api/modules/formInfo'
 import { newClientStep } from '@/constants/form'
 // import { onShow, onHide } from "@dcloudio/uni-app";
 import { postButtonApi,stepUploadApi } from '@/api/modules/formInfo'
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 // onShow(() => {
   // uni.connectSocket({

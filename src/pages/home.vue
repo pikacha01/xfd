@@ -4,6 +4,14 @@ import { onReachBottom,onShow } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
 import { connectmqtt } from '@/utils/webSocket'
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 onShow(async () => {
   if (refresh) {

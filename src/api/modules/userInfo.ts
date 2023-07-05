@@ -39,6 +39,6 @@ export function sendCodeApi(phone: string): AxiosPromise<{data:string}>{
 
 // 图片验证码校验
 export function checkCodeImgApi(phone: string,code:string): AxiosPromise<{msg:string,status: number}>{
-  // return http.get(`/robin/api/sendVerifyCode/${phone}/${code}`)
-  return http.post(`/robin/api/sendVerifyCode/${phone}/${code}`)
+  return http.get(`/robin/api/sendVerifyCode/${phone}/${code}`)
+  // return http.post(`/robin/api/sendVerifyCode/${phone}/${code}`)
 }

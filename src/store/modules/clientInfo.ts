@@ -91,7 +91,8 @@ export const useClientStore = defineStore("client-Store", () => {
     // 取消之前的请求
     cancelAxios()
     const formStore = useFormStore()
-    const res = await getClientInfoApi(start.value, end.value,search.value,statusFilter.value)
+    const res = await getClientInfoApi(start.value, end.value, search.value, statusFilter.value)
+    if(start.value === 0) userList.value = []
     for (const item of res.datas) {
       item.DateField_4 = formatDateTime(item.DateField_4);
       // 客户拥有者

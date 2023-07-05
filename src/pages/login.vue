@@ -1,4 +1,7 @@
 <template>
+  <view class="header">
+    <view class="title">登录</view>
+  </view>
   <view class="icon">
     <image style="width: 280rpx;height: 120rpx;"  src="@/static/images/icon.jpg"></image>
   </view>
@@ -70,7 +73,7 @@
     </uni-forms>
     <view class="forgetPWD" @click="gotoForgetPWD">忘记密码？</view>
   </div>
-  <view class="wxlogin">
+  <!-- <view class="wxlogin">
     <view class="elseLogin">
       <view class="sperate"></view>
       <view class="content">其他方式登录</view>
@@ -82,8 +85,8 @@
       </view>
       <view class="wxText">微信登录</view>
     </view>
-  </view>
-  <view class="attention" >点击登录表示同意<text class="agreement" @click="gotoUser">《用户协议》</text>和<text class="agreement" @click="gotoAgreement">《隐私协议》</text></view>
+  </view> -->
+  <view class="attention"><view class="changeStatus" :class="[checkAgreement ? 'checkPass' : '']" @click="changeCheckAgreement"><uni-icons color="#fff" type="checkmarkempty" size="13"></uni-icons></view>勾选表示同意<text class="agreement" @click="gotoUser">《用户协议》</text>和<text class="agreement" @click="gotoAgreement">《隐私协议》</text></view>
 </template>
 <script setup lang="ts">
 import { userApi } from "@/api";
@@ -94,10 +97,24 @@ import { reactive, ref } from "vue";
 import { generateUUID } from '@/utils/webSocket'
 import uniFormsItem from '@/uniComponents/uni-forms-item/uni-forms-item.vue'
 import { connectmqtt } from '@/utils/webSocket'
+import {onShareAppMessage } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+      title: '华福宝小程序',
+      path: '/pages/login',
+    }
+})
 
 const userStore = useUserStore()
 
 const isLoading = ref(false)
+
+const checkAgreement = ref<boolean>(false)
+
+const changeCheckAgreement = () => {
+  checkAgreement.value = !checkAgreement.value
+}
 
 const model = reactive({
   phone: "",
@@ -122,7 +139,15 @@ const gotoForgetPWD = () => {
 }
 
 const submit = () => {
-  if(isLoading.value) return 
+  if (isLoading.value) return 
+  if (!checkAgreement.value) {
+    uni.showToast({
+      title: '请先勾选协议',
+      duration: 2000,
+      icon: 'error'
+    });
+    return
+  }
   //@ts-ignore
   formRef.value.validate().then(res => {
     isLoading.value = true
@@ -184,6 +209,18 @@ const getPhoneNumber = () => {
 }
 </script>
 <style scoped lang="scss">
+.header {
+  width: 100%;
+  height: 180rpx;
+  background-color: #C7000B;
+  .title {
+    color: #fff;
+    font-size: 35rpx;
+    text-align: center;
+    font-weight: 700;
+    padding-top: 110rpx;
+  }
+}
 .uni-forms {
   margin: 145rpx 55rpx 0;
   .submit {
@@ -206,12 +243,25 @@ const getPhoneNumber = () => {
 }
 .attention{
   width: 100%;
-  margin-top: 90rpx;
+  margin-top: 500rpx;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #A9A9A9;
   font-size: 24rpx;
+  .changeStatus {
+    width: 30rpx;
+    height: 30rpx;
+    border-radius: 50%;
+    margin-right: 10rpx;
+    border: 1rpx solid black;
+    text-align: center;
+    color: #fff;
+    }
+  .checkPass {
+    background-color: #4b83cd;
+    border: 1rpx solid #4b83cd;
+  }
   .agreement {
     color: #C7000B;
   }

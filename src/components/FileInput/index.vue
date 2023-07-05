@@ -53,37 +53,83 @@ const emits = defineEmits(["checkForm"])
 // 添加文件
 const addFile =async () => {
   if (props.data.readonly || (Object.entries(formStore.currentFormSteps!.data.initData).length === 0)) return
-  uni.chooseMessageFile({
-    count: 9,
-    async success(res) {
-      uni.showLoading({ title: '上传中' })
-      if (res.errMsg !== "chooseMessageFile:ok") {
-        uni.hideLoading();
-        uni.showToast({
-          title: "选择失败",
-          icon: 'error',
-          duration: 2000
-        })
-        return
-      }
-      for (const key of res.tempFiles) {
-            //@ts-ignore
-            await user.getObsKey().then(async (data: IfObsKey) => {
-            //@ts-ignore
-            const fileObj = await OBSupload(key, data);
-            if (!formStore.currentFormSteps?.data.initData[props.data.id]) {
-              formStore.currentFormSteps!.data.initData[props.data.id] = []
-              formStore.changeForm[props.data.id] = []
+  uni.showModal({
+    title: '提示',
+    content: '从聊天框中选择文件或图片还是从相册和相机选择？',
+    confirmColor: "#C7000B",
+    confirmText:"相册",
+    cancelText: "文件",
+    success: function (res) {
+      if (!res.confirm) {
+          uni.chooseMessageFile({
+          count: 9,
+          async success(res) {
+            uni.showLoading({ title: '上传中' })
+            if (res.errMsg !== "chooseMessageFile:ok") {
+              uni.hideLoading();
+              uni.showToast({
+                title: "选择失败",
+                icon: 'error',
+                duration: 2000
+              })
+              return
             }
-            formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
-            // 检测表单子传父事件
-            emits("checkForm")
-        });
+            for (const key of res.tempFiles) {
+                  //@ts-ignore
+                  await user.getObsKey().then(async (data: IfObsKey) => {
+                  //@ts-ignore
+                  const fileObj = await OBSupload(key, data);
+                  if (!formStore.currentFormSteps?.data.initData[props.data.id]) {
+                    formStore.currentFormSteps!.data.initData[props.data.id] = []
+                    formStore.changeForm[props.data.id] = []
+                  }
+                  formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
+                  // 检测表单子传父事件
+                  emits("checkForm")
+              });
+            }
+            formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
+            uni.hideLoading();
+          }
+        })
+      } else {
+        uni.chooseImage({
+          count: 9,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['camera','album'],
+          async success(data:any) {
+            uni.showLoading({ title: '上传中' })
+            if (data.errMsg !== "chooseImage:ok") {
+              uni.hideLoading();
+              uni.showToast({
+                title: "选择失败",
+                icon: 'error',
+                duration: 2000
+              })
+              return
+            }
+            for (const key of data.tempFiles) {
+                  //@ts-ignore
+                  await user.getObsKey().then(async (data: IfObsKey) => {
+                  //@ts-ignore
+                  const fileObj = await OBSupload(key, data);
+                  if (!formStore.currentFormSteps?.data.initData[props.data.id]) {
+                    formStore.currentFormSteps!.data.initData[props.data.id] = []
+                    formStore.changeForm[props.data.id] = []
+                  }
+                  formStore.currentFormSteps?.data.initData[props.data.id].push(fileObj)
+                  // 检测表单子传父事件
+                  emits("checkForm")
+              });
+            }
+            formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
+            uni.hideLoading();
+          }
+        })
       }
-      formStore.changeForm[props.data.id] = formStore.currentFormSteps?.data.initData[props.data.id]
-      uni.hideLoading();
     }
-  })
+  },
+  );
 }
 
 // 删除文件
@@ -118,6 +164,7 @@ const deleteFile = (item) => {
           <image v-else-if="item.fileType.toLowerCase() === 'ppt' || item.fileType.toLowerCase() === 'pptx'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_ppt.png"></image>
           <image v-else-if="item.fileType.toLowerCase() === 'xlsx' || item.fileType.toLowerCase() === 'xls'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_excel.png"></image>
           <image v-else-if="item.fileType.toLowerCase() === 'mp4' || item.fileType.toLowerCase() === 'avi' || item.fileType.toLowerCase() === 'flv'" @click="preview(item.url)" class="icon" mode="widthFix" src="@/static/images/file_type_video.png"></image>
+          <image v-else class="icon" mode="widthFix" src="@/static/images/file_qita.png"></image>
         </view>
         <view class="deleteIcon" v-if="!data.readonly && !(Object.entries(formStore.currentFormSteps!.data.initData).length === 0)">
           <image class="icon" src="@/static/images/delete@2x.png" @click="deleteFile(item)"></image>
