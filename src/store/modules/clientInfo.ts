@@ -70,7 +70,9 @@ const steps = {
   "放款成功": 4.4
 }
 
-export const useClientStore = defineStore("client-Store", () => {
+export const useClientStore = defineStore(
+  "client-Store",
+  () => {
   // 下拉选项和值
   const selectOption = ref<string>("")
 

@@ -4,7 +4,9 @@ import { clientFormInfoInfo,userInfo,clienData } from '@/constants/client'
 import { newClientStep,IDUpload } from '@/constants/form'
 import { geUserInfoDetailApi,getClientFormInfoApi,getNewClientApi,stepUploadApi,addUserValidateApi } from "@/api/modules/formInfo"
 
-export const useFormStore = defineStore("form-Store", () => {
+export const useFormStore = defineStore(
+  "form-Store",
+  () => {
   // 具体工作表信息
   const formInfo = ref<clientFormInfoInfo>()
   const selectOption = ref<{text: string,value: string}[]>([])

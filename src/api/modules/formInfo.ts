@@ -86,11 +86,12 @@ export function getUserDetailStepAPi(id: string, stepId: string, formID: string,
  * @returns 
  */
 // 按钮请求
-export function postButtonApi(buttonId: string, userIds: string,viewId:string ): AxiosPromise<newClientStep>{
+export function postButtonApi(buttonId: string, userIds: string,viewId:string,menuId:string ): AxiosPromise<newClientStep>{
   return http.post('/zoro/start-button/790241614973665283', {
     buttonId,
     selectedAll: false,
     selectedIds: [userIds],
+    menuId,
     userCondition: {
     },
     viewId

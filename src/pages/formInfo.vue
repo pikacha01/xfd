@@ -161,40 +161,47 @@ const buttonsList = {
   // 征信查询
   "草稿": {
     buttonId: "798189658066092035",
-    viewId: "797391751834271746"
+    viewId: "797391751834271746",
+    menuId: "790536182940565506"
   },
   "踏勘": {
     buttonId: "792802926181580801",
-    viewId: "792522818534965249"
+    viewId: "792522818534965249",
+    menuId: "790536182940565506"
   },
   "提交审核": {
     buttonId: "797346147391209473",
-    viewId: "790599731258425345"
+    viewId: "790599731258425345",
+    menuId: "790543924113244162"
   },
   // 签约购销协议
   "buy": {
     buttonId: "810920227109928961",
-    viewId: "810917561500073985"
+    viewId: "810917561500073985",
+    menuId: "809721745403117570"
   },
   // 签约运维协议
   "operation": {
     buttonId: "811713355155210242",
-    viewId: "810917561500073985"
+    viewId: "810917561500073985",
+    menuId: "809721745403117570"
   },
   "安装自检完成": {
     buttonId: "869823621114658817",
-    viewId: "796495087814901763"
+    viewId: "796495087814901763",
+    menuId: "792597867579375617"
   },
   "并网完成": {
     buttonId: "821958840828592130",
-    viewId: "792604619072372737"
+    viewId: "792604619072372737",
+    menuId: "792604618998415361"
   }
 
 } 
 
 // 按钮查询
-const getButton = async (buttonId:string,viewId:string) => {
-  await postButtonApi(buttonId,String(formStore.currentFormSteps!.data.initData.id),viewId)
+const getButton = async (buttonId:string,viewId:string,menuId:string) => {
+  await postButtonApi(buttonId,String(formStore.currentFormSteps!.data.initData.id),viewId,menuId)
 }
 // 是否在保存表单
 let isSave = false
@@ -293,8 +300,8 @@ const saveSubmitForm = () => {
 const checkCrediGo = async () => {
   uni.showLoading({ title: '验证中' })
   if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
-    const { buttonId, viewId } = buttonsList["踏勘"]
-    await getButton(buttonId,viewId)
+    const { buttonId, viewId,menuId } = buttonsList["踏勘"]
+    await getButton(buttonId,viewId,menuId)
     formStore.userSelectStep = formStore.userSelectStep! + 1 
     await getFormInfo()
     uni.hideLoading()
@@ -302,12 +309,12 @@ const checkCrediGo = async () => {
       title: "已进入下一步",
     })
   } else {
-    const { buttonId,viewId }  = buttonsList["草稿"]
-    await getButton(buttonId,viewId)
+    const { buttonId,viewId,menuId }  = buttonsList["草稿"]
+    await getButton(buttonId,viewId,menuId)
     await getFormInfo()
     if (formStore.currentFormSteps?.data.initData["GroupField_70"] === "2") {
-      const { buttonId, viewId } = buttonsList["踏勘"]
-      await getButton(buttonId,viewId)
+      const { buttonId, viewId,menuId } = buttonsList["踏勘"]
+      await getButton(buttonId,viewId,menuId)
       formStore.userSelectStep = formStore.userSelectStep! + 1 
       await getFormInfo()
       uni.hideLoading()
@@ -327,8 +334,8 @@ const checkCrediGo = async () => {
 // 提交审核
 const submitReview = async () => {
   uni.showLoading({ title: '提交信息中' })
-  const { buttonId,viewId }  = buttonsList["提交审核"]
-  await getButton(buttonId, viewId)
+  const { buttonId,viewId,menuId }  = buttonsList["提交审核"]
+  await getButton(buttonId, viewId,menuId)
   uni.hideLoading()
   uni.showToast({
     title: '已提交审核',
@@ -339,8 +346,8 @@ const submitReview = async () => {
 
 // 完成安装自检完成
 const complete = async () => {
-  const { buttonId,viewId }  = buttonsList["安装自检完成"]
-  await getButton(buttonId, viewId)
+  const { buttonId,viewId,menuId }  = buttonsList["安装自检完成"]
+  await getButton(buttonId, viewId,menuId)
   uni.showToast({
     title: '已提交安装自检',
     icon: 'success',
@@ -350,8 +357,8 @@ const complete = async () => {
 
 // 并网
 const UtilityGridConnect = async () => {
-  const { buttonId,viewId }  = buttonsList["并网完成"]
-  await getButton(buttonId, viewId)
+  const { buttonId,viewId,menuId }  = buttonsList["并网完成"]
+  await getButton(buttonId, viewId,menuId)
   uni.showToast({
     title: '已提交并网完成',
     icon: 'success',
@@ -407,7 +414,7 @@ watch(() => {
 
 // 签约合同
 const signContract = (type:string) => {
-  const { buttonId, viewId } = buttonsList[type]
+  const { buttonId, viewId,menuId } = buttonsList[type]
   uni.showModal({
     title: '提示',
     content: "是否发送协议",
@@ -415,7 +422,7 @@ const signContract = (type:string) => {
     success: async function (res) {
       if (res.confirm) {
         uni.showLoading({ title: '发送合同中' })
-        await postButtonApi(buttonId, String(formStore.contractForm!.data.initData.id), viewId)
+        await postButtonApi(buttonId, String(formStore.contractForm!.data.initData.id), viewId,menuId)
         uni.hideLoading()
       } else if (res.cancel) {
         uni.showToast({
