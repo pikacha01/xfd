@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+import { useCountStore } from '@/store';
+import { storeToRefs } from 'pinia';
+import { refreshTokenApi } from "@/api/modules/user";
 
-onLaunch(() => {
+onLaunch(async () => {
+  const store = useCountStore();
+  const { token,refreshToken } = storeToRefs(store);
+  if (token.value.length > 0) {
+    // 获取自定义的store
+    // 取需要的 state
+    const res = await refreshTokenApi(refreshToken.value)
+    const token = `Bearer ${res.access_token}`;
+    store.$patch(v => (v.token = token));
+    store.$patch(v => (v.refreshToken = res.refresh_token));
+  }
 });
 onShow(() => {
 });

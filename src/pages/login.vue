@@ -97,7 +97,7 @@ import { reactive, ref } from "vue";
 import { generateUUID } from '@/utils/webSocket'
 import uniFormsItem from '@/uniComponents/uni-forms-item/uni-forms-item.vue'
 import { connectmqtt } from '@/utils/webSocket'
-import {onShareAppMessage } from '@dcloudio/uni-app'
+import { onShareAppMessage } from '@dcloudio/uni-app'
 
 onShareAppMessage(() => {
   return {
@@ -156,9 +156,10 @@ const submit = () => {
         userApi.getToken(res.data, model.phone, model.passWord).then(async res => {
           if (res.status == 0) {
             uni.showToast({ title: "登录成功" });
-            const { access_token } = res.data.map;
+            const { access_token,refresh_token } = res.data.map;
             const token = `Bearer ${access_token}`;
             store.$patch(v => (v.token = token));
+            store.$patch(v => (v.refreshToken = refresh_token));
             await userStore.getUserInfo()
             const uuid = generateUUID()
             userStore.uuid = uuid;

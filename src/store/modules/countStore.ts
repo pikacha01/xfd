@@ -8,6 +8,7 @@ export  const useCountStore = defineStore('storeId', {
     // all these properties will have their type inferred automatically
     FormGrid: [] as Array<IfDataItem>,
     token: "",
+    refreshToken: '',
     value: new Map(),
     companyId: "",
     companyInfo:{} as IfCompany,

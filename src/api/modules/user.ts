@@ -149,6 +149,12 @@ function getUniqueData(
   );
 }
 
+export function refreshTokenApi(
+  id: string
+): Promise<{ access_token: string; refresh_token: string }> {
+  return http.post('/robin/api/login-refresh', { token: id })
+}
+
 export default {
   getToken,
   // refreshToken,
