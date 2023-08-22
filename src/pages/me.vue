@@ -25,6 +25,7 @@ const loginOut = () => {
     success: function (res) {
         if (res.confirm) {
           store.$patch(v => (v.token = ''))
+          store.$patch(v => (v.refreshToken = ''))
           disConnection()
           clientStore.userList = []
           clientStore.TabList = [{ text: "全部", value: "0" },
