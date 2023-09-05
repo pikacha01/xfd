@@ -3,8 +3,8 @@ import { watch, ref,onMounted,nextTick } from 'vue'
 import { onReachBottom,onShow } from "@dcloudio/uni-app"
 import { useCountStore,useClientStore,useFormStore,useUserStore } from '@/store'
 import { clienData } from '@/constants/client'
-import { connectmqtt } from '@/utils/webSocket'
 import {onShareAppMessage } from '@dcloudio/uni-app'
+import { getJoinForm } from '@/api/modules/formInfo'
 
 onShareAppMessage(() => {
   return {
@@ -41,13 +41,14 @@ const clientStore = useClientStore()
 
 // 控制重复是否重复刷新
 onMounted(async() => {
-  if (!store.token) {
-    uni.redirectTo({
-      url:"/pages/login"
-    })
-  } else {
-    await connectmqtt()
-  }
+  // if (!store.token) {
+  //   uni.redirectTo({
+  //     url:"/pages/login"
+  //   })
+  // } else {
+  //   // await connectmqtt()
+  //   // await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
+  // }
   await formStore.getClientFormInfo()
   await clientStore.getTabTotal()
   await userStore.getCompany()
@@ -67,7 +68,7 @@ const selectOptionChange = async (e: string) => {
     return
   }
   refresh = true
-  clientStore.statusFilter = []
+  clientStore.statusFilter.value = []
   if (e === "") {
     selectOptions.value = [{ text: "全部", value: "" }]
     if (selectTab.value === "全部") {
@@ -100,16 +101,16 @@ const selectOptionChange = async (e: string) => {
     }
     selectOptions.value.forEach(item => {
       if (item.value !== "") {
-        clientStore.statusFilter.push(item.value)
+        clientStore.statusFilter.value!.push(item.value)
       }
     })
   } else {
-    clientStore.statusFilter.push(e)
+    clientStore.statusFilter.value.push(e)
   }
-  clientStore.startZero()
-  clientStore.selectOption = e
-  clientStore.userList = []
-  await clientStore.getClientInfo()
+  // clientStore.startZero()
+  // clientStore.selectOption = e
+  // clientStore.userList = []
+  // await clientStore.getClientInfo()
   refresh = false
 }
 
@@ -186,7 +187,7 @@ const searchName = (e) => {
   searchTimer = setTimeout(() => {
     clientStore.startZero()
     clientStore.userList = []
-    clientStore.search = e
+    clientStore.search.value = e
     clientStore.getClientInfo()
   }, 600);
 }
@@ -237,10 +238,10 @@ watch(() => {
       }
     })
   }
-  clientStore.statusFilter = []
+  clientStore.statusFilter.value = []
   selectOptions.value.forEach(item => {
     if (item.value !== "") {
-      clientStore.statusFilter.push(item.value)
+      clientStore.statusFilter.value!.push(item.value)
     }
   })
   clientStore.selectOption = ""
@@ -320,6 +321,90 @@ const toView = ref()
 
 // 回到顶部按钮是否展示
 const isTopShow = ref(false)
+
+const popup = ref()
+const openPopup = async () => {
+  if (VapList.value.length === 0 || Intallerist.value.length === 0) {
+    const vapData = await loadJoinForm('809995471871574018')
+    //@ts-ignore
+    VapList.value = vapData.map(item =>{ return {
+      text: item.TextField_24,
+      value: item.id
+    }
+    })
+    const IntallerData = await loadJoinForm('792748842532143105')
+    //@ts-ignore
+    Intallerist.value  = IntallerData.map(item =>{ return {
+        text: item.TextField_1,
+        value: item.id
+      }
+    })
+  }
+  popup.value.open('bottom')
+}
+
+const VapList = ref<any[]>([])
+const Intallerist = ref<any[]>([])
+
+const loadJoinForm = (id:string) => {
+  return new Promise(async (resolve, reject) => {
+    let begin = 0;
+    let end = 60;
+    const result = [];
+
+    async function makeRequest() {
+      const response = await getJoinForm(id, begin, end);
+      //@ts-ignore
+      result.push(...response);
+
+      //@ts-ignore
+      if (result.length === end) {
+        begin = end;
+        end += 60;
+        makeRequest();
+      } else {
+        resolve(result);
+      }
+    }
+    makeRequest();
+  });
+};
+
+const changeRegin = (e) => {
+  clientStore.areaFilter.value = e.detail.code
+}
+
+const selectOptionVAP = (e:any) => {
+  // clientStore.VAPFilter.value![0] = e
+  // console.log(e,'VAP')
+  // console.log(clientStore.VAPFilter.value![0],'VAP')
+}
+
+const selectOptionInstaller = (e) => {
+  // console.log(e,'Installer')
+  // console.log(clientStore.installerFilter.value![0],'Installer')
+}
+
+const clearFilter = () => {
+  clientStore.statusFilter.value = []
+  clientStore.areaFilter.value = []
+  clientStore.installerFilter.value = []
+  clientStore.VAPFilter.value = []
+  clientStore.search.value = ''
+}
+
+const findData = async () => {
+  refresh = true
+  clientStore.userList = []
+  clientStore.startZero()
+  await clientStore.getClientInfo()
+  popup.value.close()
+  refresh = false
+}
+
+const closePopup = () => {
+  popup.value.close()
+}
 </script>
 <template>
   <view class="bodyBGC">
@@ -347,9 +432,7 @@ const isTopShow = ref(false)
         <view class="search">
           <uni-search @input="searchName" radius="100" bgColor="#fff" placeholder="搜索" cancelButton="none"></uni-search>
         </view>
-        <view class="selectOption">
-          <uni-data-select :localdata="selectOptions" v-model="clientStore.selectOption" @change="selectOptionChange" :clear="false"></uni-data-select>
-        </view>
+        <view class="filterPopup" @click="openPopup"><uni-icons type="settings-filled" size="24"></uni-icons><text class="filter">筛选</text></view>
       </view>
       <view class="content">
         <view class="userInfo" :id="'userInfo'+index" @click.stop="goUserDetail(item,clientStore.steps[item.label])" v-for="(item,index) in clientStore.userList" :key="item.id">
@@ -369,7 +452,45 @@ const isTopShow = ref(false)
     </scroll-view>
     <view class="toTop"  v-if="isTopShow" @click="gotoTop" @touchstart.prevet>
         <uni-icons type="top" size="30" ></uni-icons>
-      </view>
+    </view>
+    <view>
+      <uni-popup ref="popup" type="bottom">
+        <view class="popup">
+          <view class="businessStep">
+            <view class="title">业务流程：</view>
+            <view class="selectOption">
+              <uni-data-select :localdata="selectOptions" v-model="clientStore.selectOption" @change="selectOptionChange" :clear="false"></uni-data-select>
+            </view>
+          </view>
+          <view class="businessStep">
+            <view class="title">地区：</view>
+            <picker class="picker" mode="region" :value="clientStore.areaFilter.value" @change="changeRegin">
+              <view class="date">
+                {{ clientStore.areaFilter.value!.length > 0 ? `${clientStore.areaFilter.value![0]} ${clientStore.areaFilter.value![1]} ${clientStore.areaFilter.value![2]}` : "请选择地区" }}
+              </view>
+            </picker>
+          </view>
+          <view class="businessStep">
+            <view class="title">VAP：</view>
+            <view class="selectOption VAP">
+              <uni-data-select label="请选择VAP"  :localdata="VapList" v-model="clientStore.VAPFilter.value![0]" @change="selectOptionVAP" :clear="false"></uni-data-select>
+            </view>
+          </view>
+          <view class="businessStep">
+            <view class="title">安装商：</view>
+            <view class="selectOption VAP">
+              <uni-data-select label="请选择安装商" :localdata="Intallerist" v-model="clientStore.installerFilter.value![0]" @change="selectOptionInstaller" :clear="false"></uni-data-select>
+            </view>
+          </view>
+          <view class="buttons">
+          <view class="button" @click="clearFilter">清空条件</view>
+          <view class="button" @click="closePopup">取消</view>
+          <view class="button" @click="findData">查找</view>
+        </view>
+        </view>
+
+      </uni-popup>
+    </view>
   </view>
 </template>
 
@@ -485,11 +606,22 @@ const isTopShow = ref(false)
   box-sizing: border-box;
   width: 100%;
   .search {
-    width: 414rpx;
+    // width: 414rpx;
+    flex: 1;
   }
   .selectOption{
     flex: 1;
     padding: 10px;
+  }
+  .filterPopup {
+    width: 150rpx;
+    display: flex;
+    align-items: center;
+    .filter {
+      margin-left: 10rpx;
+      display: flex;
+      align-items: center;
+    }
   }
 }
 .content {
@@ -550,5 +682,45 @@ const isTopShow = ref(false)
 :deep(.uni-select) {
   border-radius: 100px;
   background-color: #fff;
+}
+
+.popup {
+  height: 1000rpx;
+  background-color: #fff;
+  padding: 20rpx 20rpx;
+  .title {
+    width: 150rpx;
+    font-size: 28rpx;
+  }
+  .businessStep {
+    margin-top: 30rpx;
+    display: flex;
+    align-items: center;
+    .selectOption {
+      margin-right: 28rpx;
+      width: 200rpx
+    }
+    .VAP {
+      width: 500rpx
+    }
+    .date{
+      font-size: 28rpx;
+    }
+  }
+  .buttons {
+    margin-top: 350rpx;
+    padding: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .button {
+      border-radius: 20rpx;
+      padding: 10rpx 20rpx;  
+      margin: 0 30rpx;
+      border: 2rpx solid #e1dede;
+		  box-shadow: 0 20rpx 20rpx -20rpx #e1dede;
+      font-size: 30rpx;
+    }
+  }
 }
 </style>

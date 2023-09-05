@@ -158,7 +158,7 @@ export interface Condition {
   dataType?: string;
   formate?: string;
   operator?: Operator;
-  value?: Content[];
+  value?: Content[] | string;
   evalue?: Content[];
 }
 

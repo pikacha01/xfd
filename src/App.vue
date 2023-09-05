@@ -1,25 +1,39 @@
 <script setup lang="ts">
-import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
-import { useCountStore } from '@/store';
+import { onLaunch } from "@dcloudio/uni-app";
+import { useCountStore,useUserStore } from '@/store';
 import { storeToRefs } from 'pinia';
 import { refreshTokenApi } from "@/api/modules/user";
+import { subWebSocket } from '@/api/modules/userInfo'
+import { connectmqtt } from '@/utils/webSocket'
 
 onLaunch(async () => {
   const store = useCountStore();
-  const { token,refreshToken } = storeToRefs(store);
+  const { token, refreshToken } = storeToRefs(store);
   if (token.value.length > 0) {
     // 获取自定义的store
     // 取需要的 state
+    store.$patch(v => (v.token = ''));
     const res = await refreshTokenApi(refreshToken.value)
-    const token = `Bearer ${res.access_token}`;
-    store.$patch(v => (v.token = token));
-    store.$patch(v => (v.refreshToken = res.refresh_token));
+    if (res.access_token) {
+      const userStore = useUserStore()
+      const token = `Bearer ${res.access_token}`;
+      store.$patch(v => (v.token = token));
+      store.$patch(v => (v.refreshToken = res.refresh_token));
+      await connectmqtt()
+      await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
+      uni.navigateTo({
+        url: 'index/index'
+      })
+    } else {
+      uni.redirectTo({
+        url:"/pages/login"
+      })
+    }
+  } else {
+    uni.redirectTo({
+      url:"/pages/login"
+    })
   }
-});
-onShow(() => {
-});
-onHide(() => {
-  
 });
 </script>
 <style lang="scss">

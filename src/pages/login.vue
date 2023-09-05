@@ -98,6 +98,7 @@ import { generateUUID } from '@/utils/webSocket'
 import uniFormsItem from '@/uniComponents/uni-forms-item/uni-forms-item.vue'
 import { connectmqtt } from '@/utils/webSocket'
 import { onShareAppMessage } from '@dcloudio/uni-app'
+import { subWebSocket } from '@/api/modules/userInfo'
 
 onShareAppMessage(() => {
   return {
@@ -164,6 +165,7 @@ const submit = () => {
             const uuid = generateUUID()
             userStore.uuid = uuid;
             await connectmqtt()
+            await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
             uni.navigateTo({
               url: 'index/index'
             })

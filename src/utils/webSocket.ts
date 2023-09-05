@@ -20,14 +20,20 @@ interface CMsg {
   data?: any;
 }
 
-const store = useCountStore()
+let store
+let userStore
+let token
+setTimeout(() => {
+  store = useCountStore()
+  userStore = useUserStore()
+  token  = storeToRefs(store)
+}, 0)
 
-const { token } = storeToRefs(store);
+
 // 提示文字
 let text = ref<string>('')
 // let mqtt  = require('@/utils/m')
 
-const userStore = useUserStore()
 
 const url = "wxs://zhuyiyun.com:443/mqtt"
 
@@ -47,7 +53,6 @@ const connectmqtt = () => {
   } 
   client = mqtt.connect(url, options)
   client.on('connect', async (e) => {
-    await subWebSocket(userStore.userInfo!.id+"_xcx_"+ userStore.uuid)
       // client.subscribe('abc', { qos: 2 }, function (err) {
       //   if (!err) {
       //     console.log('订阅成功')

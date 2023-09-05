@@ -128,7 +128,7 @@ instance.interceptors.response.use((v) => {
     uni.removeStorageSync('accessToken')
     // alert('即将跳转登录页。。。', '登录过期')
     // setTimeout(redirectHome, 1500)
-    if(routes[routes.length - 1].route === "pages/login") return v.data
+    // if(routes[routes.length - 1].route === "pages/login") return v.data
     uni.redirectTo({
       url:"/pages/login"
     })

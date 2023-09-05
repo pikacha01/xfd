@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { getPermissionListApi,getClientInfoApi,getClientOwnerApi } from '@/api/modules/clientInfo'
 import { stepUploadApi } from '@/api/modules/formInfo'
-import { ref } from 'vue'
-import { clienData,userInfo } from '@/constants/client'
-import { IDUpload,newClientStep } from '@/constants/form'
+import { ref,computed } from 'vue'
+import { clienData,userInfo,clientOwner } from '@/constants/client'
+import { IDUpload,newClientStep,Condition,Operator } from '@/constants/form'
 import { useFormStore } from "@/store"
 import { cancelAxios } from '@/api/http'
 
@@ -79,27 +79,74 @@ export const useClientStore = defineStore(
   // 视图id
   const viewId = ref<string>("797373861394317313")
 
-  // 状态筛选
-  const statusFilter = ref<string[]>([])
+  // 步骤筛选
+  const statusFilter = ref<Condition>({
+      fieldName: "GroupField_69",
+      operator: Operator.InSet,
+      value: []
+  })
+
+  const search = ref<Condition>({
+    fieldName: "TextField_1",
+    operator: Operator.Contains,
+    value: ''
+  })
+    
+  const areaFilter = ref<Condition>({
+    fieldName: "RegionField_20",
+    operator: Operator.Contains,
+    value: []
+  })
+    
+  const installerFilter = ref<Condition>({
+    fieldName: "JoinFormField_63",
+    operator: Operator.Equals,
+    value: []
+  })
+    
+  const VAPFilter = ref<Condition>({
+    fieldName: "JoinFormField_98",
+    operator: Operator.Equals,
+    value: []
+  })
+    
+  const filterConditionList = computed(() => {
+    const arr = [statusFilter.value,search.value,areaFilter.value,installerFilter.value,VAPFilter.value]
+    return arr.filter((item) => {
+      if (Array.isArray(item.value)) {
+        // @ts-ignore
+        if (item.value[0] && item.value[0].length > 0) {
+          return true
+        } else {
+          return false
+        }
+      }
+      return item.value && item.value.length > 0
+    })
+  })
 
   // 人员列表
   const userList = ref<clienData[]>([])
   let start = ref(0)
   let end = ref(30)
   let total = ref<number | null>(null)
-  const search = ref<string>("")
+  const ownerList = ref<clientOwner[]>([])
   // 获取人员列表
   const getClientInfo = async () => {
     // 取消之前的请求
     cancelAxios()
     const formStore = useFormStore()
-    const res = await getClientInfoApi(start.value, end.value, search.value, statusFilter.value)
+    const res = await getClientInfoApi(start.value, end.value,filterConditionList.value)
     if(start.value === 0) userList.value = []
     for (const item of res.datas) {
       item.DateField_4 = formatDateTime(item.DateField_4);
-      // 客户拥有者
-      if (item.MemberField_5 !== undefined) {
+      const index = ownerList.value.findIndex(data => data.id === item.MemberField_5)
+      if (item.MemberField_5 && index !== -1) {
+        item.owner = ownerList.value[index].name;
+      } else if (item.MemberField_5 !== undefined) {
         const data = await getClientOwnerApi(item.MemberField_5);
+        // @ts-ignore
+        ownerList.value.push(data);
         // @ts-ignore
         item.owner = data.name;
       }
@@ -134,7 +181,7 @@ export const useClientStore = defineStore(
   // 获取Tab栏总数量
   const getTabTotal = async () => {
     let tempList: any = []
-    search.value = ""
+    search.value.value = ""
     const formStore = useFormStore()
     for (const data of TabList.value) {
       if (data.text === "全部") {
@@ -168,7 +215,11 @@ export const useClientStore = defineStore(
       tempList.forEach(item => {
         filterList.push(item.value)
       })
-      const res = await getClientInfoApi(start.value, end.value, search.value, filterList)
+      const res = await getClientInfoApi(start.value, end.value, [{
+          fieldName: "GroupField_69",
+          operator: Operator.InSet,
+          value: [...filterList]
+      }])
       filterList = []
       tempList = []
       data.value = String(res.total)
@@ -203,6 +254,7 @@ export const useClientStore = defineStore(
 
   return {
     selectOption, getClientInfo, userList, total, end, start,IDCardForm,
-    startZero,search,viewId,statusFilter,TabList,getTabTotal,steps}
+    startZero, search, viewId, statusFilter, TabList, getTabTotal, steps, areaFilter,
+    installerFilter,VAPFilter}
   }
 )

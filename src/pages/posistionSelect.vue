@@ -60,7 +60,7 @@ const covers = ref([{
 
 // 搜索地址
 const searchAddress = ref<string>()
-let searchTimer: number | null = null;
+let searchTimer: number | any = null;
 // 地址搜索
 watch(() => {
   return searchAddress.value

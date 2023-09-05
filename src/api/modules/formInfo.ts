@@ -129,3 +129,13 @@ export function getSNCodeList(id:string,stepId:string): AxiosPromise<SNList>{
     viewId: ""
   })
 }
+
+// 获取关联表列表
+export function getJoinForm(id:string,begin:number,end:number): AxiosPromise<any[]>{
+  return http.post(`/zoro/form-datas/790241614973665283/${id}
+  `, {
+    begin,
+    end,
+    keyword: ""
+  })
+}

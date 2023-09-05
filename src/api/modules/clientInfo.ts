@@ -2,16 +2,17 @@ import http from '../http'
 import HWCloud from '../huaweiClound'
 import { clienData,tabsList,clientOwner,obs } from '@/constants/client'
 import { AxiosPromise } from "axios";
+import { IDUpload,newClientStep,Condition,Operator } from '@/constants/form'
 
 
 // 获取客户信息
-export function getClientInfoApi(start:number,end:number,search:string,statusFilter:string[]): Promise<{
+export function getClientInfoApi(start:number,end:number,criterias:Condition[]): Promise<{
   datas: clienData[],
   end:number,
   start: number,
   total:number
 }> {
-  if (search && (statusFilter.length !== 0 && statusFilter[0].length !== 0 ) ) {
+  if (criterias && criterias.length > 0) {
     return http.post('/zoro/pagedList/790241614973665283',{
       menuId: "790536182940565506",
       viewId: "797373861394317313",
@@ -23,54 +24,7 @@ export function getClientInfoApi(start:number,end:number,search:string,statusFil
         sort: [],
         start,
         operator: "AND",
-        criterias: [{
-          fieldName: "TextField_1",
-          operator: "CONTAINS",
-          value: search
-        },{
-          fieldName: "GroupField_69",
-          operator: "IN_SET",
-          value: [...statusFilter]
-        }]
-      }
-    })
-  } else if (search) {
-    return http.post('/zoro/pagedList/790241614973665283',{
-      menuId: "790536182940565506",
-      viewId: "797373861394317313",
-      buttonId: "fetch",
-      selectedAll: false,
-      selectedIds: [],
-      userCondition: {
-        end,
-        sort: [],
-        start,
-        operator: "AND",
-        criterias: [{
-          fieldName: "TextField_1",
-          operator: "CONTAINS",
-          value: search
-        }]
-      }
-    })
-  }
-  else if (statusFilter.length !== 0 && statusFilter[0].length !== 0 ) {
-    return http.post('/zoro/pagedList/790241614973665283',{
-      menuId: "790536182940565506",
-      viewId:"797373861394317313",
-      buttonId: "fetch",
-      selectedAll: false,
-      selectedIds: [],
-      userCondition: {
-        end,
-        sort: [],
-        start,
-        operator: "AND",
-        criterias: [{
-          fieldName: "GroupField_69",
-          operator: "IN_SET",
-          value: [...statusFilter]
-        }]
+        criterias
       }
     })
   } else {
