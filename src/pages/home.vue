@@ -345,6 +345,7 @@ const openPopup = async () => {
 
 const VapList = ref<any[]>([])
 const Intallerist = ref<any[]>([])
+const areaList = ref<string[]>()
 
 const loadJoinForm = (id:string) => {
   return new Promise(async (resolve, reject) => {
@@ -372,6 +373,7 @@ const loadJoinForm = (id:string) => {
 
 const changeRegin = (e) => {
   clientStore.areaFilter.value = e.detail.code
+  areaList.value = e.detail.value
 }
 
 const selectOptionVAP = (e:any) => {
@@ -398,6 +400,7 @@ const findData = async () => {
   clientStore.userList = []
   clientStore.startZero()
   await clientStore.getClientInfo()
+  await clientStore.getTabTotal()
   popup.value.close()
   refresh = false
 }
@@ -464,9 +467,9 @@ const closePopup = () => {
           </view>
           <view class="businessStep">
             <view class="title">地区：</view>
-            <picker class="picker" mode="region" :value="clientStore.areaFilter.value" @change="changeRegin">
+            <picker class="picker" mode="region" :value="clientStore.areaFilter.value" custom-item="全部" @change="changeRegin">
               <view class="date">
-                {{ clientStore.areaFilter.value!.length > 0 ? `${clientStore.areaFilter.value![0]} ${clientStore.areaFilter.value![1]} ${clientStore.areaFilter.value![2]}` : "请选择地区" }}
+                {{ areaList ? `${areaList[0]} ${areaList[1]} ${areaList[2]}` : "请选择地区" }}
               </view>
             </picker>
           </view>

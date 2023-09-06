@@ -23,6 +23,7 @@ interface CMsg {
 let store
 let userStore
 let token
+let url
 setTimeout(() => {
   store = useCountStore()
   userStore = useUserStore()
@@ -34,8 +35,19 @@ setTimeout(() => {
 let text = ref<string>('')
 // let mqtt  = require('@/utils/m')
 
+// #ifdef APP-PLUS
+url = 'wxs://zhuyiyun.com:443/mqtt'
+// #endif
+// #ifdef H5
+url = 'wss://zhuyiyun.com:443/mqtt'
+// #endif
+// #ifdef MP-WEIXIN
+url = 'wxs://zhuyiyun.com:443/mqtt'
 
-const url = "wxs://zhuyiyun.com:443/mqtt"
+// #endif
+
+
+// const url = "wxs://zhuyiyun.com:443/mqtt"
 
 let client: any = null
 

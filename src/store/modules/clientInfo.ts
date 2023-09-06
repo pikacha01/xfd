@@ -215,11 +215,12 @@ export const useClientStore = defineStore(
       tempList.forEach(item => {
         filterList.push(item.value)
       })
+      const filter = filterConditionList.value.filter(item => item.fieldName !== 'GroupField_69')
       const res = await getClientInfoApi(start.value, end.value, [{
           fieldName: "GroupField_69",
           operator: Operator.InSet,
           value: [...filterList]
-      }])
+      },...filter])
       filterList = []
       tempList = []
       data.value = String(res.total)
